@@ -34,7 +34,7 @@ const SystemStatus: React.FC = () => {
   const { status, loading, error } = useSystemStatus();
 
   return (
-    <Card className="mb-8 border-orange-500/50">
+    <Card className="mb-8 border-orange-500/30 bg-gray-800 shadow-lg">
       <CardHeader className="bg-orange-500 text-white">
         <CardTitle className="flex items-center gap-2">
           <CheckCircle className="h-5 w-5" />
@@ -57,25 +57,25 @@ const SystemStatus: React.FC = () => {
 
         {status && (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="p-4 rounded-md border border-gray-200 bg-gray-50">
+            <div className="p-4 rounded-md border border-orange-500/20 bg-gray-900 hover:border-orange-500/40 transition-all duration-300 shadow-md">
               <div className="flex justify-between items-center">
-                <h3 className="font-medium">Environmental Monitoring</h3>
+                <h3 className="font-medium text-white">Environmental Monitoring</h3>
                 <StatusBadge status={status.environmental_monitoring} />
               </div>
             </div>
-            <div className="p-4 rounded-md border border-gray-200 bg-gray-50">
+            <div className="p-4 rounded-md border border-orange-500/20 bg-gray-900 hover:border-orange-500/40 transition-all duration-300 shadow-md">
               <div className="flex justify-between items-center">
-                <h3 className="font-medium">Species Database</h3>
+                <h3 className="font-medium text-white">Species Database</h3>
                 <StatusBadge status={status.species_database} />
               </div>
             </div>
-            <div className="p-4 rounded-md border border-gray-200 bg-gray-50">
+            <div className="p-4 rounded-md border border-orange-500/20 bg-gray-900 hover:border-orange-500/40 transition-all duration-300 shadow-md">
               <div className="flex justify-between items-center">
-                <h3 className="font-medium">Overall Status</h3>
+                <h3 className="font-medium text-white">Overall Status</h3>
                 <StatusBadge status={status.overall_status} />
               </div>
             </div>
-            <div className="col-span-1 md:col-span-3 text-xs text-gray-500 text-right">
+            <div className="col-span-1 md:col-span-3 text-xs text-gray-400 text-right">
               Last updated: {status.last_updated ? new Date(status.last_updated).toLocaleString() : 'N/A'}
             </div>
           </div>
