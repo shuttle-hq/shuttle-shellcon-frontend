@@ -98,8 +98,8 @@ const SystemArchitecture: React.FC = () => {
             >
               <SpeciesHubControls
                 onFetchAllSpecies={handleFetchAllSpecies}
-                onGetSpeciesDetails={() => setShowSpeciesDetailsDialog(true)}
-                onGetFeedingSchedule={() => setShowFeedingScheduleDialog(true)}
+                onGetSpeciesDetails={() => handleGetSpeciesDetails("")}
+                onGetFeedingSchedule={() => handleGetFeedingSchedule("")}
                 loadSpeciesForDropdown={loadSpeciesForDropdown}
                 speciesList={speciesList}
                 speciesLoading={speciesLoading}
