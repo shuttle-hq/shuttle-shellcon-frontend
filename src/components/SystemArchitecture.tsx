@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Server, Database, Monitor } from "lucide-react";
@@ -99,13 +98,11 @@ const SystemArchitecture: React.FC = () => {
             >
               <SpeciesHubControls
                 onFetchAllSpecies={handleFetchAllSpecies}
-                onSearchSpecies={handleSearchSpecies}
-                onGetSpeciesDetails={handleGetSpeciesDetails}
-                onGetFeedingSchedule={handleGetFeedingSchedule}
+                onGetSpeciesDetails={() => setShowSpeciesDetailsDialog(true)}
+                onGetFeedingSchedule={() => setShowFeedingScheduleDialog(true)}
                 loadSpeciesForDropdown={loadSpeciesForDropdown}
                 speciesList={speciesList}
                 speciesLoading={speciesLoading}
-                searchLoading={searchLoading}
                 detailsLoading={detailsLoading}
                 scheduleLoading={scheduleLoading}
               />
@@ -167,6 +164,10 @@ const SystemArchitecture: React.FC = () => {
         feedingSchedule={feedingSchedule}
         scheduleLoading={scheduleLoading}
         scheduleError={scheduleError}
+        
+        onSearchSpecies={handleSearchSpecies}
+        onGetSpeciesDetails={handleGetSpeciesDetails}
+        onGetFeedingSchedule={handleGetFeedingSchedule}
       />
     </>
   );
