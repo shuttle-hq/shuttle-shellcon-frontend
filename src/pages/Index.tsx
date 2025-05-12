@@ -5,7 +5,7 @@ import SystemStatus from '../components/SystemStatus';
 import ChallengeList from '../components/ChallengeList';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { Button } from '@/components/ui/button';
-import { ChevronDown, ArrowDown } from 'lucide-react';
+import { ArrowDown } from 'lucide-react';
 
 const Index = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -28,26 +28,28 @@ const Index = () => {
           className="w-full"
         >
           <div className="flex items-center justify-between">
-            <h2 className="text-lg font-semibold text-gray-800">
-              Welcome to the Shuttle onboarding adventure!
-            </h2>
-            <CollapsibleTrigger asChild>
-              <Button 
-                variant="outline" 
-                size="sm" 
-                className={`
-                  bg-gradient-to-r from-orange-400 to-orange-500 
-                  text-white font-medium px-4 py-2 shadow-lg 
-                  hover:from-orange-500 hover:to-orange-600
-                  border-2 border-orange-600
-                  animate-pulse hover:animate-none transition-all
-                  flex items-center gap-2
-                `}
-              >
-                Read Story
-                <ArrowDown className={`h-4 w-4 transition-transform duration-300 ${isOpen ? 'transform rotate-180' : 'animate-bounce'}`} />
-              </Button>
-            </CollapsibleTrigger>
+            <div className="flex items-center gap-3">
+              <h2 className="text-lg font-semibold text-gray-800">
+                Welcome to the Shuttle onboarding adventure!
+              </h2>
+              <CollapsibleTrigger asChild>
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  className={`
+                    bg-gradient-to-r from-orange-400 to-orange-500 
+                    text-white font-medium px-4 py-2 shadow-lg 
+                    hover:from-orange-500 hover:to-orange-600
+                    border-2 border-orange-600
+                    animate-pulse hover:animate-none transition-all
+                    flex items-center gap-2
+                  `}
+                >
+                  Read Story
+                  <ArrowDown className={`h-4 w-4 transition-transform duration-300 ${isOpen ? 'transform rotate-180' : 'animate-bounce'}`} />
+                </Button>
+              </CollapsibleTrigger>
+            </div>
           </div>
           
           <p className="text-gray-600 mt-1">
