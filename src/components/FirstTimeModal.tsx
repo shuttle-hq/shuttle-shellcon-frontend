@@ -18,9 +18,12 @@ interface FirstTimeModalProps {
 }
 
 const FirstTimeModal = ({ isOpen, onClose, onReadStory }: FirstTimeModalProps) => {
+  console.log("Modal rendering with isOpen:", isOpen);
+  
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="border-orange-500 bg-gradient-to-b from-gray-900 to-black max-w-md relative overflow-hidden z-50">
+        <div className="absolute inset-0 bg-gradient-to-b from-gray-900 to-black -z-10"></div>
         <div className="mascot-background w-24 h-24 absolute right-0 -bottom-4">
           <img 
             src="/lovable-uploads/4adfa2cc-cffd-4463-8069-939658c80853.png" 
