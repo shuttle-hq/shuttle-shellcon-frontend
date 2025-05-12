@@ -1,0 +1,71 @@
+
+import { API_URLS } from '../config/api';
+
+// Aqua-Brain API
+export const getSystemStatus = async () => {
+  try {
+    const response = await fetch(`${API_URLS.AQUA_BRAIN}/api/system/status`);
+    if (!response.ok) throw new Error('Failed to fetch system status');
+    return await response.json();
+  } catch (error) {
+    console.error('Error fetching system status:', error);
+    throw error;
+  }
+};
+
+export const getChallenges = async () => {
+  try {
+    const response = await fetch(`${API_URLS.AQUA_BRAIN}/api/challenges/current`);
+    if (!response.ok) throw new Error('Failed to fetch challenges');
+    return await response.json();
+  } catch (error) {
+    console.error('Error fetching challenges:', error);
+    throw error;
+  }
+};
+
+// Aqua-Monitor API
+export const getTankReadings = async (tankId: string) => {
+  try {
+    const response = await fetch(`${API_URLS.AQUA_MONITOR}/api/tanks/${tankId}/readings`);
+    if (!response.ok) throw new Error('Failed to fetch tank readings');
+    return await response.json();
+  } catch (error) {
+    console.error('Error fetching tank readings:', error);
+    throw error;
+  }
+};
+
+export const getSensorStatus = async () => {
+  try {
+    const response = await fetch(`${API_URLS.AQUA_MONITOR}/api/sensors/status`);
+    if (!response.ok) throw new Error('Failed to fetch sensor status');
+    return await response.json();
+  } catch (error) {
+    console.error('Error fetching sensor status:', error);
+    throw error;
+  }
+};
+
+// Species-Hub API
+export const getSpecies = async () => {
+  try {
+    const response = await fetch(`${API_URLS.SPECIES_HUB}/api/species`);
+    if (!response.ok) throw new Error('Failed to fetch species');
+    return await response.json();
+  } catch (error) {
+    console.error('Error fetching species:', error);
+    throw error;
+  }
+};
+
+export const getFeedingSchedule = async () => {
+  try {
+    const response = await fetch(`${API_URLS.SPECIES_HUB}/api/feeding/schedule`);
+    if (!response.ok) throw new Error('Failed to fetch feeding schedule');
+    return await response.json();
+  } catch (error) {
+    console.error('Error fetching feeding schedule:', error);
+    throw error;
+  }
+};

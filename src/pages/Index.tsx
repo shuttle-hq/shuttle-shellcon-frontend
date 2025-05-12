@@ -1,33 +1,32 @@
 
 import React from 'react';
+import SystemArchitecture from '../components/SystemArchitecture';
+import SystemStatus from '../components/SystemStatus';
+import ChallengeList from '../components/ChallengeList';
 
 const Index = () => {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-white to-gray-100">
-      <div className="text-center p-8 max-w-md rounded-xl shadow-sm bg-white">
-        <h1 className="text-3xl font-bold text-gray-800 mb-4">My Empty Project</h1>
-        <p className="text-gray-600 mb-6">
-          Ready to connect to your GitHub repository and start building!
-        </p>
-        <div className="flex justify-center space-x-4">
-          <a 
-            href="https://github.com" 
-            target="_blank" 
-            rel="noopener noreferrer"
-            className="px-4 py-2 bg-gray-900 text-white rounded-md hover:bg-gray-800 transition-colors"
-          >
-            Visit GitHub
-          </a>
-          <a 
-            href="https://docs.lovable.dev" 
-            target="_blank" 
-            rel="noopener noreferrer"
-            className="px-4 py-2 bg-white text-gray-800 border border-gray-300 rounded-md hover:bg-gray-50 transition-colors"
-          >
-            Documentation
-          </a>
+    <div className="min-h-screen bg-gray-100">
+      <header className="bg-gray-900 text-white py-4 border-b-4 border-orange-500">
+        <div className="container mx-auto px-4">
+          <h1 className="text-2xl md:text-3xl font-bold">ShellCon Smart Aquarium Dashboard</h1>
+          <p className="text-gray-300 text-sm md:text-base">
+            Real-time monitoring and optimization challenges for the world's premier crustacean convention
+          </p>
         </div>
-      </div>
+      </header>
+
+      <main className="container mx-auto px-4 py-8">
+        <SystemArchitecture />
+        <SystemStatus />
+        <ChallengeList />
+      </main>
+      
+      <footer className="bg-gray-900 text-white py-4 border-t-2 border-orange-500 mt-8">
+        <div className="container mx-auto px-4 text-center text-sm">
+          &copy; {new Date().getFullYear()} ShellCon Smart Aquarium System | Powered by Shuttle.dev
+        </div>
+      </footer>
     </div>
   );
 };
