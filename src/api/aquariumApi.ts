@@ -4,7 +4,7 @@ import { API_URLS } from '../config/api';
 // Aqua-Brain API
 export const getSystemStatus = async () => {
   try {
-    const response = await fetch(`${API_URLS.AQUA_BRAIN}/api/system/status`);
+    const response = await fetch(`${API_URLS.AQUA_BRAIN}/system/status`);
     if (!response.ok) throw new Error('Failed to fetch system status');
     return await response.json();
   } catch (error) {
@@ -15,7 +15,7 @@ export const getSystemStatus = async () => {
 
 export const getChallenges = async () => {
   try {
-    const response = await fetch(`${API_URLS.AQUA_BRAIN}/api/challenges/current`);
+    const response = await fetch(`${API_URLS.AQUA_BRAIN}/challenges/current`);
     if (!response.ok) throw new Error('Failed to fetch challenges');
     return await response.json();
   } catch (error) {
