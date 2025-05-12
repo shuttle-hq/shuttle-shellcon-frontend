@@ -3,6 +3,9 @@ import React, { useEffect } from 'react';
 import { TanksTable } from './api-results/TanksTable';
 import { ReadingsDisplay } from './api-results/ReadingsDisplay';
 import { SensorsDisplay } from './api-results/SensorsDisplay';
+import { SpeciesListDisplay } from './api-results/SpeciesListDisplay';
+import { SpeciesDetailsDisplay } from './api-results/SpeciesDetailsDisplay';
+import { FeedingScheduleDisplay } from './api-results/FeedingScheduleDisplay';
 import { 
   LoadingState, 
   ErrorState, 
@@ -15,7 +18,7 @@ interface ApiResultDisplayProps {
   data: any;
   loading: boolean;
   error: string | null;
-  type: 'tanks' | 'readings' | 'sensors';
+  type: 'tanks' | 'readings' | 'sensors' | 'species-list' | 'species-search' | 'species-details' | 'feeding-schedule';
 }
 
 export const ApiResultDisplay: React.FC<ApiResultDisplayProps> = ({ 
@@ -53,6 +56,16 @@ export const ApiResultDisplay: React.FC<ApiResultDisplayProps> = ({
       
     case 'sensors':
       return <SensorsDisplay data={data} />;
+      
+    case 'species-list':
+    case 'species-search':
+      return <SpeciesListDisplay data={Array.isArray(data) ? data : [data]} />;
+      
+    case 'species-details':
+      return <SpeciesDetailsDisplay data={data} />;
+      
+    case 'feeding-schedule':
+      return <FeedingScheduleDisplay data={data} />;
       
     default:
       return <JsonView data={data} />;

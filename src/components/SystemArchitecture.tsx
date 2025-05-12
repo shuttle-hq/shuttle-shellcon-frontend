@@ -4,11 +4,14 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Server, Database, Monitor } from "lucide-react";
 import ServiceCard from './system-architecture/ServiceCard';
 import AquaMonitorControls from './system-architecture/AquaMonitorControls';
+import SpeciesHubControls from './system-architecture/SpeciesHubControls';
 import ResultDialogs from './system-architecture/ResultDialogs';
+import SpeciesResultDialogs from './system-architecture/SpeciesResultDialogs';
 import { useAquaData } from './system-architecture/useAquaData';
+import { useSpeciesData } from './system-architecture/useSpeciesData';
 
 const SystemArchitecture: React.FC = () => {
-  // Extract all data and handlers from custom hook
+  // Extract all data and handlers from custom hooks
   const {
     tanksData,
     tanksLoading,
@@ -30,6 +33,35 @@ const SystemArchitecture: React.FC = () => {
     handleFetchTankReadings,
     handleCheckSensorStatus
   } = useAquaData();
+
+  // Extract species hub data and handlers
+  const {
+    speciesList,
+    speciesLoading,
+    speciesError,
+    searchResults,
+    searchLoading,
+    searchError,
+    speciesDetails,
+    detailsLoading,
+    detailsError,
+    feedingSchedule,
+    scheduleLoading,
+    scheduleError,
+    showSpeciesListDialog,
+    setShowSpeciesListDialog,
+    showSearchResultsDialog,
+    setShowSearchResultsDialog,
+    showSpeciesDetailsDialog,
+    setShowSpeciesDetailsDialog,
+    showFeedingScheduleDialog,
+    setShowFeedingScheduleDialog,
+    handleFetchAllSpecies,
+    handleSearchSpecies,
+    handleGetSpeciesDetails,
+    handleGetFeedingSchedule,
+    loadSpeciesForDropdown
+  } = useSpeciesData();
 
   return (
     <>
@@ -64,7 +96,20 @@ const SystemArchitecture: React.FC = () => {
               title="species-hub" 
               description="Species and feeding information service that manages the database of crustacean species, their optimal environmental parameters, and feeding schedules."
               icon={Database}
-            />
+            >
+              <SpeciesHubControls
+                onFetchAllSpecies={handleFetchAllSpecies}
+                onSearchSpecies={handleSearchSpecies}
+                onGetSpeciesDetails={handleGetSpeciesDetails}
+                onGetFeedingSchedule={handleGetFeedingSchedule}
+                loadSpeciesForDropdown={loadSpeciesForDropdown}
+                speciesList={speciesList}
+                speciesLoading={speciesLoading}
+                searchLoading={searchLoading}
+                detailsLoading={detailsLoading}
+                scheduleLoading={scheduleLoading}
+              />
+            </ServiceCard>
             
             {/* Aqua Brain Service Card */}
             <ServiceCard 
@@ -76,7 +121,7 @@ const SystemArchitecture: React.FC = () => {
         </CardContent>
       </Card>
 
-      {/* Dialogs for API Results */}
+      {/* Dialogs for Aqua Monitor API Results */}
       <ResultDialogs
         showTanksDialog={showTanksDialog}
         setShowTanksDialog={setShowTanksDialog}
@@ -95,6 +140,33 @@ const SystemArchitecture: React.FC = () => {
         sensorStatus={sensorStatus}
         sensorLoading={sensorLoading}
         sensorError={sensorError}
+      />
+
+      {/* Dialogs for Species Hub API Results */}
+      <SpeciesResultDialogs
+        showSpeciesListDialog={showSpeciesListDialog}
+        setShowSpeciesListDialog={setShowSpeciesListDialog}
+        speciesList={speciesList}
+        speciesLoading={speciesLoading}
+        speciesError={speciesError}
+        
+        showSearchResultsDialog={showSearchResultsDialog}
+        setShowSearchResultsDialog={setShowSearchResultsDialog}
+        searchResults={searchResults}
+        searchLoading={searchLoading}
+        searchError={searchError}
+        
+        showSpeciesDetailsDialog={showSpeciesDetailsDialog}
+        setShowSpeciesDetailsDialog={setShowSpeciesDetailsDialog}
+        speciesDetails={speciesDetails}
+        detailsLoading={detailsLoading}
+        detailsError={detailsError}
+        
+        showFeedingScheduleDialog={showFeedingScheduleDialog}
+        setShowFeedingScheduleDialog={setShowFeedingScheduleDialog}
+        feedingSchedule={feedingSchedule}
+        scheduleLoading={scheduleLoading}
+        scheduleError={scheduleError}
       />
     </>
   );
