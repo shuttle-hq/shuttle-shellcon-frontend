@@ -1,82 +1,107 @@
 
 import React from 'react';
-import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import { getBatteryColorClass } from '../utils/displayHelpers';
+import { Clock, Activity, Server } from "lucide-react";
 
 interface SensorsDisplayProps {
   data: any;
 }
 
+// Helper function to format the date nicely
+const formatDate = (dateString: string): string => {
+  const date = new Date(dateString);
+  return date.toLocaleString('en-US', {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+    hour12: true
+  });
+};
+
 export const SensorsDisplay: React.FC<SensorsDisplayProps> = ({ data }) => {
-  return (
-    <div className="space-y-4">
-      <div className="overflow-x-auto">
-        <Table className="w-full">
-          <TableHeader className="bg-gray-950/50">
-            <TableRow>
-              <TableHead className="text-orange-400">Sensor ID</TableHead>
-              <TableHead className="text-orange-400">Type</TableHead>
-              <TableHead className="text-orange-400">Status</TableHead>
-              <TableHead className="text-orange-400">Last Report</TableHead>
-              <TableHead className="text-orange-400">Battery</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {data.sensors && data.sensors.map((sensor: any) => (
-              <TableRow key={sensor.id} className="hover:bg-gray-800">
-                <TableCell className="font-mono">{sensor.id}</TableCell>
-                <TableCell>{sensor.type || "Unknown"}</TableCell>
-                <TableCell>
-                  <Badge className={`
-                    ${sensor.status === 'online' ? 'bg-green-600' : ''}
-                    ${sensor.status === 'degraded' ? 'bg-amber-600' : ''}
-                    ${sensor.status === 'offline' ? 'bg-red-600' : ''}
-                    ${!sensor.status ? 'bg-gray-600' : ''}
-                  `}>
-                    {sensor.status || "Unknown"}
-                  </Badge>
-                </TableCell>
-                <TableCell>{sensor.lastReport || "N/A"}</TableCell>
-                <TableCell>
-                  <div className="flex items-center">
-                    <div className="h-2 w-16 bg-gray-700 rounded-full overflow-hidden">
-                      <div 
-                        className={`h-2 ${getBatteryColorClass(sensor.battery)}`} 
-                        style={{width: `${sensor.battery || 0}%`}}
-                      />
-                    </div>
-                    <span className="ml-2 text-xs">{sensor.battery || 0}%</span>
-                  </div>
-                </TableCell>
-              </TableRow>
-            ))}
-            {(!data.sensors || data.sensors.length === 0) && (
-              <TableRow>
-                <TableCell colSpan={5} className="text-center text-gray-400">No sensors found</TableCell>
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
+  // Check if we have valid data
+  if (!data) {
+    return (
+      <div className="text-center p-4 text-gray-400">
+        No sensor data available
       </div>
-      
-      {data.networkStatus && (
-        <div className="bg-gray-950/50 rounded-md p-3 mt-4">
-          <p className="text-orange-400 font-medium">Network Status</p>
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mt-2">
-            {Object.entries(data.networkStatus).map(([key, value]: [string, any]) => (
-              <div key={key} className="border border-gray-700 rounded-md p-2 bg-gray-850">
-                <div className="text-xs text-gray-400 capitalize">{key}</div>
-                <div className="font-semibold">
-                  {typeof value === 'boolean' 
-                    ? (value ? '✅ Active' : '❌ Inactive') 
-                    : value}
-                </div>
-              </div>
-            ))}
+    );
+  }
+  
+  return (
+    <div className="space-y-6">
+      {/* Status Card */}
+      <div className="bg-gray-950/50 rounded-md p-4 border border-gray-800">
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="text-lg font-medium text-orange-400 flex items-center">
+            <Server className="mr-2 h-5 w-5" />
+            System Sensor Status
+          </h3>
+          <Badge className={`
+            ${data.status === 'online' ? 'bg-green-600 hover:bg-green-600' : ''}
+            ${data.status === 'degraded' ? 'bg-amber-600 hover:bg-amber-600' : ''}
+            ${data.status === 'offline' ? 'bg-red-600 hover:bg-red-600' : ''}
+            ${!data.status ? 'bg-gray-600 hover:bg-gray-600' : ''}
+            px-3 py-1 text-sm
+          `}>
+            {data.status || "Unknown"}
+          </Badge>
+        </div>
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {/* Active Sensors */}
+          <div className="bg-gray-850 rounded-md p-3 border border-gray-700">
+            <div className="flex items-center justify-between">
+              <span className="text-gray-400 text-sm">Active Sensors</span>
+              <span className="text-2xl font-bold text-orange-300">{data.active_sensors}</span>
+            </div>
+            <div className="mt-2 h-2 w-full bg-gray-700 rounded-full overflow-hidden">
+              <div 
+                className="h-2 bg-orange-500" 
+                style={{width: data.active_sensors === 24 ? '100%' : `${(data.active_sensors / 24) * 100}%`}}
+              />
+            </div>
+          </div>
+          
+          {/* Last Updated */}
+          <div className="bg-gray-850 rounded-md p-3 border border-gray-700">
+            <div className="text-gray-400 text-sm mb-1 flex items-center">
+              <Clock className="h-3 w-3 mr-1" /> 
+              Last Updated
+            </div>
+            <div className="text-white">
+              {data.last_updated ? formatDate(data.last_updated) : "Unknown"}
+            </div>
           </div>
         </div>
-      )}
+      </div>
+      
+      {/* System Activity */}
+      <div className="bg-gray-950/50 rounded-md p-4 border border-gray-800">
+        <h3 className="text-md font-medium text-orange-400 flex items-center mb-3">
+          <Activity className="mr-2 h-4 w-4" />
+          System Activity
+        </h3>
+        <div className="p-3 bg-gray-850 rounded-md border border-gray-700">
+          <p className="text-sm">
+            {data.status === 'online' && (
+              <span className="text-green-400">All sensor systems are operating normally. {data.active_sensors} sensors are actively reporting data.</span>
+            )}
+            {data.status === 'degraded' && (
+              <span className="text-amber-400">Sensor system is operating with reduced capacity. Only {data.active_sensors} sensors are reporting data.</span>
+            )}
+            {data.status === 'offline' && (
+              <span className="text-red-400">Sensor system is currently offline. No data is being reported.</span>
+            )}
+            {!data.status && (
+              <span className="text-gray-400">Sensor status information unavailable.</span>
+            )}
+          </p>
+        </div>
+      </div>
     </div>
   );
 };

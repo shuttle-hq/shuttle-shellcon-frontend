@@ -28,27 +28,18 @@ export const useAquaData = () => {
       const data = await getAllTanks();
       console.log("Raw tanks data received:", data);
       
-      // Create a proper data structure if tanks data is not in expected format
-      let formattedData: any = data;
-      
-      // Check if data is not in the expected format (with a tanks array)
-      if (data && Array.isArray(data)) {
-        // If data is an array directly, wrap it in an object with tanks property
-        formattedData = { tanks: data };
-        console.log("Restructured tanks data:", formattedData);
-      } else if (data && !Array.isArray(data) && typeof data === 'object') {
-        // If data is an object but doesn't have tanks property or tanks is not an array
-        if (!data.tanks || !Array.isArray(data.tanks)) {
-          formattedData = { tanks: [data] };
-          console.log("Restructured single tank data:", formattedData);
-        }
+      // The API returns an array of tank IDs
+      if (Array.isArray(data)) {
+        // Store the raw array of tank IDs
+        setTanksData({ tanks: data });
+        setTanksList(data);
+        console.log("Tank IDs set in state:", data);
+      } else {
+        // Handle unexpected data format
+        console.warn("Unexpected data format received from API", data);
+        setTanksData({ tanks: [] });
+        setTanksList([]);
       }
-      
-      setTanksData(formattedData);
-      setTanksList(formattedData.tanks || []);
-      
-      console.log("Final tanks data set in state:", formattedData);
-      console.log("Tanks list set in state:", formattedData.tanks || []);
       
       setShowTanksDialog(true);
     } catch (error) {

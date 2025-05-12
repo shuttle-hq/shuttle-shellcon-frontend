@@ -51,13 +51,13 @@ const AquaMonitorControls: React.FC<AquaMonitorControlsProps> = ({
         </DropdownMenuTrigger>
         <DropdownMenuContent className="bg-gray-900 border-orange-500/40 text-white">
           {tanksList.length > 0 ? (
-            tanksList.map((tank) => (
+            tanksList.map((tankId) => (
               <DropdownMenuItem 
-                key={tank.id} 
-                onClick={() => onFetchTankReadings(tank.id)}
+                key={tankId} 
+                onClick={() => onFetchTankReadings(tankId)}
                 className="hover:bg-gray-800 cursor-pointer"
               >
-                {tank.name || tank.id}
+                {tankId}
               </DropdownMenuItem>
             ))
           ) : (
