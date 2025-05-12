@@ -1,5 +1,5 @@
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { getAllTanks, getTankReadings, getSensorStatus } from "@/api/aquariumApi";
 import { toast } from "@/components/ui/sonner";
 
@@ -16,8 +16,27 @@ export const useAquaData = () => {
   const [sensorLoading, setSensorLoading] = useState(false);
   const [sensorError, setSensorError] = useState<string | null>(null);
   
-  // Initialize with the known tank IDs from curl results
-  const [tanksList, setTanksList] = useState<string[]>(["Tank-A1", "Tank-B2", "Tank-C3"]);
+  // Start with an empty array that will be populated on initialization
+  const [tanksList, setTanksList] = useState<string[]>([]);
+  
+  // Fetch tank list on component initialization
+  useEffect(() => {
+    const fetchInitialTanks = async () => {
+      try {
+        const data = await getAllTanks();
+        if (Array.isArray(data)) {
+          setTanksList(data);
+          console.log("Initial tank list loaded:", data);
+        }
+      } catch (error) {
+        console.error("Failed to load initial tank list:", error);
+        // Fallback to known tank IDs if the API fails
+        setTanksList(["Tank-A1", "Tank-B2", "Tank-C3"]);
+      }
+    };
+    
+    fetchInitialTanks();
+  }, []);
   const [showTanksDialog, setShowTanksDialog] = useState(false);
   const [showReadingsDialog, setShowReadingsDialog] = useState(false);
   const [showSensorDialog, setShowSensorDialog] = useState(false);
