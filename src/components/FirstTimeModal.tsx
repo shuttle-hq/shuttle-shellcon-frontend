@@ -26,12 +26,12 @@ const FirstTimeModal = ({ isOpen, onClose, onReadStory }: FirstTimeModalProps) =
             <Book className="h-5 w-5 text-orange-400" />
             Welcome to ShellCon!
           </DialogTitle>
-          <DialogDescription className="text-gray-300">
+          <DialogDescription className="text-gray-300 text-sm">
             You've been called in to help with the Smart Aquarium system at the world's premier crustacean convention!
           </DialogDescription>
         </DialogHeader>
 
-        <div className="py-4 text-gray-200">
+        <div className="py-4 text-gray-200 text-sm">
           <p className="mb-4">
             Before diving into the challenges, you'll need to understand the situation at ShellCon and what's expected of you.
           </p>
