@@ -58,7 +58,7 @@ const Index = () => {
           <img 
             src="/lovable-uploads/4adfa2cc-cffd-4463-8069-939658c80853.png" 
             alt="Ferris the Crab" 
-            className="w-full h-full animate-float"
+            className="w-full h-full object-contain animate-float"
           />
         </div>
       </header>
@@ -163,7 +163,7 @@ const Index = () => {
           <img 
             src="/lovable-uploads/4adfa2cc-cffd-4463-8069-939658c80853.png" 
             alt="Ferris the Crab" 
-            className="w-full h-full"
+            className="w-full h-full object-contain"
           />
         </div>
       </footer>

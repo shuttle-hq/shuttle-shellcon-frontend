@@ -21,11 +21,11 @@ const FirstTimeModal = ({ isOpen, onClose, onReadStory }: FirstTimeModalProps) =
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="border-orange-500 bg-gradient-to-b from-gray-900 to-black max-w-md relative overflow-hidden">
-        <div className="mascot-background w-24 h-24">
+        <div className="mascot-background w-24 h-24 absolute right-0 -bottom-4">
           <img 
             src="/lovable-uploads/4adfa2cc-cffd-4463-8069-939658c80853.png" 
             alt="Ferris the Crab" 
-            className="w-full h-full"
+            className="w-full h-full object-contain"
           />
         </div>
         <DialogHeader className="relative z-10">
