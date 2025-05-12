@@ -25,9 +25,20 @@ export const getChallenges = async () => {
 };
 
 // Aqua-Monitor API
+export const getAllTanks = async () => {
+  try {
+    const response = await fetch(`${API_URLS.AQUA_MONITOR}/tanks`);
+    if (!response.ok) throw new Error('Failed to fetch tanks');
+    return await response.json();
+  } catch (error) {
+    console.error('Error fetching tanks:', error);
+    throw error;
+  }
+};
+
 export const getTankReadings = async (tankId: string) => {
   try {
-    const response = await fetch(`${API_URLS.AQUA_MONITOR}/api/tanks/${tankId}/readings`);
+    const response = await fetch(`${API_URLS.AQUA_MONITOR}/tanks/${tankId}/readings`);
     if (!response.ok) throw new Error('Failed to fetch tank readings');
     return await response.json();
   } catch (error) {
@@ -38,7 +49,7 @@ export const getTankReadings = async (tankId: string) => {
 
 export const getSensorStatus = async () => {
   try {
-    const response = await fetch(`${API_URLS.AQUA_MONITOR}/api/sensors/status`);
+    const response = await fetch(`${API_URLS.AQUA_MONITOR}/sensors/status`);
     if (!response.ok) throw new Error('Failed to fetch sensor status');
     return await response.json();
   } catch (error) {
@@ -50,7 +61,7 @@ export const getSensorStatus = async () => {
 // Species-Hub API
 export const getSpecies = async () => {
   try {
-    const response = await fetch(`${API_URLS.SPECIES_HUB}/api/species`);
+    const response = await fetch(`${API_URLS.SPECIES_HUB}/species`);
     if (!response.ok) throw new Error('Failed to fetch species');
     return await response.json();
   } catch (error) {
@@ -61,7 +72,7 @@ export const getSpecies = async () => {
 
 export const getFeedingSchedule = async () => {
   try {
-    const response = await fetch(`${API_URLS.SPECIES_HUB}/api/feeding/schedule`);
+    const response = await fetch(`${API_URLS.SPECIES_HUB}/feeding/schedule`);
     if (!response.ok) throw new Error('Failed to fetch feeding schedule');
     return await response.json();
   } catch (error) {
