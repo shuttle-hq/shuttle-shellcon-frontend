@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import SystemArchitecture from '../components/SystemArchitecture';
 import SystemStatus from '../components/SystemStatus';
@@ -58,7 +59,7 @@ const Index = () => {
               <img 
                 src="/lovable-uploads/05b270df-e4c2-4bb9-8616-c60df68d5506.png" 
                 alt="Shuttle Logo" 
-                className="h-8 w-auto"
+                className="h-12 w-auto" // Changed from h-8 to h-12 to make the logo bigger
               />
               <div>
                 <h1 className="text-2xl md:text-3xl font-bold text-orange-400">ShellCon Smart Aquarium Dashboard</h1>
