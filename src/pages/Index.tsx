@@ -5,7 +5,7 @@ import SystemStatus from '../components/SystemStatus';
 import ChallengeList from '../components/ChallengeList';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { Button } from '@/components/ui/button';
-import { ChevronDown } from 'lucide-react';
+import { ChevronDown, ArrowDown } from 'lucide-react';
 
 const Index = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -32,9 +32,20 @@ const Index = () => {
               Welcome to the Shuttle onboarding adventure!
             </h2>
             <CollapsibleTrigger asChild>
-              <Button variant="ghost" size="sm" className="p-0 hover:bg-transparent">
-                <ChevronDown className={`h-5 w-5 text-orange-500 transition-transform duration-200 ${isOpen ? 'transform rotate-180' : ''}`} />
-                <span className="sr-only">{isOpen ? 'Close' : 'Open'}</span>
+              <Button 
+                variant="outline" 
+                size="sm" 
+                className={`
+                  bg-gradient-to-r from-orange-400 to-orange-500 
+                  text-white font-medium px-4 py-2 shadow-lg 
+                  hover:from-orange-500 hover:to-orange-600
+                  border-2 border-orange-600
+                  animate-pulse hover:animate-none transition-all
+                  flex items-center gap-2
+                `}
+              >
+                Read Story
+                <ArrowDown className={`h-4 w-4 transition-transform duration-300 ${isOpen ? 'transform rotate-180' : 'animate-bounce'}`} />
               </Button>
             </CollapsibleTrigger>
           </div>
