@@ -159,7 +159,7 @@ const Index = () => {
             Shuttle
           </a>
         </div>
-        <div className="mascot-footer w-16 h-16 right-4 bottom-1">
+        <div className="mascot-footer w-16 h-16 right-4 absolute top-1/2 transform -translate-y-1/2">
           <img 
             src="/lovable-uploads/4adfa2cc-cffd-4463-8069-939658c80853.png" 
             alt="Ferris the Crab" 
