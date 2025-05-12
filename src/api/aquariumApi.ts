@@ -59,11 +59,9 @@ export const getSensorStatus = async () => {
 };
 
 // Species-Hub API
-export const getSpecies = async (params = {}) => {
+export const getSpecies = async () => {
   try {
-    const queryParams = new URLSearchParams(params);
-    const queryString = queryParams.toString() ? `?${queryParams.toString()}` : '';
-    const response = await fetch(`${API_URLS.SPECIES_HUB}/species${queryString}`);
+    const response = await fetch(`${API_URLS.SPECIES_HUB}/species`);
     if (!response.ok) throw new Error('Failed to fetch species');
     return await response.json();
   } catch (error) {
@@ -72,22 +70,9 @@ export const getSpecies = async (params = {}) => {
   }
 };
 
-export const getSpeciesById = async (id: string) => {
+export const getFeedingSchedule = async () => {
   try {
-    const response = await fetch(`${API_URLS.SPECIES_HUB}/species/${id}`);
-    if (!response.ok) throw new Error('Failed to fetch species details');
-    return await response.json();
-  } catch (error) {
-    console.error('Error fetching species details:', error);
-    throw error;
-  }
-};
-
-export const getFeedingSchedule = async (speciesId: string, params = {}) => {
-  try {
-    const queryParams = new URLSearchParams(params);
-    const queryString = queryParams.toString() ? `?${queryParams.toString()}` : '';
-    const response = await fetch(`${API_URLS.SPECIES_HUB}/species/${speciesId}/feeding-schedule${queryString}`);
+    const response = await fetch(`${API_URLS.SPECIES_HUB}/feeding/schedule`);
     if (!response.ok) throw new Error('Failed to fetch feeding schedule');
     return await response.json();
   } catch (error) {
