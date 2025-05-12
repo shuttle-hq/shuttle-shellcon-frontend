@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import SystemArchitecture from '../components/SystemArchitecture';
 import SystemStatus from '../components/SystemStatus';
@@ -13,20 +12,30 @@ const Index = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [showFirstTimeModal, setShowFirstTimeModal] = useState(false);
 
+  // Force modal open initially for testing
   useEffect(() => {
+    console.log("Checking localStorage for 'hasVisitedBefore'");
+    // Remove hasVisitedBefore from localStorage to test modal
+    localStorage.removeItem('hasVisitedBefore');
+    
     // Check if this is the user's first visit
     const hasVisitedBefore = localStorage.getItem('hasVisitedBefore');
+    console.log("hasVisitedBefore value:", hasVisitedBefore);
+    
     if (!hasVisitedBefore) {
+      console.log("Setting modal to show");
       setShowFirstTimeModal(true);
     }
   }, []);
 
   const handleCloseFirstTimeModal = () => {
+    console.log("Modal closed");
     localStorage.setItem('hasVisitedBefore', 'true');
     setShowFirstTimeModal(false);
   };
 
   const handleReadStory = () => {
+    console.log("Read story button clicked");
     setIsOpen(true);
     handleCloseFirstTimeModal();
     // Scroll to the alert section
@@ -35,6 +44,8 @@ const Index = () => {
       alertElement.scrollIntoView({ behavior: 'smooth' });
     }
   };
+
+  console.log("Modal state:", showFirstTimeModal);
 
   return (
     <div className="min-h-screen bg-gray-900">
@@ -168,6 +179,7 @@ const Index = () => {
         </div>
       </footer>
       
+      {/* Modal rendered here, outside of other containers */}
       <FirstTimeModal 
         isOpen={showFirstTimeModal} 
         onClose={handleCloseFirstTimeModal} 
