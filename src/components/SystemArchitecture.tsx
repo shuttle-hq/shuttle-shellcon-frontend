@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Server, Database, Monitor, Eye, Search, ThermometerSnowflake } from "lucide-react";
@@ -33,10 +32,29 @@ const SystemArchitecture: React.FC = () => {
     setTanksError(null);
     try {
       const data = await getAllTanks();
-      setTanksData(data);
-      setTanksList(data.tanks || []);
+      console.log("Raw tanks data received:", data);
+      
+      // Create a proper data structure if tanks data is not in expected format
+      let formattedData = data;
+      
+      // Check if data is not in the expected format (with a tanks array)
+      if (data && Array.isArray(data) && !data.tanks) {
+        // If data is an array directly, wrap it in an object with tanks property
+        formattedData = { tanks: data };
+        console.log("Restructured tanks data:", formattedData);
+      } else if (data && !Array.isArray(data.tanks) && !data.tanks) {
+        // If data is an object but doesn't have tanks property
+        formattedData = { tanks: [data] };
+        console.log("Restructured single tank data:", formattedData);
+      }
+      
+      setTanksData(formattedData);
+      setTanksList(formattedData.tanks || []);
+      
+      console.log("Final tanks data set in state:", formattedData);
+      console.log("Tanks list set in state:", formattedData.tanks || []);
+      
       setShowTanksDialog(true);
-      console.log("Tanks data:", data);
     } catch (error) {
       console.error("Error fetching tanks:", error);
       setTanksError("Failed to fetch tanks");

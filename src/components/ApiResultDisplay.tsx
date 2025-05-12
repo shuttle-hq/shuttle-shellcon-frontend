@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 
@@ -16,6 +16,11 @@ export const ApiResultDisplay: React.FC<ApiResultDisplayProps> = ({
   error, 
   type 
 }) => {
+  // Add debugging on component mount and when data changes
+  useEffect(() => {
+    console.log(`ApiResultDisplay received data for ${type}:`, data);
+  }, [data, type]);
+
   if (loading) {
     return (
       <div className="flex justify-center items-center py-8">
@@ -47,6 +52,23 @@ export const ApiResultDisplay: React.FC<ApiResultDisplayProps> = ({
   // Format each data type differently
   switch (type) {
     case 'tanks':
+      // Check for various data structures that might be returned
+      console.log("Processing tanks data:", data);
+      
+      let tanksArray = [];
+      
+      // Handle different possible data structures
+      if (data.tanks && Array.isArray(data.tanks)) {
+        tanksArray = data.tanks;
+      } else if (Array.isArray(data)) {
+        tanksArray = data;
+      } else if (data && typeof data === 'object' && !data.tanks) {
+        // If data is a single tank object
+        tanksArray = [data];
+      }
+      
+      console.log("Processed tanks array:", tanksArray);
+      
       return (
         <div className="overflow-x-auto">
           <Table className="w-full">
@@ -60,31 +82,35 @@ export const ApiResultDisplay: React.FC<ApiResultDisplayProps> = ({
               </TableRow>
             </TableHeader>
             <TableBody>
-              {data.tanks && data.tanks.map((tank: any) => (
-                <TableRow key={tank.id} className="hover:bg-gray-800">
-                  <TableCell className="font-mono">{tank.id}</TableCell>
-                  <TableCell>{tank.name || "Unnamed"}</TableCell>
-                  <TableCell>{tank.capacity || "N/A"} L</TableCell>
-                  <TableCell>
-                    <Badge className={`
-                      ${tank.status === 'operational' ? 'bg-green-600' : ''}
-                      ${tank.status === 'maintenance' ? 'bg-amber-600' : ''}
-                      ${tank.status === 'offline' ? 'bg-red-600' : ''}
-                      ${!tank.status ? 'bg-gray-600' : ''}
-                    `}>
-                      {tank.status || "Unknown"}
-                    </Badge>
-                  </TableCell>
-                  <TableCell>{Array.isArray(tank.species) ? tank.species.join(", ") : (tank.species || "None")}</TableCell>
-                </TableRow>
-              ))}
-              {(!data.tanks || data.tanks.length === 0) && (
+              {tanksArray && tanksArray.length > 0 ? (
+                tanksArray.map((tank: any, index: number) => (
+                  <TableRow key={tank.id || index} className="hover:bg-gray-800">
+                    <TableCell className="font-mono">{tank.id || `tank-${index}`}</TableCell>
+                    <TableCell>{tank.name || "Unnamed"}</TableCell>
+                    <TableCell>{tank.capacity || "N/A"} L</TableCell>
+                    <TableCell>
+                      <Badge className={`
+                        ${tank.status === 'operational' ? 'bg-green-600' : ''}
+                        ${tank.status === 'maintenance' ? 'bg-amber-600' : ''}
+                        ${tank.status === 'offline' ? 'bg-red-600' : ''}
+                        ${!tank.status ? 'bg-gray-600' : ''}
+                      `}>
+                        {tank.status || "Unknown"}
+                      </Badge>
+                    </TableCell>
+                    <TableCell>{Array.isArray(tank.species) ? tank.species.join(", ") : (tank.species || "None")}</TableCell>
+                  </TableRow>
+                ))
+              ) : (
                 <TableRow>
                   <TableCell colSpan={5} className="text-center text-gray-400">No tanks found</TableCell>
                 </TableRow>
               )}
             </TableBody>
           </Table>
+          <div className="mt-4 p-2 bg-gray-850 rounded text-xs text-gray-400">
+            <p>Total tanks: {tanksArray ? tanksArray.length : 0}</p>
+          </div>
         </div>
       );
       
