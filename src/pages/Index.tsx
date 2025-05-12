@@ -15,30 +15,21 @@ const Index = () => {
 
   useEffect(() => {
     // For testing purposes - uncomment to always show the modal
-    localStorage.removeItem('hasVisitedBefore');
+    // localStorage.removeItem('hasVisitedBefore');
     
     // Check if this is the user's first visit
     const hasVisitedBefore = localStorage.getItem('hasVisitedBefore');
-    console.log("hasVisitedBefore value:", hasVisitedBefore);
-    
     if (!hasVisitedBefore) {
-      console.log("Setting modal to show");
       setShowFirstTimeModal(true);
-      toast({
-        title: "Welcome to ShellCon!",
-        description: "First time modal should appear now",
-      });
     }
   }, []);
 
   const handleCloseFirstTimeModal = () => {
-    console.log("Modal closed");
     localStorage.setItem('hasVisitedBefore', 'true');
     setShowFirstTimeModal(false);
   };
 
   const handleReadStory = () => {
-    console.log("Read story button clicked");
     setIsOpen(true);
     handleCloseFirstTimeModal();
     // Scroll to the alert section
@@ -50,7 +41,7 @@ const Index = () => {
     }, 300);
   };
 
-  console.log("Render - Modal state:", showFirstTimeModal);
+
 
   return (
     <>
