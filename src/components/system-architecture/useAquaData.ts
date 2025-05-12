@@ -16,7 +16,8 @@ export const useAquaData = () => {
   const [sensorLoading, setSensorLoading] = useState(false);
   const [sensorError, setSensorError] = useState<string | null>(null);
   
-  const [tanksList, setTanksList] = useState<any[]>([]);
+  // Initialize with the known tank IDs from curl results
+  const [tanksList, setTanksList] = useState<string[]>(["Tank-A1", "Tank-B2", "Tank-C3"]);
   const [showTanksDialog, setShowTanksDialog] = useState(false);
   const [showReadingsDialog, setShowReadingsDialog] = useState(false);
   const [showSensorDialog, setShowSensorDialog] = useState(false);
@@ -55,6 +56,11 @@ export const useAquaData = () => {
     if (!tankId) {
       toast.error("Please select a tank first");
       return;
+    }
+    
+    // Add the tank ID to the list if it's not already there
+    if (!tanksList.includes(tankId)) {
+      setTanksList(prev => [...prev, tankId]);
     }
     
     setReadingsLoading(true);

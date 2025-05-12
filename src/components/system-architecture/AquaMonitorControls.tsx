@@ -43,31 +43,23 @@ const AquaMonitorControls: React.FC<AquaMonitorControlsProps> = ({
             variant="outline" 
             size="sm" 
             className="bg-gray-800 border-orange-500/50 text-orange-400 hover:bg-gray-700 w-full justify-start"
-            disabled={readingsLoading || !tanksList.length}
+            disabled={readingsLoading}
           >
             <Search className="mr-2 h-4 w-4" />
             Fetch Tank Readings
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent className="bg-gray-900 border-orange-500/40 text-white">
-          {tanksList.length > 0 ? (
-            tanksList.map((tankId) => (
-              <DropdownMenuItem 
-                key={tankId} 
-                onClick={() => onFetchTankReadings(tankId)}
-                className="hover:bg-gray-800 cursor-pointer"
-              >
-                {tankId}
-              </DropdownMenuItem>
-            ))
-          ) : (
+          {/* Always show tank IDs, since they're pre-initialized */}
+          {tanksList.map((tankId) => (
             <DropdownMenuItem 
-              onClick={onViewAllTanks} 
+              key={tankId} 
+              onClick={() => onFetchTankReadings(tankId)}
               className="hover:bg-gray-800 cursor-pointer"
             >
-              Load tanks first
+              {tankId}
             </DropdownMenuItem>
-          )}
+          ))}
         </DropdownMenuContent>
       </DropdownMenu>
       
