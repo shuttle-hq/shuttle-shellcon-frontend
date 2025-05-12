@@ -21,9 +21,11 @@ const FirstTimeModal = ({ isOpen, onClose, onReadStory }: FirstTimeModalProps) =
   console.log("Modal rendering with isOpen:", isOpen);
   
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="border-orange-500 bg-gradient-to-b from-gray-900 to-black max-w-md relative overflow-hidden z-50">
-        <div className="absolute inset-0 bg-gradient-to-b from-gray-900 to-black -z-10"></div>
+    <Dialog open={isOpen} onOpenChange={(open) => {
+      console.log("Dialog onOpenChange called with:", open);
+      if (!open) onClose();
+    }}>
+      <DialogContent className="border-orange-500 bg-black max-w-md">
         <div className="mascot-background w-24 h-24 absolute right-0 -bottom-4">
           <img 
             src="/lovable-uploads/4adfa2cc-cffd-4463-8069-939658c80853.png" 
@@ -31,7 +33,7 @@ const FirstTimeModal = ({ isOpen, onClose, onReadStory }: FirstTimeModalProps) =
             className="w-full h-full object-contain"
           />
         </div>
-        <DialogHeader className="relative z-10">
+        <DialogHeader>
           <DialogTitle className="text-xl tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-orange-400 via-orange-300 to-purple-400 flex items-center gap-2 font-mono">
             <Book className="h-5 w-5 text-orange-400" />
             Welcome to ShellCon!
@@ -41,7 +43,7 @@ const FirstTimeModal = ({ isOpen, onClose, onReadStory }: FirstTimeModalProps) =
           </DialogDescription>
         </DialogHeader>
 
-        <div className="py-4 text-gray-200 text-sm tracking-wide font-light relative z-10">
+        <div className="py-4 text-gray-200 text-sm tracking-wide font-light">
           <p className="mb-4">
             Before diving into the challenges, you'll need to understand the situation at ShellCon and what's expected of you.
           </p>
@@ -50,7 +52,7 @@ const FirstTimeModal = ({ isOpen, onClose, onReadStory }: FirstTimeModalProps) =
           </p>
         </div>
 
-        <DialogFooter className="flex flex-col sm:flex-row gap-2 relative z-10">
+        <DialogFooter className="flex flex-col sm:flex-row gap-2">
           <Button
             variant="outline"
             onClick={onClose}

@@ -14,34 +14,27 @@ const Index = () => {
   const [showFirstTimeModal, setShowFirstTimeModal] = useState(false);
 
   useEffect(() => {
-    console.log("=== Index component mounted ===");
-    // Remove hasVisitedBefore from localStorage for testing
+    // For testing purposes - uncomment to always show the modal
     localStorage.removeItem('hasVisitedBefore');
     
-    // Check if this is the user's first visit (delayed to ensure DOM is ready)
-    setTimeout(() => {
-      const hasVisitedBefore = localStorage.getItem('hasVisitedBefore');
-      console.log("hasVisitedBefore value:", hasVisitedBefore);
-      
-      if (!hasVisitedBefore) {
-        console.log("Setting modal to show");
-        setShowFirstTimeModal(true);
-        toast({
-          title: "Welcome to ShellCon!",
-          description: "First time modal should appear now",
-        });
-      }
-    }, 500);
+    // Check if this is the user's first visit
+    const hasVisitedBefore = localStorage.getItem('hasVisitedBefore');
+    console.log("hasVisitedBefore value:", hasVisitedBefore);
+    
+    if (!hasVisitedBefore) {
+      console.log("Setting modal to show");
+      setShowFirstTimeModal(true);
+      toast({
+        title: "Welcome to ShellCon!",
+        description: "First time modal should appear now",
+      });
+    }
   }, []);
 
   const handleCloseFirstTimeModal = () => {
     console.log("Modal closed");
     localStorage.setItem('hasVisitedBefore', 'true');
     setShowFirstTimeModal(false);
-    toast({
-      title: "Modal closed",
-      description: "You can always access the story from the main page",
-    });
   };
 
   const handleReadStory = () => {
@@ -61,7 +54,6 @@ const Index = () => {
 
   return (
     <>
-      {/* Modal rendered at root level */}
       <FirstTimeModal 
         isOpen={showFirstTimeModal} 
         onClose={handleCloseFirstTimeModal} 
