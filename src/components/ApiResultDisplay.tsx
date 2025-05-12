@@ -9,13 +9,18 @@ import {
   NoDataState, 
   JsonView 
 } from './api-results/CommonComponents';
+import { 
+  SpeciesListDisplay, 
+  SpeciesDetailsDisplay, 
+  FeedingScheduleDisplay 
+} from './api-results/SpeciesResultsComponents';
 import { processTanksData } from './utils/displayHelpers';
 
 interface ApiResultDisplayProps {
   data: any;
   loading: boolean;
   error: string | null;
-  type: 'tanks' | 'readings' | 'sensors';
+  type: 'tanks' | 'readings' | 'sensors' | 'species-list' | 'species-details' | 'feeding-schedule';
 }
 
 export const ApiResultDisplay: React.FC<ApiResultDisplayProps> = ({ 
@@ -53,6 +58,15 @@ export const ApiResultDisplay: React.FC<ApiResultDisplayProps> = ({
       
     case 'sensors':
       return <SensorsDisplay data={data} />;
+    
+    case 'species-list':
+      return <SpeciesListDisplay data={data} />;
+      
+    case 'species-details':
+      return <SpeciesDetailsDisplay data={data} />;
+      
+    case 'feeding-schedule':
+      return <FeedingScheduleDisplay data={data} />;
       
     default:
       return <JsonView data={data} />;
