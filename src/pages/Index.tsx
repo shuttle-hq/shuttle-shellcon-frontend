@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import SystemArchitecture from '../components/SystemArchitecture';
 import SystemStatus from '../components/SystemStatus';
 import ChallengeList from '../components/ChallengeList';
@@ -7,9 +7,34 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/component
 import { Button } from '@/components/ui/button';
 import { ArrowDown, Sparkles } from 'lucide-react';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import FirstTimeModal from '../components/FirstTimeModal';
 
 const Index = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [showFirstTimeModal, setShowFirstTimeModal] = useState(false);
+
+  useEffect(() => {
+    // Check if this is the user's first visit
+    const hasVisitedBefore = localStorage.getItem('hasVisitedBefore');
+    if (!hasVisitedBefore) {
+      setShowFirstTimeModal(true);
+    }
+  }, []);
+
+  const handleCloseFirstTimeModal = () => {
+    localStorage.setItem('hasVisitedBefore', 'true');
+    setShowFirstTimeModal(false);
+  };
+
+  const handleReadStory = () => {
+    setIsOpen(true);
+    handleCloseFirstTimeModal();
+    // Scroll to the alert section
+    const alertElement = document.querySelector('.alert-story');
+    if (alertElement) {
+      alertElement.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gray-900">
@@ -34,7 +59,7 @@ const Index = () => {
       <div className="container mx-auto px-4 py-3 mt-4">
         <Alert 
           variant="highlight" 
-          className="border-orange-500 shadow-xl"
+          className="border-orange-500 shadow-xl alert-story"
         >
           <Collapsible
             open={isOpen}
@@ -128,6 +153,12 @@ const Index = () => {
           </a>
         </div>
       </footer>
+      
+      <FirstTimeModal 
+        isOpen={showFirstTimeModal} 
+        onClose={handleCloseFirstTimeModal} 
+        onReadStory={handleReadStory}
+      />
     </div>
   );
 };
