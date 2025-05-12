@@ -1,3 +1,4 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -124,6 +125,32 @@
   .card-gradient {
     @apply bg-gradient-to-b from-gray-900 to-black;
   }
+  
+  /* Mascot styles */
+  .mascot-container {
+    @apply relative overflow-hidden;
+  }
+  
+  .mascot-background {
+    @apply absolute right-0 -bottom-4 opacity-10 transition-opacity duration-300 z-0 pointer-events-none;
+  }
+  
+  .mascot-background:hover {
+    @apply opacity-15;
+  }
+  
+  .mascot-footer {
+    @apply absolute opacity-20 transition-all duration-300 z-0 pointer-events-none;
+  }
+  
+  /* Header with mascot */
+  .header-with-mascot {
+    @apply relative overflow-hidden;
+  }
+  
+  .header-mascot {
+    @apply absolute opacity-10 transition-opacity duration-300 z-0 pointer-events-none rotate-12 right-6 top-1/2 -translate-y-1/2;
+  }
 }
 
 @layer utilities {
@@ -145,6 +172,10 @@
   
   .animate-spin-slow {
     animation: spin 3s linear infinite;
+  }
+  
+  .animate-float {
+    animation: float 6s ease-in-out infinite;
   }
   
   @keyframes gradient {
@@ -176,6 +207,18 @@
     }
     to {
       transform: rotate(360deg);
+    }
+  }
+  
+  @keyframes float {
+    0% {
+      transform: translateY(0px) rotate(0deg);
+    }
+    50% {
+      transform: translateY(-10px) rotate(5deg);
+    }
+    100% {
+      transform: translateY(0px) rotate(0deg);
     }
   }
 }

@@ -38,8 +38,8 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-gray-900">
-      <header className="bg-black text-white py-4 border-b-4 border-orange-500">
-        <div className="container mx-auto px-4 flex items-center justify-between">
+      <header className="header-with-mascot bg-black text-white py-4 border-b-4 border-orange-500">
+        <div className="container mx-auto px-4 flex items-center justify-between relative z-10">
           <div className="flex items-center gap-4">
             <img 
               src="/lovable-uploads/05b270df-e4c2-4bb9-8616-c60df68d5506.png" 
@@ -53,6 +53,13 @@ const Index = () => {
               </p>
             </div>
           </div>
+        </div>
+        <div className="header-mascot w-32 h-32">
+          <img 
+            src="/lovable-uploads/4adfa2cc-cffd-4463-8069-939658c80853.png" 
+            alt="Ferris the Crab" 
+            className="w-full h-full animate-float"
+          />
         </div>
       </header>
 
@@ -145,12 +152,19 @@ const Index = () => {
         <ChallengeList />
       </main>
       
-      <footer className="bg-black text-white py-4 border-t-2 border-orange-500 mt-8">
+      <footer className="bg-black text-white py-4 border-t-2 border-orange-500 mt-8 relative">
         <div className="container mx-auto px-4 text-center text-sm">
           &copy; {new Date().getFullYear()} ShellCon Smart Aquarium System | Powered by 
           <a href="https://shuttle.dev" target="_blank" rel="noopener noreferrer" className="text-orange-400 hover:text-orange-300 ml-1">
             Shuttle
           </a>
+        </div>
+        <div className="mascot-footer w-16 h-16 right-4 bottom-1">
+          <img 
+            src="/lovable-uploads/4adfa2cc-cffd-4463-8069-939658c80853.png" 
+            alt="Ferris the Crab" 
+            className="w-full h-full"
+          />
         </div>
       </footer>
       

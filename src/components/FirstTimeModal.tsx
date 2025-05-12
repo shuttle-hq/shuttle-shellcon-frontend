@@ -20,8 +20,15 @@ interface FirstTimeModalProps {
 const FirstTimeModal = ({ isOpen, onClose, onReadStory }: FirstTimeModalProps) => {
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="border-orange-500 bg-gradient-to-b from-gray-900 to-black max-w-md">
-        <DialogHeader>
+      <DialogContent className="border-orange-500 bg-gradient-to-b from-gray-900 to-black max-w-md relative overflow-hidden">
+        <div className="mascot-background w-24 h-24">
+          <img 
+            src="/lovable-uploads/4adfa2cc-cffd-4463-8069-939658c80853.png" 
+            alt="Ferris the Crab" 
+            className="w-full h-full"
+          />
+        </div>
+        <DialogHeader className="relative z-10">
           <DialogTitle className="text-xl tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-orange-400 via-orange-300 to-purple-400 flex items-center gap-2 font-mono">
             <Book className="h-5 w-5 text-orange-400" />
             Welcome to ShellCon!
@@ -31,7 +38,7 @@ const FirstTimeModal = ({ isOpen, onClose, onReadStory }: FirstTimeModalProps) =
           </DialogDescription>
         </DialogHeader>
 
-        <div className="py-4 text-gray-200 text-sm tracking-wide font-light">
+        <div className="py-4 text-gray-200 text-sm tracking-wide font-light relative z-10">
           <p className="mb-4">
             Before diving into the challenges, you'll need to understand the situation at ShellCon and what's expected of you.
           </p>
@@ -40,7 +47,7 @@ const FirstTimeModal = ({ isOpen, onClose, onReadStory }: FirstTimeModalProps) =
           </p>
         </div>
 
-        <DialogFooter className="flex flex-col sm:flex-row gap-2">
+        <DialogFooter className="flex flex-col sm:flex-row gap-2 relative z-10">
           <Button
             variant="outline"
             onClick={onClose}
