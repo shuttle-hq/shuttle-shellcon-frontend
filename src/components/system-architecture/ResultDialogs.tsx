@@ -46,7 +46,7 @@ const ResultDialogs: React.FC<ResultDialogsProps> = ({
   return (
     <>
       <Dialog open={showTanksDialog} onOpenChange={setShowTanksDialog}>
-        <DialogContent className="bg-gray-900 border-2 border-orange-500/40 text-white max-w-3xl" onInteractOutside={e => e.preventDefault()} onEscapeKeyDown={e => e.preventDefault()}>
+        <DialogContent className="bg-gray-900 border-2 border-orange-500/40 text-white max-w-3xl" onInteractOutside={e => e.preventDefault()} onEscapeKeyDown={e => e.preventDefault()} hideCloseButton>
           <DialogHeader>
             <DialogTitle className="text-orange-400">Available Tanks</DialogTitle>
             <CustomDialogClose />
@@ -61,7 +61,7 @@ const ResultDialogs: React.FC<ResultDialogsProps> = ({
       </Dialog>
 
       <Dialog open={showReadingsDialog} onOpenChange={setShowReadingsDialog}>
-        <DialogContent className="bg-gray-900 border-2 border-orange-500/40 text-white max-w-3xl" onInteractOutside={e => e.preventDefault()} onEscapeKeyDown={e => e.preventDefault()}>
+        <DialogContent className="bg-gray-900 border-2 border-orange-500/40 text-white max-w-3xl" onInteractOutside={e => e.preventDefault()} onEscapeKeyDown={e => e.preventDefault()} hideCloseButton>
           <DialogHeader>
             <DialogTitle className="text-orange-400">Tank Readings</DialogTitle>
             <CustomDialogClose />
@@ -76,7 +76,7 @@ const ResultDialogs: React.FC<ResultDialogsProps> = ({
       </Dialog>
 
       <Dialog open={showSensorDialog} onOpenChange={setShowSensorDialog}>
-        <DialogContent className="bg-gray-900 border-2 border-orange-500/40 text-white max-w-3xl" onInteractOutside={e => e.preventDefault()} onEscapeKeyDown={e => e.preventDefault()}>
+        <DialogContent className="bg-gray-900 border-2 border-orange-500/40 text-white max-w-3xl" onInteractOutside={e => e.preventDefault()} onEscapeKeyDown={e => e.preventDefault()} hideCloseButton>
           <DialogHeader>
             <DialogTitle className="text-orange-400">Sensor Status</DialogTitle>
             <CustomDialogClose />

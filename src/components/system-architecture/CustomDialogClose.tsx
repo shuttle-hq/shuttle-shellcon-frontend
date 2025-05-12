@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { X } from 'lucide-react';
 import { DialogClose } from '@/components/ui/dialog';
@@ -12,7 +13,7 @@ export const CustomDialogClose: React.FC<React.ComponentPropsWithoutRef<typeof D
 }) => (
   <DialogClose
     className={cn(
-      "absolute right-4 top-4 rounded-sm opacity-70 transition-opacity hover:opacity-100 outline-none focus:outline-none disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground",
+      "absolute right-4 top-4 rounded-sm opacity-70 transition-opacity hover:opacity-100 outline-none focus:outline-none focus:ring-0 focus-visible:ring-0 focus-visible:outline-none disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground",
       className
     )}
     {...props}
