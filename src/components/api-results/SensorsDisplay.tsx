@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Badge } from "@/components/ui/badge";
+import { StatusBadge } from "@/components/ui/status-badge";
 import { Clock, Activity, Server } from "lucide-react";
 
 interface SensorsDisplayProps {
@@ -40,15 +40,10 @@ export const SensorsDisplay: React.FC<SensorsDisplayProps> = ({ data }) => {
             <Server className="mr-2 h-5 w-5" />
             System Sensor Status
           </h3>
-          <Badge className={`
-            ${data.status === 'online' ? 'bg-green-600 hover:bg-green-600' : ''}
-            ${data.status === 'degraded' ? 'bg-amber-600 hover:bg-amber-600' : ''}
-            ${data.status === 'offline' ? 'bg-red-600 hover:bg-red-600' : ''}
-            ${!data.status ? 'bg-gray-600 hover:bg-gray-600' : ''}
-            px-3 py-1 text-sm
-          `}>
-            {data.status || "Unknown"}
-          </Badge>
+          <StatusBadge 
+            status={data.status || 'unknown'} 
+            className="px-3 py-1 text-sm"
+          />
         </div>
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

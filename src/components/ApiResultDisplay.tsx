@@ -6,6 +6,8 @@ import { SensorsDisplay } from './api-results/SensorsDisplay';
 import { SpeciesListDisplay } from './api-results/SpeciesListDisplay';
 import { SpeciesDetailsDisplay } from './api-results/SpeciesDetailsDisplay';
 import { FeedingScheduleDisplay } from './api-results/FeedingScheduleDisplay';
+import { TankAnalysisSummaryDisplay } from './api-results/TankAnalysisSummaryDisplay';
+import { TankAnalysisDetailDisplay } from './api-results/TankAnalysisDetailDisplay';
 import { 
   LoadingState, 
   ErrorState, 
@@ -18,7 +20,7 @@ interface ApiResultDisplayProps {
   data: any;
   loading: boolean;
   error: string | null;
-  type: 'tanks' | 'readings' | 'sensors' | 'species-list' | 'species-search' | 'species-details' | 'feeding-schedule';
+  type: 'tanks' | 'readings' | 'sensors' | 'species-list' | 'species-search' | 'species-details' | 'feeding-schedule' | 'tank-analysis-summary' | 'tank-analysis-detail';
 }
 
 export const ApiResultDisplay: React.FC<ApiResultDisplayProps> = ({ 
@@ -66,6 +68,12 @@ export const ApiResultDisplay: React.FC<ApiResultDisplayProps> = ({
       
     case 'feeding-schedule':
       return <FeedingScheduleDisplay data={data} />;
+      
+    case 'tank-analysis-summary':
+      return <TankAnalysisSummaryDisplay data={data} />;
+      
+    case 'tank-analysis-detail':
+      return <TankAnalysisDetailDisplay data={data} />;
       
     default:
       return <JsonView data={data} />;

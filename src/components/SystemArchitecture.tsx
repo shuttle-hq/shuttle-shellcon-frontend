@@ -4,10 +4,13 @@ import { Server, Database, Monitor } from "lucide-react";
 import ServiceCard from './system-architecture/ServiceCard';
 import AquaMonitorControls from './system-architecture/AquaMonitorControls';
 import SpeciesHubControls from './system-architecture/SpeciesHubControls';
+import AquaBrainControls from './system-architecture/AquaBrainControls';
 import ResultDialogs from './system-architecture/ResultDialogs';
 import SpeciesResultDialogs from './system-architecture/SpeciesResultDialogs';
+import AquaBrainResultDialogs from './system-architecture/AquaBrainResultDialogs';
 import { useAquaData } from './system-architecture/useAquaData';
 import { useSpeciesData } from './system-architecture/useSpeciesData';
+import { useAquaBrainData } from './system-architecture/useAquaBrainData';
 
 const SystemArchitecture: React.FC = () => {
   // Extract all data and handlers from custom hooks
@@ -61,6 +64,22 @@ const SystemArchitecture: React.FC = () => {
     handleGetFeedingSchedule,
     loadSpeciesForDropdown
   } = useSpeciesData();
+  
+  // Extract aqua-brain data and handlers
+  const {
+    tankAnalysisSummary,
+    summaryLoading,
+    summaryError,
+    tankAnalysisDetail,
+    detailLoading,
+    detailError,
+    showAnalysisSummaryDialog,
+    setShowAnalysisSummaryDialog,
+    showAnalysisDetailDialog,
+    setShowAnalysisDetailDialog,
+    handleGetAllTankAnalysis,
+    handleGetTankAnalysis
+  } = useAquaBrainData();
 
   return (
     <>
@@ -68,7 +87,7 @@ const SystemArchitecture: React.FC = () => {
         <CardHeader className="bg-gray-900 border-b-2 border-orange-500/40">
           <CardTitle className="text-white flex items-center gap-2">
             <Server className="h-6 w-6 text-orange-400" />
-            ShellCon Smart Aquarium System Architecture
+            ShellCon Smart Aquarium System Control Panel
           </CardTitle>
         </CardHeader>
         <CardContent className="pt-6">
@@ -98,8 +117,9 @@ const SystemArchitecture: React.FC = () => {
             >
               <SpeciesHubControls
                 onFetchAllSpecies={handleFetchAllSpecies}
-                onGetSpeciesDetails={() => handleGetSpeciesDetails("")}
-                onGetFeedingSchedule={() => handleGetFeedingSchedule("")}
+                onGetSpeciesDetails={handleGetSpeciesDetails}
+                onGetFeedingSchedule={handleGetFeedingSchedule}
+                setShowFeedingScheduleDialog={setShowFeedingScheduleDialog}
                 loadSpeciesForDropdown={loadSpeciesForDropdown}
                 speciesList={speciesList}
                 speciesLoading={speciesLoading}
@@ -113,7 +133,15 @@ const SystemArchitecture: React.FC = () => {
               title="aqua-brain" 
               description="Analysis and challenge tracking service that performs system-wide analysis, detecting patterns, making predictions, and coordinating responses."
               icon={Server}
-            />
+            >
+              <AquaBrainControls
+                onGetAllTankAnalysis={handleGetAllTankAnalysis}
+                onGetTankAnalysis={handleGetTankAnalysis}
+                tanksList={tanksList}
+                summaryLoading={summaryLoading}
+                detailLoading={detailLoading}
+              />
+            </ServiceCard>
           </div>
         </CardContent>
       </Card>
@@ -168,6 +196,23 @@ const SystemArchitecture: React.FC = () => {
         onSearchSpecies={handleSearchSpecies}
         onGetSpeciesDetails={handleGetSpeciesDetails}
         onGetFeedingSchedule={handleGetFeedingSchedule}
+      />
+      
+      {/* Dialogs for Aqua Brain API Results */}
+      <AquaBrainResultDialogs
+        showAnalysisSummaryDialog={showAnalysisSummaryDialog}
+        setShowAnalysisSummaryDialog={setShowAnalysisSummaryDialog}
+        tankAnalysisSummary={tankAnalysisSummary}
+        summaryLoading={summaryLoading}
+        summaryError={summaryError}
+        
+        showAnalysisDetailDialog={showAnalysisDetailDialog}
+        setShowAnalysisDetailDialog={setShowAnalysisDetailDialog}
+        tankAnalysisDetail={tankAnalysisDetail}
+        detailLoading={detailLoading}
+        detailError={detailError}
+        
+        onGetTankAnalysis={handleGetTankAnalysis}
       />
     </>
   );

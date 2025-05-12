@@ -109,7 +109,7 @@ const Index = () => {
                     </Button>
                   </CollapsibleTrigger>
                   <h2 className="text-lg font-semibold text-orange-300">
-                    Welcome to the Shuttle onboarding adventure!
+                    Welcome to the Shuttle onboarding experience!
                   </h2>
                 </div>
               </div>
@@ -152,7 +152,7 @@ const Index = () => {
                 </p>
                 
                 <p>
-                  Examine each challenge, implement the suggested optimizations, and watch as the system's performance improves. 
+                  Examine each challenge, implement the suggested optimizations, and watch as the system's performance improves under "System Status". 
                   The convention opens soon—the clock is ticking and the crustaceans are getting crabby! Remember, in the 
                   world of Rust performance optimization, you're not just a developer—you're a Rustacean on a mission!
                 </p>

@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { ApiResultDisplay } from "../ApiResultDisplay";
 import { CustomDialogClose } from "./CustomDialogClose";
+import { SpeciesListDisplay } from "../api-results/SpeciesListDisplay";
 import { Species, FeedingSchedule } from './useSpeciesData';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -124,120 +125,132 @@ const SpeciesResultDialogs: React.FC<SpeciesResultDialogsProps> = ({
   
   return (
     <>
-      {/* Species List Dialog with Search Tab */}
+      {/* Species List Dialog (Simplified) */}
       <Dialog open={showSpeciesListDialog} onOpenChange={setShowSpeciesListDialog}>
-        <DialogContent className="bg-gray-900 border-2 border-orange-500/40 text-white max-w-3xl" onInteractOutside={e => e.preventDefault()} onEscapeKeyDown={e => e.preventDefault()} hideCloseButton>
+        <DialogContent className="bg-gray-900 border-2 border-orange-500/40 text-white max-w-3xl overflow-auto" onInteractOutside={e => e.preventDefault()} onEscapeKeyDown={e => e.preventDefault()} hideCloseButton>
           <DialogHeader>
             <DialogTitle className="text-orange-400">Species Database</DialogTitle>
             <CustomDialogClose />
           </DialogHeader>
           
-          <Tabs defaultValue="all-species" className="w-full">
-            <TabsList className="w-full bg-gray-800">
-              <TabsTrigger value="all-species" className="flex-1 text-gray-300 data-[state=active]:bg-gray-700 data-[state=active]:text-white">
-                All Species
-              </TabsTrigger>
-              <TabsTrigger value="search" className="flex-1 text-gray-300 data-[state=active]:bg-gray-700 data-[state=active]:text-white">
-                Search
-              </TabsTrigger>
-            </TabsList>
-            
-            <TabsContent value="all-species">
-              <ApiResultDisplay 
-                data={speciesList} 
-                loading={speciesLoading} 
-                error={speciesError}
-                type="species-list" 
-              />
-            </TabsContent>
-            
-            <TabsContent value="search" className="space-y-4">
-              <div className="space-y-2 p-2">
-                <div className="flex gap-2">
-                  <Input
-                    placeholder="Search species..."
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    className="flex-1 bg-gray-800 border-orange-500/30 text-white"
-                  />
-                  <Select value={searchType} onValueChange={(value) => setSearchType(value as 'name' | 'scientific_name')}>
-                    <SelectTrigger className="w-[180px] bg-gray-800 border-orange-500/30 text-white">
-                      <SelectValue placeholder="Search by..." />
-                    </SelectTrigger>
-                    <SelectContent className="bg-gray-800 border-orange-500/30">
-                      <SelectItem value="name" className="text-white hover:bg-gray-700">Name</SelectItem>
-                      <SelectItem value="scientific_name" className="text-white hover:bg-gray-700">Scientific Name</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <Button 
-                  variant="outline" 
-                  size="sm"
-                  className="w-full bg-gray-800 border-orange-500/30 text-orange-400 hover:bg-gray-700"
-                  onClick={handleSearch}
-                  disabled={searchLoading || !searchTerm.trim()}
-                >
-                  <Search className="mr-2 h-4 w-4" />
-                  {searchLoading ? "Searching..." : "Search Species"}
-                </Button>
-              </div>
-              
-              <ApiResultDisplay 
-                data={searchResults} 
-                loading={searchLoading} 
-                error={searchError}
-                type="species-list" 
-              />
-            </TabsContent>
-          </Tabs>
+          <div className="mt-4">
+            <SpeciesListDisplay 
+              data={speciesList}
+            />
+          </div>
         </DialogContent>
       </Dialog>
 
-      {/* Species Details Dialog */}
+      {/* Species Details Dialog (Detailed View) */}
       <Dialog open={showSpeciesDetailsDialog} onOpenChange={setShowSpeciesDetailsDialog}>
-        <DialogContent className="bg-gray-900 border-2 border-orange-500/40 text-white max-w-3xl" onInteractOutside={e => e.preventDefault()} onEscapeKeyDown={e => e.preventDefault()} hideCloseButton>
+        <DialogContent className="bg-gray-900 border-2 border-orange-500/40 text-white max-w-4xl w-[80vw]" onInteractOutside={e => e.preventDefault()} onEscapeKeyDown={e => e.preventDefault()} hideCloseButton>
           <DialogHeader>
-            <DialogTitle className="text-orange-400">Species Details</DialogTitle>
+            <DialogTitle className="text-orange-400 flex items-center">
+              {speciesDetails ? (
+                <>
+                  <Info className="mr-2 h-5 w-5" />
+                  {speciesDetails.name} Details
+                </>
+              ) : (
+                <>Species Details</>
+              )}
+            </DialogTitle>
             <CustomDialogClose />
           </DialogHeader>
           
-          {!speciesDetails && (
-            <div className="space-y-4 bg-gray-800 p-4 rounded-md">
-              <Select value={selectedSpeciesId} onValueChange={setSelectedSpeciesId}>
-                <SelectTrigger className="w-full bg-gray-800 border-orange-500/30 text-white">
-                  <SelectValue placeholder="Select species..." />
-                </SelectTrigger>
-                <SelectContent className="bg-gray-800 border-orange-500/30 max-h-[200px]">
-                  {speciesList.map(species => (
-                    <SelectItem 
-                      key={species.id} 
-                      value={species.id} 
-                      className="text-white hover:bg-gray-700"
-                    >
-                      {species.id} - {species.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <Button 
-                variant="outline" 
-                className="w-full bg-gray-800 border-orange-500/30 text-orange-400 hover:bg-gray-700"
-                onClick={handleSelectSpecies}
-                disabled={detailsLoading || !selectedSpeciesId}
-              >
-                <Info className="mr-2 h-4 w-4" />
-                {detailsLoading ? "Loading Details..." : "Get Species Details"}
-              </Button>
+          {!speciesDetails ? (
+            <div className="bg-gray-800 p-4 rounded-md border border-orange-500/20">
+              <p className="text-gray-300 mb-4 italic">Loading species details...</p>
             </div>
-          )}
-          
-          {speciesDetails && (
-            <ApiResultDisplay 
-              data={speciesDetails} 
-              loading={detailsLoading} 
-              error={detailsError}
-              type="species-details" 
-            />
+          ) : (
+            <div className="space-y-4">
+              {/* Header Info - matching tank readings style */}
+              <div className="bg-gray-950/50 rounded-md p-3">
+                <p className="text-orange-400 font-medium">Species ID: <span className="text-white font-mono">{speciesDetails.id}</span></p>
+                <div className="flex items-center justify-between mt-1">
+                  <p className="text-base font-medium">{speciesDetails.name}</p>
+                  <p className="text-sm italic text-gray-300">{speciesDetails.scientific_name}</p>
+                </div>
+              </div>
+              
+              {/* Main Parameters - grid layout like tank readings */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="border border-gray-700 rounded-md p-3 bg-gray-850">
+                  <div className="text-sm text-gray-400 mb-1 capitalize">Temperature Range</div>
+                  <div className="flex justify-between items-center">
+                    <span className="font-semibold text-lg">
+                      {speciesDetails.parameters?.temperature || '22°C - 28°C'}
+                    </span>
+                  </div>
+                </div>
+                
+                <div className="border border-gray-700 rounded-md p-3 bg-gray-850">
+                  <div className="text-sm text-gray-400 mb-1 capitalize">pH Range</div>
+                  <div className="flex justify-between items-center">
+                    <span className="font-semibold text-lg">
+                      {speciesDetails.parameters?.ph || '7.0 - 8.2'}
+                    </span>
+                  </div>
+                </div>
+                
+                <div className="border border-gray-700 rounded-md p-3 bg-gray-850">
+                  <div className="text-sm text-gray-400 mb-1 capitalize">Diet Type</div>
+                  <div className="flex justify-between items-center">
+                    <span className="font-semibold text-lg">
+                      {speciesDetails.diet_type || 'Omnivore'}
+                    </span>
+                  </div>
+                </div>
+                
+                {speciesDetails.tank_size && (
+                  <div className="border border-gray-700 rounded-md p-3 bg-gray-850">
+                    <div className="text-sm text-gray-400 mb-1 capitalize">Tank Size</div>
+                    <div className="flex justify-between items-center">
+                      <span className="font-semibold text-lg">
+                        {speciesDetails.tank_size}
+                      </span>
+                    </div>
+                  </div>
+                )}
+                
+                {speciesDetails.care_level && (
+                  <div className="border border-gray-700 rounded-md p-3 bg-gray-850">
+                    <div className="text-sm text-gray-400 mb-1 capitalize">Care Level</div>
+                    <div className="flex justify-between items-center">
+                      <span className="font-semibold text-lg">
+                        {speciesDetails.care_level}
+                      </span>
+                    </div>
+                  </div>
+                )}
+              </div>
+              
+              {/* Description Panel */}
+              {speciesDetails.description && (
+                <div className="mt-4 border border-gray-700 rounded-md p-4 bg-gray-850">
+                  <div className="text-sm text-gray-400 mb-2 capitalize">Description</div>
+                  <p className="text-sm leading-relaxed">{speciesDetails.description}</p>
+                </div>
+              )}
+              
+              {/* Additional Parameters Panel */}
+              {speciesDetails.parameters && Object.keys(speciesDetails.parameters).filter(k => k !== 'temperature' && k !== 'ph').length > 0 && (
+                <div className="mt-6 border-t border-gray-700 pt-4">
+                  <h3 className="text-orange-400 text-sm mb-3">Additional Parameters</h3>
+                  <div className="grid grid-cols-2 gap-3 text-sm">
+                    {Object.entries(speciesDetails.parameters)
+                      .filter(([key]) => key !== 'temperature' && key !== 'ph')
+                      .map(([key, value]) => (
+                        <div key={key} className="border border-gray-700 rounded p-2 bg-gray-850">
+                          <span className="text-gray-400 capitalize">{key.replace('_', ' ')}:</span>{" "}
+                          <span className="font-medium">{value}</span>
+                        </div>
+                      ))
+                    }
+                  </div>
+                </div>
+              )}
+            </div>
           )}
         </DialogContent>
       </Dialog>

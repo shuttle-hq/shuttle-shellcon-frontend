@@ -24,6 +24,28 @@ export const getChallenges = async () => {
   }
 };
 
+export const getAllTankAnalysis = async () => {
+  try {
+    const response = await fetch(`${API_URLS.AQUA_BRAIN}/analysis/tanks`);
+    if (!response.ok) throw new Error('Failed to fetch tank analysis summary');
+    return await response.json();
+  } catch (error) {
+    console.error('Error fetching tank analysis summary:', error);
+    throw error;
+  }
+};
+
+export const getTankAnalysis = async (tankId: string) => {
+  try {
+    const response = await fetch(`${API_URLS.AQUA_BRAIN}/analysis/tanks/${tankId}`);
+    if (!response.ok) throw new Error(`Failed to fetch analysis for tank ${tankId}`);
+    return await response.json();
+  } catch (error) {
+    console.error(`Error fetching analysis for tank ${tankId}:`, error);
+    throw error;
+  }
+};
+
 // Aqua-Monitor API
 export const getAllTanks = async () => {
   try {

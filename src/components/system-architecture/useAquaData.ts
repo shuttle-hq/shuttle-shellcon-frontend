@@ -86,9 +86,17 @@ export const useAquaData = () => {
     setReadingsError(null);
     try {
       const data = await getTankReadings(tankId);
-      setTankReadings(data);
+      console.log("Tank readings raw data:", data);
+      
+      // Extract the readings array from the response structure
+      if (data && data.readings && Array.isArray(data.readings)) {
+        setTankReadings(data.readings);
+      } else {
+        // Fallback in case the expected structure changes
+        setTankReadings(Array.isArray(data) ? data : []);
+      }
+      
       setShowReadingsDialog(true);
-      console.log("Tank readings:", data);
     } catch (error) {
       console.error("Error fetching tank readings:", error);
       setReadingsError("Failed to fetch tank readings");
