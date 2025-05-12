@@ -59,8 +59,8 @@ const ChallengeList: React.FC = () => {
   const total = challengesData?.total || fallbackChallenges.length;
 
   return (
-    <Card className="border-orange-500/30 bg-gray-800 shadow-lg">
-      <CardHeader className="bg-gray-900 text-white border-b border-orange-500/20">
+    <Card className="border-orange-500/40 bg-gray-800 shadow-lg orange-glow">
+      <CardHeader className="bg-gray-900 text-white border-b-2 border-orange-500/40">
         <CardTitle className="flex justify-between items-center">
           <div className="flex items-center gap-2">
             <List className="h-5 w-5 text-orange-400" />
@@ -80,8 +80,8 @@ const ChallengeList: React.FC = () => {
             </div>
             {[1, 2, 3].map((i) => (
               <div key={i} className="space-y-2">
-                <Skeleton className="h-10 w-full bg-gray-700" />
-                <Skeleton className="h-24 w-full bg-gray-700" />
+                <Skeleton className="h-10 w-full" />
+                <Skeleton className="h-24 w-full" />
               </div>
             ))}
           </div>

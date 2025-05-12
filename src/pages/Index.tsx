@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import SystemArchitecture from '../components/SystemArchitecture';
 import SystemStatus from '../components/SystemStatus';
@@ -117,7 +116,7 @@ const Index = () => {
         <div className="container mx-auto px-4 text-center text-sm">
           &copy; {new Date().getFullYear()} ShellCon Smart Aquarium System | Powered by 
           <a href="https://shuttle.dev" target="_blank" rel="noopener noreferrer" className="text-orange-400 hover:text-orange-300 ml-1">
-            Shuttle.dev
+            Shuttle
           </a>
         </div>
       </footer>

@@ -101,11 +101,11 @@
   }
   
   .card-hover {
-    @apply transition-all duration-300 hover:shadow-lg hover:border-orange-500/50;
+    @apply transition-all duration-300 hover:shadow-lg hover:border-orange-400;
   }
   
   .glass-effect {
-    @apply backdrop-blur-sm bg-black/40 border border-orange-500/20;
+    @apply backdrop-blur-sm bg-black/40 border border-orange-400/30;
   }
 }
 

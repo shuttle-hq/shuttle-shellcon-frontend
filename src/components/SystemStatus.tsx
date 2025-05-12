@@ -24,7 +24,7 @@ const StatusBadge: React.FC<{ status: string }> = ({ status }) => {
   };
 
   return (
-    <Badge className={`${getStatusColor()} text-white`}>
+    <Badge className={`${getStatusColor()} text-white font-medium`}>
       {status}
     </Badge>
   );
@@ -34,8 +34,8 @@ const SystemStatus: React.FC = () => {
   const { status, loading, error } = useSystemStatus();
 
   return (
-    <Card className="mb-8 border-orange-500/30 bg-gray-800 shadow-lg">
-      <CardHeader className="bg-orange-500 text-white">
+    <Card className="mb-8 shadow-lg orange-glow">
+      <CardHeader className="bg-orange-500 bg-opacity-90 text-white">
         <CardTitle className="flex items-center gap-2">
           <CheckCircle className="h-5 w-5" />
           System Status
@@ -49,7 +49,7 @@ const SystemStatus: React.FC = () => {
         )}
 
         {error && (
-          <Alert variant="destructive">
+          <Alert variant="destructive" className="mb-4">
             <AlertCircle className="h-4 w-4" />
             <AlertDescription>{error}</AlertDescription>
           </Alert>
@@ -57,25 +57,25 @@ const SystemStatus: React.FC = () => {
 
         {status && (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="p-4 rounded-md border border-orange-500/20 bg-gray-900 hover:border-orange-500/40 transition-all duration-300 shadow-md">
+            <div className="p-4 rounded-md border-2 border-orange-500/30 bg-gray-900 hover:border-orange-400 transition-all duration-300 shadow-md">
               <div className="flex justify-between items-center">
                 <h3 className="font-medium text-white">Environmental Monitoring</h3>
                 <StatusBadge status={status.environmental_monitoring} />
               </div>
             </div>
-            <div className="p-4 rounded-md border border-orange-500/20 bg-gray-900 hover:border-orange-500/40 transition-all duration-300 shadow-md">
+            <div className="p-4 rounded-md border-2 border-orange-500/30 bg-gray-900 hover:border-orange-400 transition-all duration-300 shadow-md">
               <div className="flex justify-between items-center">
                 <h3 className="font-medium text-white">Species Database</h3>
                 <StatusBadge status={status.species_database} />
               </div>
             </div>
-            <div className="p-4 rounded-md border border-orange-500/20 bg-gray-900 hover:border-orange-500/40 transition-all duration-300 shadow-md">
+            <div className="p-4 rounded-md border-2 border-orange-500/30 bg-gray-900 hover:border-orange-400 transition-all duration-300 shadow-md">
               <div className="flex justify-between items-center">
                 <h3 className="font-medium text-white">Overall Status</h3>
                 <StatusBadge status={status.overall_status} />
               </div>
             </div>
-            <div className="col-span-1 md:col-span-3 text-xs text-gray-400 text-right">
+            <div className="col-span-1 md:col-span-3 text-xs text-gray-300 text-right">
               Last updated: {status.last_updated ? new Date(status.last_updated).toLocaleString() : 'N/A'}
             </div>
           </div>

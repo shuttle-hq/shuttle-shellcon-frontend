@@ -16,7 +16,7 @@ const Challenge: React.FC<ChallengeProps> = ({ challenge }) => {
 
   return (
     <Card className={`mb-4 border-l-4 ${isSolved ? 'border-l-green-500' : 'border-l-orange-500'} bg-gray-800 shadow-md hover:shadow-lg transition-all duration-300`}>
-      <CardHeader className="bg-gray-900 pb-2 border-b border-gray-700">
+      <CardHeader className="bg-gray-900 pb-2 border-b-2 border-gray-700">
         <CardTitle className="text-lg flex justify-between">
           <div className="flex items-center gap-2 text-white">
             {challenge.title}
@@ -45,7 +45,7 @@ const Challenge: React.FC<ChallengeProps> = ({ challenge }) => {
         <div className="flex justify-end">
           <Button
             variant="outline"
-            className="text-orange-400 border-orange-500/50 hover:bg-orange-500/10 hover:text-orange-300"
+            className="text-orange-400 border-orange-500 hover:bg-orange-500/10 hover:text-orange-300"
             onClick={() => setShowSolution(!showSolution)}
           >
             {showSolution ? "Hide Solution" : "Show Solution"}
@@ -53,7 +53,7 @@ const Challenge: React.FC<ChallengeProps> = ({ challenge }) => {
         </div>
 
         {showSolution && (
-          <div className="mt-4 p-4 bg-gray-900 rounded-md border border-orange-500/30">
+          <div className="mt-4 p-4 bg-gray-900 rounded-md border-2 border-orange-500/40">
             <h4 className="font-bold mb-2 text-orange-300">Solution:</h4>
             <div className="text-gray-300">
               {challenge.solution || "Solution content will be available once implemented."}
