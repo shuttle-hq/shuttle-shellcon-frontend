@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Challenge as ChallengeType } from '../hooks/useAquariumData';
 import { BookOpen, Check, ChevronDown, ChevronUp, Code, ExternalLink, HelpCircle, Info, X } from "lucide-react";
+import ReactMarkdown from 'react-markdown';
 
 interface ChallengeProps {
   challenge: ChallengeType;
@@ -17,9 +18,17 @@ const Challenge: React.FC<ChallengeProps> = ({ challenge }) => {
   const isSolved = challenge.status === 'solved';
 
   // Check if this challenge has a solution with code and lecture
-  const hasSolution = challenge.solution && typeof challenge.solution !== 'string';
+  const hasSolution = challenge.solution && (
+    typeof challenge.solution === 'string' || 
+    (typeof challenge.solution === 'object' && 
+      (challenge.solution.code || challenge.solution.explanation))
+  );
+  
   const hasHint = challenge.hint;
-  const hasLecture = hasSolution && typeof challenge.solution === 'object' && challenge.solution.lecture;
+  
+  const hasLecture = challenge.solution && 
+    typeof challenge.solution === 'object' && 
+    challenge.solution.lecture;
 
   return (
     <Card className={`mb-4 border-l-4 ${isSolved ? 'border-l-green-500' : 'border-l-orange-500'} bg-gray-800 shadow-md hover:shadow-lg transition-all duration-300`}>
@@ -87,15 +96,17 @@ const Challenge: React.FC<ChallengeProps> = ({ challenge }) => {
           )}
 
           {/* Solution Button */}
-          <Button
-            variant="outline"
-            size="sm"
-            className="text-orange-400 border-orange-500 hover:bg-orange-500/10 hover:text-orange-300"
-            onClick={() => setShowSolution(!showSolution)}
-          >
-            <Code className="h-4 w-4 mr-1" />
-            {showSolution ? "Hide Solution" : "Show Solution"}
-          </Button>
+          {hasSolution && (
+            <Button
+              variant="outline"
+              size="sm"
+              className="text-orange-400 border-orange-500 hover:bg-orange-500/10 hover:text-orange-300"
+              onClick={() => setShowSolution(!showSolution)}
+            >
+              <Code className="h-4 w-4 mr-1" />
+              {showSolution ? "Hide Solution" : "Show Solution"}
+            </Button>
+          )}
 
           {/* More Information Button - only shown if lecture is available */}
           {hasLecture && (
@@ -154,18 +165,17 @@ const Challenge: React.FC<ChallengeProps> = ({ challenge }) => {
           </div>
         )}
 
-        {/* More Information Section */}
+        {/* More Information Section with Markdown */}
         {showMoreInfo && hasLecture && typeof challenge.solution === 'object' && challenge.solution.lecture && (
           <div className="mt-4 p-4 bg-green-900/20 rounded-md border-2 border-green-500/40">
             <h4 className="font-bold mb-2 text-green-300 flex items-center gap-2">
               <BookOpen className="h-4 w-4" />
               More Information:
             </h4>
-            <div className="text-gray-300 markdown-content">
-              {/* Render as markdown - for now just plain text */}
-              <pre className="whitespace-pre-wrap font-sans text-sm">
+            <div className="text-gray-300 markdown-content prose prose-invert prose-sm max-w-none">
+              <ReactMarkdown>
                 {challenge.solution.lecture}
-              </pre>
+              </ReactMarkdown>
             </div>
           </div>
         )}
