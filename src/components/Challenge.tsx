@@ -173,7 +173,7 @@ const Challenge: React.FC<ChallengeProps> = ({ challenge }) => {
               More Information:
             </h4>
             <div className="text-gray-300 markdown-content prose prose-invert prose-sm max-w-none">
-              <ReactMarkdown>
+              <ReactMarkdown className="md-content">
                 {challenge.solution.lecture}
               </ReactMarkdown>
             </div>
