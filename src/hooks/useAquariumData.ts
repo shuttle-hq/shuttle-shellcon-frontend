@@ -16,7 +16,17 @@ export interface Challenge {
   title: string;
   status: string;
   description: string;
-  solution: string;
+  // New properties
+  hint?: string;
+  service?: string;
+  file?: string;
+  function?: string;
+  // Solution can either be a string (old format) or an object (new format)
+  solution: string | {
+    code?: string;
+    explanation?: string;
+    lecture?: string;
+  };
 }
 
 export interface ChallengesResponse {
