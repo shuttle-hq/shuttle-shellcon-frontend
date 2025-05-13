@@ -42,8 +42,6 @@ const Index = () => {
     }, 300);
   };
 
-
-
   return (
     <>
       <FirstTimeModal 
@@ -59,7 +57,7 @@ const Index = () => {
               <img 
                 src="/lovable-uploads/05b270df-e4c2-4bb9-8616-c60df68d5506.png" 
                 alt="Shuttle Logo" 
-                className="h-12 w-auto" // Changed from h-8 to h-12 to make the logo bigger
+                className="h-12 w-auto"
               />
               <div>
                 <h1 className="text-2xl md:text-3xl font-bold text-orange-400">ShellCon Smart Aquarium Dashboard</h1>
@@ -120,6 +118,20 @@ const Index = () => {
               
               <CollapsibleContent className="text-sm mt-2 space-y-3 text-gray-300 animate-fade-in">
                 <div>
+                  <p className="font-semibold text-orange-300">Welcome to ShellCon Emergency Response Team!</p>
+                  <p>
+                    You are now a member of the emergency technical response team for ShellCon, where Rustaceans and crustaceans unite!
+                  </p>
+                </div>
+                
+                <div className="border-l-4 border-green-500 pl-4 py-2">
+                  <p className="font-bold text-green-400">🦀 Congratulations on Your Deployment! 🦀</p>
+                  <p>
+                    First and foremost, excellent work on successfully deploying the microservices that power the ShellCon platform! This is no small feat, and demonstrates your technical prowess. Before diving into the challenges, take a moment to verify that all systems are operational by using the API call buttons in the Control Panel below. Each button connects to a different service endpoint, allowing you to confirm that all components are communicating properly.
+                  </p>
+                </div>
+                
+                <div>
                   <p className="font-semibold text-orange-300">The Situation</p>
                   <p>
                     This year's ShellCon features a revolutionary Smart Aquarium system built with Rust and deployed on Shuttle. 
@@ -136,7 +148,7 @@ const Index = () => {
                 </p>
                 
                 <div>
-                  <p className="font-semibold text-orange-300">The Smart Aquarium is powered by three microservices running on Shuttle:</p>
+                  <p className="font-semibold text-orange-300">The Smart Aquarium Architecture</p>
                   <ul className="list-disc pl-5 space-y-1">
                     <li><span className="font-medium text-orange-200">aqua-monitor:</span> Collects real-time environmental data from tank sensors (currently moving at a snail's pace instead of crab-like efficiency)</li>
                     <li><span className="font-medium text-orange-200">species-hub:</span> Manages the species database and feeding requirements (currently as disorganized as a lobster molting season)</li>
@@ -144,17 +156,23 @@ const Index = () => {
                   </ul>
                 </div>
                 
-                <p>
-                  Your mission is to solve a series of challenges that will optimize these services, demonstrating your 
-                  Rust backend expertise while learning valuable patterns for high-performance distributed systems. 
-                  Each fix brings you one step closer to ensuring the safety of these incredible creatures and saving 
-                  the reputation of ShellCon.
-                </p>
+                <div>
+                  <p className="font-semibold text-orange-300">Your Mission</p>
+                  <p>
+                    Your mission is to solve a series of challenges that will optimize these services, demonstrating your 
+                    Rust backend expertise while learning valuable patterns for high-performance distributed systems. 
+                    Each fix brings you one step closer to ensuring the safety of these incredible creatures and saving 
+                    the reputation of ShellCon.
+                  </p>
+                </div>
                 
                 <p>
                   Examine each challenge, implement the suggested optimizations, and watch as the system's performance improves under "System Status". 
-                  The convention opens soon—the clock is ticking and the crustaceans are getting crabby! Remember, in the 
-                  world of Rust performance optimization, you're not just a developer—you're a Rustacean on a mission!
+                  The convention opens soon—the clock is ticking and the crustaceans are getting crabby!
+                </p>
+                
+                <p>
+                  Remember, in the world of Rust performance optimization, you're not just a developer—you're a Rustacean on a mission!
                 </p>
               </CollapsibleContent>
             </Collapsible>
