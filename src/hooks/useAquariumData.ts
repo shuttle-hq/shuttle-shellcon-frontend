@@ -6,6 +6,9 @@ import { toast } from "@/components/ui/sonner";
 export interface SystemStatus {
   environmental_monitoring: string;
   species_database: string;
+  feeding_system: string;
+  remote_monitoring: string;
+  analysis_engine: string;
   overall_status: string;
   last_updated: string;
 }

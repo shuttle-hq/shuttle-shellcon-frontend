@@ -71,6 +71,24 @@ const SystemStatus: React.FC = () => {
             </div>
             <div className="p-4 rounded-md border-2 border-orange-500/30 bg-gray-900 hover:border-orange-400 transition-all duration-300 shadow-md">
               <div className="flex justify-between items-center">
+                <h3 className="font-medium text-white">Feeding System</h3>
+                <StatusBadge status={status.feeding_system} />
+              </div>
+            </div>
+            <div className="p-4 rounded-md border-2 border-orange-500/30 bg-gray-900 hover:border-orange-400 transition-all duration-300 shadow-md">
+              <div className="flex justify-between items-center">
+                <h3 className="font-medium text-white">Remote Monitoring</h3>
+                <StatusBadge status={status.remote_monitoring} />
+              </div>
+            </div>
+            <div className="p-4 rounded-md border-2 border-orange-500/30 bg-gray-900 hover:border-orange-400 transition-all duration-300 shadow-md">
+              <div className="flex justify-between items-center">
+                <h3 className="font-medium text-white">Analysis Engine</h3>
+                <StatusBadge status={status.analysis_engine} />
+              </div>
+            </div>
+            <div className="p-4 rounded-md border-2 border-orange-500/30 bg-gray-900 hover:border-orange-400 transition-all duration-300 shadow-md">
+              <div className="flex justify-between items-center">
                 <h3 className="font-medium text-white">Overall Status</h3>
                 <StatusBadge status={status.overall_status} />
               </div>
