@@ -49,15 +49,12 @@ const WelcomeStory: React.FC<WelcomeStoryProps> = ({ isOpen, setIsOpen }) => {
           </div>
           
           <p className="text-gray-300 mt-1">
-            You are now a member of the emergency technical response team for ShellCon, where Rustaceans and crustaceans unite!
+            
           </p>
           
           <CollapsibleContent className="text-sm mt-2 space-y-3 text-gray-300 animate-fade-in">
             <div>
               <p className="font-semibold text-orange-300">Welcome to ShellCon Emergency Response Team!</p>
-              <p>
-                You are now a member of the emergency technical response team for ShellCon, where Rustaceans and crustaceans unite!
-              </p>
             </div>
             
             <div className="border-l-4 border-orange-500 pl-4 py-2">
