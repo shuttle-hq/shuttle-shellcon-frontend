@@ -124,8 +124,8 @@ const Index = () => {
                   </p>
                 </div>
                 
-                <div className="border-l-4 border-green-500 pl-4 py-2">
-                  <p className="font-bold text-green-400">🦀 Congratulations on Your Deployment! 🦀</p>
+                <div className="border-l-4 border-orange-500 pl-4 py-2">
+                  <p className="font-bold text-orange-400">🦀 Congratulations on Your Deployment! 🦀</p>
                   <p>
                     First and foremost, excellent work on successfully deploying the microservices that power the ShellCon platform! This is no small feat, and demonstrates your technical prowess. Before diving into the challenges, take a moment to verify that all systems are operational by using the API call buttons in the Control Panel below. Each button connects to a different service endpoint, allowing you to confirm that all components are communicating properly.
                   </p>
