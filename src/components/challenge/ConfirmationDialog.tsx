@@ -29,18 +29,18 @@ const ConfirmationDialog: React.FC<ConfirmationDialogProps> = ({
     <AlertDialog open={isOpen} onOpenChange={onOpenChange}>
       <AlertDialogContent className="bg-gray-900 border border-gray-700 text-white">
         <AlertDialogHeader>
-          <AlertDialogTitle className="text-orange-500 flex items-center gap-2">
-            <AlertTriangle className="h-5 w-5" />
-            {pendingAction === 'solution' ? 'View Solution? 🦀' : 'View Information? 🦀'}
+          <AlertDialogTitle className="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 via-purple-400 to-orange-400 flex items-center gap-2">
+            <AlertTriangle className="h-5 w-5 text-orange-400" />
+            {pendingAction === 'solution' ? '🦀 View Solution? 🦀' : '🦀 View Information? 🦀'}
           </AlertDialogTitle>
           <AlertDialogDescription className="text-gray-300">
             {pendingAction === 'solution' ? (
               <div>
-                Ferris says: Looking at the solution will prevent you from experiencing the challenge of solving this problem yourself. Are you sure you want to continue?
+                <span className="font-medium text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-purple-400">Ferris says:</span> Looking at the solution will prevent you from experiencing the challenge of solving this problem yourself. Are you sure you want to continue?
               </div>
             ) : (
               <div>
-                Ferris says: This section contains educational information about the concepts involved in this challenge. It may contain hints or explanations that could make the challenge easier.
+                <span className="font-medium text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-purple-400">Ferris says:</span> This section contains educational information about the concepts involved in this challenge. It may contain hints or explanations that could make the challenge easier.
               </div>
             )}
           </AlertDialogDescription>
@@ -51,7 +51,7 @@ const ConfirmationDialog: React.FC<ConfirmationDialogProps> = ({
           </AlertDialogCancel>
           <AlertDialogAction 
             onClick={onConfirm} 
-            className="bg-orange-600 text-white hover:bg-orange-700"
+            className="bg-gradient-to-r from-orange-500 via-purple-500 to-orange-500 animate-gradient bg-size-200 text-white hover:bg-orange-700"
           >
             {pendingAction === 'solution' ? "Show me the solution" : "Show me the information"}
           </AlertDialogAction>
