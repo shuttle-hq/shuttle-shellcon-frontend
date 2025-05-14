@@ -42,7 +42,7 @@
   animation: pulse 3s ease-in-out infinite;
 }
 
-.title-icon {
+.animate-subtle-float {
   animation: subtle-float 3s ease-in-out infinite;
 }
 
