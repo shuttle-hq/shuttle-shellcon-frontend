@@ -1,9 +1,8 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Challenge as ChallengeType } from '../hooks/useAquariumData';
-import { BookOpen, Check, ChevronDown, ChevronUp, Code, Crab, ExternalLink, HelpCircle, Info, X } from "lucide-react";
+import { BookOpen, Check, ChevronDown, ChevronUp, Code, HelpCircle, Info, Fish, X } from "lucide-react";
 import ReactMarkdown from 'react-markdown';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from './ui/alert-dialog';
 
@@ -226,9 +225,9 @@ const Challenge: React.FC<ChallengeProps> = ({ challenge }) => {
         <AlertDialogContent className="border-2 border-orange-500/40 bg-gray-900 max-w-md">
           <AlertDialogHeader>
             <AlertDialogTitle className="text-center flex items-center justify-center gap-2 text-orange-400">
-              <Crab className="h-6 w-6 text-orange-500 animate-pulse" />
+              <Fish className="h-6 w-6 text-orange-500 animate-pulse" />
               <span className="text-xl futuristic-title">Ferris Says Hold Up!</span>
-              <Crab className="h-6 w-6 text-orange-500 animate-pulse" />
+              <Fish className="h-6 w-6 text-orange-500 animate-pulse" />
             </AlertDialogTitle>
             <AlertDialogDescription className="text-center text-gray-300 mt-4">
               <div className="bg-gray-800 p-4 rounded-md mb-4 border border-orange-500/30">
@@ -239,7 +238,7 @@ const Challenge: React.FC<ChallengeProps> = ({ challenge }) => {
                 )}
               </div>
               <div className="text-xs opacity-70 italic mt-2">
-                - Ferris the Rust Crab, concerned about your learning journey
+                - Ferris the Rust Mascot, concerned about your learning journey
               </div>
             </AlertDialogDescription>
           </AlertDialogHeader>
