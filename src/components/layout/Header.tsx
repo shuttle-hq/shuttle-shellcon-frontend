@@ -12,19 +12,7 @@ const Header: React.FC = () => {
             className="h-12 w-auto"
           />
           <div>
-            <h1 
-              className="text-2xl md:text-3xl" 
-              style={{
-                fontFamily: 'Inter, sans-serif',
-                fontWeight: 800,
-                letterSpacing: '-0.025em',
-                color: 'transparent',
-                backgroundImage: 'linear-gradient(to right, #f97316, #fbbf24, #f59e0b)',
-                backgroundClip: 'text',
-                WebkitBackgroundClip: 'text',
-                textShadow: '0 0 30px rgba(249, 115, 22, 0.3)'
-              }}
-            >
+            <h1 className="text-2xl md:text-3xl shellcon-main-title">
               ShellCon Smart Aquarium System Control Panel
             </h1>
             <p className="text-gray-300 text-sm md:text-base">
