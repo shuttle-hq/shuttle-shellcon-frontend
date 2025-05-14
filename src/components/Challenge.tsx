@@ -31,7 +31,7 @@ const Challenge: React.FC<ChallengeProps> = ({ challenge }) => {
     challenge.solution.lecture;
 
   return (
-    <Card className={`mb-4 border-l-2 ${isSolved ? 'border-l-green-500' : 'border-l-orange-500'} bg-gray-800 shadow-md hover:shadow-lg transition-all duration-300`}>
+    <Card className={`mb-4 border ${isSolved ? 'border-green-500/40' : 'border-orange-500/40'} bg-gray-900 shadow-md hover:shadow-lg transition-all duration-300`}>
       <CardHeader className="bg-gray-900 pb-2 border-b-2 border-gray-700">
         <CardTitle className="text-lg flex justify-between">
           <div className="flex items-center gap-2 text-white">

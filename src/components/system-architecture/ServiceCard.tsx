@@ -16,7 +16,7 @@ const ServiceCard: React.FC<ServiceCardProps> = ({
   children
 }) => {
   return (
-    <div className="border-l-2 border-orange-500 border rounded-md p-4 bg-gray-800 text-white hover:border-orange-400 transition-all duration-300 shadow-md">
+    <div className="border border-orange-500/30 rounded-md p-4 bg-gray-900 text-white hover:border-orange-400 transition-all duration-300 shadow-md">
       <div className="flex justify-between items-center mb-2">
         <h3 className="font-bold text-orange-400">{title}</h3>
         <IconComponent className="h-5 w-5 text-orange-400" />
