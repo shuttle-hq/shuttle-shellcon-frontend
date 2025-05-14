@@ -51,4 +51,9 @@
   .header-mascot {
     @apply absolute opacity-10 transition-opacity duration-300 z-0 pointer-events-none rotate-12 right-6 top-1/2 -translate-y-1/2;
   }
+  
+  /* Animation for the Ferris crab */
+  .crab-dance {
+    @apply animate-bounce;
+  }
 }
