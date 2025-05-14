@@ -73,13 +73,13 @@
     @apply shadow-[0_0_15px_rgba(249,115,22,0.2)];
   }
   
-  /* Title styles with animated icon */
+  /* Title styles with static icon */
   .title-with-icon {
     @apply flex items-center gap-2;
   }
   
   .title-icon {
-    @apply animate-subtle-float;
+    /* Removed animation class */
   }
   
   /* Card header title style */

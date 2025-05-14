@@ -1,16 +1,15 @@
 
-import { useState, useCallback } from 'react';
+import { useState } from 'react';
 import { Challenge } from '../../../hooks/useAquariumData';
-import { toast } from '@/hooks/use-toast';
 import { API_BASE_URL } from '../../../config/api';
+import { toast } from '../../../hooks/use-toast';
+
+export type PendingActionType = "solution" | "lecture";
 
 interface UseChallengeCardProps {
   challenge: Challenge;
   onSystemStatusUpdate?: (status: any) => void;
 }
-
-// Define the allowed pending action types
-export type PendingActionType = 'solution' | 'lecture';
 
 export const useChallengeCard = ({ challenge, onSystemStatusUpdate }: UseChallengeCardProps) => {
   const [showSolution, setShowSolution] = useState<boolean>(false);
@@ -20,99 +19,97 @@ export const useChallengeCard = ({ challenge, onSystemStatusUpdate }: UseChallen
   const [pendingAction, setPendingAction] = useState<PendingActionType | null>(null);
   const [isValidating, setIsValidating] = useState<boolean>(false);
   const [validationMessage, setValidationMessage] = useState<string | null>(null);
-  const isSolved = challenge.status === 'solved';
+  
+  // Check if challenge is already solved
+  const [isSolved, setIsSolved] = useState<boolean>(
+    challenge.status === 'solved'
+  );
 
-  // Determine if the challenge has a hint, solution, or lecture
-  const hasHint = !!challenge.hint;
-  const hasSolution = !!challenge.solution;
+  // Check if the challenge has a solution property
+  const hasSolution = Boolean(challenge.solution);
+  
+  // Check if the challenge has a hint property
+  const hasHint = Boolean(challenge.hint);
+  
+  // Check if the solution has a lecture property (for More Information)
+  const hasLecture = typeof challenge.solution === 'object' && Boolean(challenge.solution.lecture);
 
-  // Check if there's a lecture available in the solution object
-  const hasLecture = typeof challenge.solution === 'object' && !!challenge.solution.lecture;
-
-  // Request to view the solution (with confirmation)
-  const handleSolutionRequest = useCallback(() => {
-    setPendingAction('solution');
-    setConfirmDialogOpen(true);
-  }, []);
-
-  // Request to view more information / lecture (with confirmation)
-  const handleLectureRequest = useCallback(() => {
-    setPendingAction('lecture');
-    setConfirmDialogOpen(true);
-  }, []);
-
-  // Confirm dialog action
-  const handleConfirm = useCallback(() => {
-    if (pendingAction === 'solution') {
-      setShowSolution(true);
-    } else if (pendingAction === 'lecture') {
-      setShowMoreInfo(true);
+  const handleSolutionRequest = () => {
+    if (showSolution) {
+      setShowSolution(false);
+    } else {
+      setPendingAction("solution");
+      setConfirmDialogOpen(true);
     }
-    
-    // Close the dialog
-    setConfirmDialogOpen(false);
-  }, [pendingAction]);
+  };
 
-  // Validate the solution
-  const handleValidateSolution = useCallback(async () => {
-    if (!challenge.id || isValidating) return;
+  const handleLectureRequest = () => {
+    if (showMoreInfo) {
+      setShowMoreInfo(false);
+    } else {
+      setPendingAction("lecture");
+      setConfirmDialogOpen(true);
+    }
+  };
 
-    setIsValidating(true);
-    setValidationMessage(null);
-
+  const handleValidateSolution = async () => {
     try {
-      // Mock API call for the demo
-      const response = await fetch(`${API_BASE_URL}/challenges/${challenge.id}/validate`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      });
+      setIsValidating(true);
+      setValidationMessage(null);
 
+      // Simulate API call to validate solution
+      const response = await fetch(`${API_BASE_URL}/validate/${challenge.name}`);
       const data = await response.json();
 
-      if (response.ok) {
-        // Check if data.implementation.valid exists (it's our expected response format)
-        const isValid = data?.implementation?.valid;
-
-        if (isValid) {
-          setValidationMessage("🎉 Challenge successfully solved!");
-          toast({
-            title: "Challenge solved!",
-            description: `You've successfully solved the "${challenge.title}" challenge!`,
-            variant: "default" // Changed from "success" to "default"
-          });
-
-          // The API returns an updated system status that we need to pass back
-          // to update the SystemStatus component
-          if (onSystemStatusUpdate && data.system_status) {
-            onSystemStatusUpdate(data.system_status);
-          }
-        } else {
-          // Not valid, show the error message
-          const message = data?.implementation?.message || "The solution doesn't meet all requirements yet.";
-          setValidationMessage(`⚠️ ${message}`);
-          toast({
-            title: "Not quite right",
-            description: message,
-            variant: "default" // Changed from "warning" to "default"
-          });
+      if (data.success) {
+        setIsSolved(true);
+        setValidationMessage(data.message || "Great job! Challenge successfully solved!");
+        
+        // Show success toast
+        toast({
+          title: "Challenge Completed!",
+          description: `You've successfully solved: ${challenge.title}`,
+          variant: "default"
+        });
+        
+        // Update system status if provided
+        if (onSystemStatusUpdate && data.systemStatus) {
+          onSystemStatusUpdate(data.systemStatus);
         }
       } else {
-        throw new Error(data.message || 'Failed to validate solution');
+        setValidationMessage(data.message || "Validation failed. Please check your implementation.");
+        
+        // Show warning toast
+        toast({
+          title: "Validation Failed",
+          description: data.message || "Your solution doesn't quite match what we're looking for.",
+          variant: "destructive"
+        });
       }
     } catch (error) {
-      console.error("Error validating solution:", error);
-      setValidationMessage("⚠️ Error validating solution. Please try again.");
+      console.error('Error validating solution:', error);
+      setValidationMessage("Error validating solution. Please try again later.");
+      
+      // Show error toast
       toast({
-        title: "Error",
-        description: "Failed to validate the solution. Please try again later.",
+        title: "Validation Error",
+        description: "We encountered a technical issue checking your solution.",
         variant: "destructive"
       });
     } finally {
       setIsValidating(false);
     }
-  }, [challenge.id, challenge.title, isValidating, onSystemStatusUpdate]);
+  };
+
+  const handleConfirm = () => {
+    if (pendingAction === "solution") {
+      setShowSolution(true);
+    } else if (pendingAction === "lecture") {
+      setShowMoreInfo(true);
+    }
+    setConfirmDialogOpen(false);
+    setPendingAction(null);
+  };
 
   return {
     showSolution,
@@ -130,6 +127,7 @@ export const useChallengeCard = ({ challenge, onSystemStatusUpdate }: UseChallen
     setShowHint,
     setShowMoreInfo,
     setConfirmDialogOpen,
+    setPendingAction,
     handleSolutionRequest,
     handleLectureRequest,
     handleValidateSolution,

@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
@@ -86,7 +87,7 @@ const ChallengeList: React.FC = () => {
       <CardHeader className="bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 text-white border-b border-orange-500/30 pb-4">
         <div className="flex justify-between items-center">
           <CardTitle className="card-header-title">
-            <Target className="h-5 w-5 text-orange-400 title-icon" />
+            <Target className="h-5 w-5 text-orange-400" />
             Optimization Challenges
           </CardTitle>
           <div className="flex items-center gap-2 text-sm">

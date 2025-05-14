@@ -33,12 +33,12 @@ const WelcomeStory: React.FC<WelcomeStoryProps> = ({ isOpen, setIsOpen }) => {
                     bg-size-200 animate-gradient text-white font-bold px-6 py-3 shadow-lg 
                     hover:shadow-orange-500/50 border-none
                     flex items-center gap-2 transition-all duration-300
-                    hover:scale-105 animate-pulse
+                    hover:scale-105
                   `}
                 >
-                  <Sparkles className="h-4 w-4 animate-spin-slow" />
+                  <Sparkles className="h-4 w-4" />
                   Read Story
-                  <ArrowDown className={`h-4 w-4 transition-transform duration-300 ${isOpen ? 'transform rotate-180' : 'animate-bounce'}`} />
+                  <ArrowDown className={`h-4 w-4 transition-transform duration-300 ${isOpen ? 'transform rotate-180' : ''}`} />
                   <span className="absolute inset-0 bg-gradient-to-r from-orange-400 to-purple-500 opacity-50 blur-sm"></span>
                 </Button>
               </CollapsibleTrigger>

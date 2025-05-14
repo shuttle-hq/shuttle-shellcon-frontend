@@ -106,7 +106,7 @@ const ChallengeCard: React.FC<ChallengeCardProps> = ({ challenge, onSystemStatus
           />
 
           {/* More Information Section with Markdown */}
-          {typeof challenge.solution === 'object' && (
+          {typeof challenge.solution === 'object' && challenge.solution.lecture && (
             <LectureSection 
               lecture={challenge.solution.lecture} 
               isVisible={showMoreInfo === true} 
