@@ -10,7 +10,7 @@ import SolutionSection from './SolutionSection';
 import LectureSection from './LectureSection';
 import ConfirmationDialog from './ConfirmationDialog';
 import ValidationMessage from './ValidationMessage';
-import { useChallengeCard, PendingActionType } from './hooks/useChallengeCard';
+import { useChallengeCard } from './hooks/useChallengeCard';
 
 interface ChallengeCardProps {
   challenge: ChallengeType;
@@ -120,7 +120,7 @@ const ChallengeCard: React.FC<ChallengeCardProps> = ({ challenge, onSystemStatus
         isOpen={confirmDialogOpen} 
         onOpenChange={setConfirmDialogOpen} 
         onConfirm={handleConfirm} 
-        pendingAction={pendingAction as PendingActionType} 
+        pendingAction={pendingAction} 
       />
     </>
   );

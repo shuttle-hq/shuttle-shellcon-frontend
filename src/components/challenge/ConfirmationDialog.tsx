@@ -11,13 +11,12 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { AlertTriangle } from 'lucide-react';
-import { PendingActionType } from './hooks/useChallengeCard';
 
 interface ConfirmationDialogProps {
   isOpen: boolean;
   onOpenChange: (open: boolean) => void;
   onConfirm: () => void;
-  pendingAction: PendingActionType;
+  pendingAction: 'solution' | 'lecture' | null;
 }
 
 const ConfirmationDialog: React.FC<ConfirmationDialogProps> = ({
