@@ -1,11 +1,10 @@
-
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Skeleton } from "@/components/ui/skeleton";
 import Challenge from './Challenge';
 import { useChallenges, useSystemStatus } from '../hooks/useAquariumData';
-import { AlertCircle, List, Trophy, Loader2, Shield } from "lucide-react";
+import { AlertCircle, List, Trophy, Loader2, Target } from "lucide-react";
 
 const ChallengeList: React.FC = () => {
   const { challengesData, loading, error } = useChallenges();
@@ -86,8 +85,8 @@ const ChallengeList: React.FC = () => {
     <Card className="border-orange-500/40 bg-gray-800 shadow-xl overflow-hidden">
       <CardHeader className="bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 text-white border-b border-orange-500/30 pb-4">
         <div className="flex justify-between items-center">
-          <CardTitle className="flex items-center gap-2 text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-orange-200">
-            <Shield className="h-5 w-5 text-orange-400" />
+          <CardTitle className="card-header-title">
+            <Target className="h-5 w-5 text-orange-400 title-icon" />
             Optimization Challenges
           </CardTitle>
           <div className="flex items-center gap-2 text-sm">

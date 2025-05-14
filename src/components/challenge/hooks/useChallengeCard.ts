@@ -9,12 +9,15 @@ interface UseChallengeCardProps {
   onSystemStatusUpdate?: (status: any) => void;
 }
 
+// Define the allowed pending action types
+export type PendingActionType = 'solution' | 'lecture';
+
 export const useChallengeCard = ({ challenge, onSystemStatusUpdate }: UseChallengeCardProps) => {
   const [showSolution, setShowSolution] = useState<boolean>(false);
   const [showHint, setShowHint] = useState<boolean>(false);
   const [showMoreInfo, setShowMoreInfo] = useState<boolean>(false);
   const [confirmDialogOpen, setConfirmDialogOpen] = useState<boolean>(false);
-  const [pendingAction, setPendingAction] = useState<string>('');
+  const [pendingAction, setPendingAction] = useState<PendingActionType | null>(null);
   const [isValidating, setIsValidating] = useState<boolean>(false);
   const [validationMessage, setValidationMessage] = useState<string | null>(null);
   const isSolved = challenge.status === 'solved';
@@ -77,7 +80,7 @@ export const useChallengeCard = ({ challenge, onSystemStatusUpdate }: UseChallen
           toast({
             title: "Challenge solved!",
             description: `You've successfully solved the "${challenge.title}" challenge!`,
-            variant: "success"
+            variant: "default" // Changed from "success" to "default"
           });
 
           // The API returns an updated system status that we need to pass back
@@ -92,7 +95,7 @@ export const useChallengeCard = ({ challenge, onSystemStatusUpdate }: UseChallen
           toast({
             title: "Not quite right",
             description: message,
-            variant: "warning"
+            variant: "default" // Changed from "warning" to "default"
           });
         }
       } else {
