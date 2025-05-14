@@ -83,8 +83,8 @@ const ChallengeCard: React.FC<ChallengeCardProps> = ({ challenge, onSystemStatus
             hasSolution={hasSolution}
             hasLecture={hasLecture}
             showHint={showHint}
-            showSolution={showSolution}
-            showMoreInfo={showMoreInfo}
+            showSolution={showSolution === true} 
+            showMoreInfo={showMoreInfo === true}
             onToggleHint={() => setShowHint(!showHint)}
             onSolutionRequest={handleSolutionRequest}
             onLectureRequest={handleLectureRequest}

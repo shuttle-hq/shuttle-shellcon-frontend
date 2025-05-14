@@ -26,6 +26,53 @@
     @apply bg-gradient-to-b from-gray-900 to-black;
   }
   
+  /* Card shine effect */
+  .card-shine {
+    @apply relative overflow-hidden;
+  }
+  
+  .card-shine::after {
+    @apply content-[''] absolute -top-[200%] left-[-100%] w-[50%] h-[200%] opacity-0 transform rotate-30 bg-gradient-to-t from-transparent via-white/10 to-transparent pointer-events-none;
+    animation: shineEffect 5s ease-in-out infinite;
+  }
+  
+  @keyframes shineEffect {
+    0% { opacity: 0; transform: translateY(0) rotate(25deg); }
+    25% { opacity: 0.5; }
+    50% { opacity: 0; transform: translateY(200%) rotate(25deg); }
+    100% { opacity: 0; }
+  }
+  
+  /* Status card effects */
+  .status-card {
+    @apply relative overflow-hidden backdrop-blur-sm shadow-lg transition-all duration-300;
+    background-image: radial-gradient(circle at bottom right, var(--status-color-faint, rgba(0,0,0,0)), transparent 70%);
+  }
+  
+  .online-glow {
+    --status-color: rgba(74, 222, 128, 0.5);
+    --status-color-faint: rgba(74, 222, 128, 0.05);
+    @apply shadow-[0_0_15px_rgba(74,222,128,0.2)];
+  }
+  
+  .degraded-glow {
+    --status-color: rgba(250, 204, 21, 0.5);
+    --status-color-faint: rgba(250, 204, 21, 0.05);
+    @apply shadow-[0_0_15px_rgba(250,204,21,0.2)];
+  }
+  
+  .offline-glow {
+    --status-color: rgba(239, 68, 68, 0.5);
+    --status-color-faint: rgba(239, 68, 68, 0.05);
+    @apply shadow-[0_0_15px_rgba(239,68,68,0.2)];
+  }
+  
+  .orange-glow {
+    --status-color: rgba(249, 115, 22, 0.5);
+    --status-color-faint: rgba(249, 115, 22, 0.05);
+    @apply shadow-[0_0_15px_rgba(249,115,22,0.2)];
+  }
+  
   /* Mascot styles */
   .mascot-container {
     @apply relative overflow-hidden;
