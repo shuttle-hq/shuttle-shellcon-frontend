@@ -86,7 +86,7 @@ const SystemArchitecture: React.FC = () => {
       <Card className="mb-8 shadow-xl border-orange-500/50 overflow-hidden">
         <CardHeader className="bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 text-white border-b border-orange-500/30 pb-4">
           <div className="flex justify-between items-center">
-            <CardTitle className="card-header-title">
+            <CardTitle className="card-header-title futuristic-title">
               <CircuitBoard className="h-5 w-5 text-orange-400 title-icon" />
               ShellCon Smart Aquarium System Control Panel
             </CardTitle>
@@ -148,7 +148,7 @@ const SystemArchitecture: React.FC = () => {
         </CardContent>
       </Card>
 
-      {/* Dialogs for Aqua Monitor API Results */}
+      {/* Dialogs for various API Results */}
       <ResultDialogs
         showTanksDialog={showTanksDialog}
         setShowTanksDialog={setShowTanksDialog}

@@ -62,9 +62,9 @@ const FirstTimeModal = ({ isOpen, onClose, onReadStory }: FirstTimeModalProps) =
           </Button>
           <Button
             onClick={onReadStory}
-            className="bg-gradient-to-r from-orange-500 via-purple-500 to-orange-500 bg-size-200 animate-gradient text-white font-mono tracking-wider hover:shadow-orange-500/50 border-none flex items-center gap-2 transition-all duration-300 hover:scale-105"
+            className="bg-gradient-to-r from-orange-500 via-purple-500 to-orange-500 bg-size-200 text-white font-mono tracking-wider hover:shadow-orange-500/50 border-none flex items-center gap-2 transition-all duration-300 hover:scale-105"
           >
-            <Sparkles className="h-4 w-4" />
+            <Sparkles className="h-4 w-4 animate-sparkle-spin" />
             Read Story Now
           </Button>
         </DialogFooter>
