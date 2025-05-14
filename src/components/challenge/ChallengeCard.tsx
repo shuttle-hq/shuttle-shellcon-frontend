@@ -126,21 +126,6 @@ const ChallengeCard: React.FC<ChallengeCardProps> = ({ challenge, onSystemStatus
     setPendingAction(null);
   };
 
-  const isSolved = challenge.status === 'solved';
-
-  // Check if this challenge has a solution with code and lecture
-  const hasSolution = challenge.solution && (
-    typeof challenge.solution === 'string' || 
-    (typeof challenge.solution === 'object' && 
-      (challenge.solution.code || challenge.solution.explanation))
-  );
-  
-  const hasHint = !!challenge.hint;
-  
-  const hasLecture = challenge.solution && 
-    typeof challenge.solution === 'object' && 
-    !!challenge.solution.lecture;
-
   return (
     <>
       <Card className={`mb-4 border ${isSolved ? 'border-green-500/40' : 'border-orange-500/40'} bg-gray-900 shadow-md hover:shadow-lg transition-all duration-300`}>
@@ -206,7 +191,7 @@ const ChallengeCard: React.FC<ChallengeCardProps> = ({ challenge, onSystemStatus
             isVisible={showHint} 
           />
 
-          {/* Solution Section - Fix the boolean prop issue */}
+          {/* Solution Section */}
           <SolutionSection 
             solution={challenge.solution} 
             isVisible={showSolution} 
