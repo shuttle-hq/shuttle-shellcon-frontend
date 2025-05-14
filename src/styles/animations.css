@@ -42,11 +42,6 @@
   animation: pulse 3s ease-in-out infinite;
 }
 
-/* Added animate-subtle-float class */
-.animate-subtle-float {
-  animation: subtle-float 3s ease-in-out infinite;
-}
-
 .title-icon {
   animation: subtle-float 3s ease-in-out infinite;
 }
