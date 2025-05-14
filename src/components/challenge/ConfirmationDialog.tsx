@@ -31,16 +31,16 @@ const ConfirmationDialog: React.FC<ConfirmationDialogProps> = ({
         <AlertDialogHeader>
           <AlertDialogTitle className="text-orange-500 flex items-center gap-2">
             <AlertTriangle className="h-5 w-5" />
-            {pendingAction === 'solution' ? 'View Solution?' : 'View Information?'}
+            {pendingAction === 'solution' ? 'View Solution? 🦀' : 'View Information? 🦀'}
           </AlertDialogTitle>
           <AlertDialogDescription className="text-gray-300">
             {pendingAction === 'solution' ? (
               <div>
-                Looking at the solution will prevent you from experiencing the challenge of solving this problem yourself. Are you sure you want to continue?
+                Ferris says: Looking at the solution will prevent you from experiencing the challenge of solving this problem yourself. Are you sure you want to continue?
               </div>
             ) : (
               <div>
-                This section contains educational information about the concepts involved in this challenge. It may contain hints or explanations that could make the challenge easier.
+                Ferris says: This section contains educational information about the concepts involved in this challenge. It may contain hints or explanations that could make the challenge easier.
               </div>
             )}
           </AlertDialogDescription>

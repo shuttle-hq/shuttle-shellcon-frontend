@@ -12,7 +12,7 @@ const Footer: React.FC = () => {
         </a>
       </div>
       <div className="mascot-footer w-16 h-16 right-4 absolute top-1/2 transform -translate-y-1/2">
-        <FerrisWheel className="h-full w-full text-orange-400 animate-spin-slow" />
+        <FerrisWheel className="h-full w-full text-orange-400" />
       </div>
     </footer>
   );

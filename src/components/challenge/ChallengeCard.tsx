@@ -90,7 +90,7 @@ const ChallengeCard: React.FC<ChallengeCardProps> = ({ challenge, onSystemStatus
             onLectureRequest={handleLectureRequest}
             onValidateRequest={handleValidateSolution}
             isValidating={isValidating}
-            challengeId={challenge.id}
+            challengeId={challenge.id || ""}
           />
 
           {/* Hint Section */}
