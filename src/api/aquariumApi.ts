@@ -1,4 +1,3 @@
-
 import { API_URLS } from '../config/api';
 
 // Aqua-Brain API
@@ -20,6 +19,18 @@ export const getChallenges = async () => {
     return await response.json();
   } catch (error) {
     console.error('Error fetching challenges:', error);
+    throw error;
+  }
+};
+
+// New function to validate challenge solution
+export const validateChallengeSolution = async (challengeId: number) => {
+  try {
+    const response = await fetch(`${API_URLS.AQUA_BRAIN}/challenges/${challengeId}/solution`);
+    if (!response.ok) throw new Error(`Failed to validate solution for challenge ${challengeId}`);
+    return await response.json();
+  } catch (error) {
+    console.error(`Error validating solution for challenge ${challengeId}:`, error);
     throw error;
   }
 };

@@ -63,7 +63,7 @@ export const useSystemStatus = () => {
     return () => clearInterval(interval);
   }, []);
 
-  return { status, loading, error };
+  return { status, loading, error, setStatus };
 };
 
 export const useChallenges = () => {
@@ -91,5 +91,5 @@ export const useChallenges = () => {
     return () => clearInterval(interval);
   }, []);
 
-  return { challengesData, loading, error };
+  return { challengesData, loading, error, setChallengesData };
 };

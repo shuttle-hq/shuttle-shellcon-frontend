@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { 
+import {
   AlertDialog,
   AlertDialogAction,
   AlertDialogCancel,
@@ -8,8 +8,9 @@ import {
   AlertDialogDescription,
   AlertDialogFooter,
   AlertDialogHeader,
-  AlertDialogTitle
-} from '@/components/ui/alert-dialog';
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import { AlertTriangle } from 'lucide-react';
 
 interface ConfirmationDialogProps {
   isOpen: boolean;
@@ -26,18 +27,22 @@ const ConfirmationDialog: React.FC<ConfirmationDialogProps> = ({
 }) => {
   return (
     <AlertDialog open={isOpen} onOpenChange={onOpenChange}>
-      <AlertDialogContent className="border-2 border-orange-500/40 bg-gray-900 max-w-md">
+      <AlertDialogContent className="bg-gray-900 border border-gray-700 text-white">
         <AlertDialogHeader>
-          <AlertDialogTitle className="text-center flex items-center justify-center gap-2 text-orange-400">
-            <span className="text-2xl">🦀</span>
-            <span className="text-xl futuristic-title">Ferris Says</span>
-            <span className="text-2xl">🦀</span>
+          <AlertDialogTitle className="text-orange-500 flex items-center gap-2">
+            <AlertTriangle className="h-5 w-5" />
+            {pendingAction === 'solution' ? 'View Solution?' : 'View Information?'}
           </AlertDialogTitle>
-          <AlertDialogDescription className="text-center text-gray-300 mt-2">
-            {pendingAction === 'solution' ? (
-              <p>Are you sure you want to view the solution? Trying to solve it yourself first is the best way to learn!</p>
-            ) : (
-              <p>This additional information might contain hints about the solution. Are you sure you want to proceed?</p>
+          <AlertDialogDescription className="text-gray-300">
+            {pendingAction === 'solution' && (
+              <span>
+                Looking at the solution will prevent you from experiencing the challenge of solving this problem yourself. Are you sure you want to continue?
+              </span>
+            )}
+            {pendingAction === 'lecture' && (
+              <span>
+                This section contains educational information about the concepts involved in this challenge. It may contain hints or explanations that could make the challenge easier.
+              </span>
             )}
           </AlertDialogDescription>
         </AlertDialogHeader>
@@ -45,11 +50,11 @@ const ConfirmationDialog: React.FC<ConfirmationDialogProps> = ({
           <AlertDialogCancel className="text-gray-400 border-gray-700 hover:bg-gray-800 hover:text-white">
             I'll try again
           </AlertDialogCancel>
-          <AlertDialogAction
-            className="bg-orange-600 hover:bg-orange-700 text-white"
-            onClick={onConfirm}
+          <AlertDialogAction 
+            onClick={onConfirm} 
+            className="bg-orange-600 text-white hover:bg-orange-700"
           >
-            Show me anyway
+            {pendingAction === 'solution' ? "Show me the solution" : "Show me the information"}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

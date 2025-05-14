@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Button } from "@/components/ui/button";
-import { BookOpen, Code, HelpCircle } from "lucide-react";
+import { BookOpen, Code, HelpCircle, CheckSquare } from "lucide-react";
 
 interface ActionButtonsProps {
   hasHint: boolean;
@@ -13,6 +13,9 @@ interface ActionButtonsProps {
   onToggleHint: () => void;
   onSolutionRequest: () => void;
   onLectureRequest: () => void;
+  onValidateRequest?: () => void;
+  isValidating?: boolean;
+  challengeId: number;
 }
 
 const ActionButtons: React.FC<ActionButtonsProps> = ({
@@ -24,10 +27,27 @@ const ActionButtons: React.FC<ActionButtonsProps> = ({
   showMoreInfo,
   onToggleHint,
   onSolutionRequest,
-  onLectureRequest
+  onLectureRequest,
+  onValidateRequest,
+  isValidating = false,
+  challengeId
 }) => {
   return (
     <div className="flex flex-wrap gap-3 mb-2">
+      {/* Validate Solution Button */}
+      {onValidateRequest && (
+        <Button
+          variant="outline"
+          size="sm"
+          className="text-green-400 border-green-500 hover:bg-green-500/10 hover:text-green-300"
+          onClick={onValidateRequest}
+          disabled={isValidating}
+        >
+          <CheckSquare className="h-4 w-4 mr-1" />
+          {isValidating ? "Validating..." : "Validate your solution"}
+        </Button>
+      )}
+
       {/* Hint Button */}
       {hasHint && (
         <Button

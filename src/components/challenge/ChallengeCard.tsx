@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Challenge as ChallengeType } from '../../hooks/useAquariumData';
@@ -8,18 +9,23 @@ import HintSection from './HintSection';
 import SolutionSection from './SolutionSection';
 import LectureSection from './LectureSection';
 import ConfirmationDialog from './ConfirmationDialog';
+import { validateChallengeSolution } from '../../api/aquariumApi';
+import { toast } from "@/components/ui/sonner";
 
 interface ChallengeCardProps {
   challenge: ChallengeType;
+  onSystemStatusUpdate?: (status: any) => void;
 }
 
-const ChallengeCard: React.FC<ChallengeCardProps> = ({ challenge }) => {
+const ChallengeCard: React.FC<ChallengeCardProps> = ({ challenge, onSystemStatusUpdate }) => {
   const [showSolution, setShowSolution] = useState(false);
   const [showHint, setShowHint] = useState(false);
   const [showMoreInfo, setShowMoreInfo] = useState(false);
   const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
   const [pendingAction, setPendingAction] = useState<'solution' | 'lecture' | null>(null);
   const [seenDialogs, setSeenDialogs] = useState<Set<string>>(new Set());
+  const [isValidating, setIsValidating] = useState(false);
+  const [validationMessage, setValidationMessage] = useState<string | null>(null);
 
   const isSolved = challenge.status === 'solved';
 
@@ -68,6 +74,45 @@ const ChallengeCard: React.FC<ChallengeCardProps> = ({ challenge }) => {
     
     setPendingAction('lecture');
     setConfirmDialogOpen(true);
+  };
+
+  const handleValidateSolution = async () => {
+    if (!challenge.id) {
+      toast.error("Challenge ID is missing. Cannot validate solution.");
+      return;
+    }
+
+    setIsValidating(true);
+    setValidationMessage(null);
+    
+    try {
+      const response = await validateChallengeSolution(challenge.id);
+      
+      // Update UI based on response
+      if (response.implementation && response.implementation.valid) {
+        toast.success(response.implementation.message || "Your solution is correct!");
+        setValidationMessage(response.implementation.message);
+        
+        // If the challenge status was updated, we can update it locally too
+        if (response.challenge && response.challenge.status === "SOLVED") {
+          // We'd update the challenge status in the parent component
+          challenge.status = "solved";
+        }
+        
+        // Update system status if provided
+        if (response.system_status && onSystemStatusUpdate) {
+          onSystemStatusUpdate(response.system_status);
+        }
+      } else {
+        toast.error(response.implementation?.message || "Your solution is not yet correct.");
+        setValidationMessage(response.implementation?.message);
+      }
+    } catch (error) {
+      console.error("Error validating solution:", error);
+      toast.error("Failed to validate your solution. Please try again.");
+    } finally {
+      setIsValidating(false);
+    }
   };
 
   const handleConfirm = () => {
@@ -119,6 +164,13 @@ const ChallengeCard: React.FC<ChallengeCardProps> = ({ challenge }) => {
             function={challenge.function}
           />
 
+          {/* Validation Message */}
+          {validationMessage && (
+            <div className={`mb-4 p-3 rounded border ${isSolved ? 'border-green-500/40 bg-green-900/20 text-green-400' : 'border-orange-500/40 bg-orange-900/20 text-orange-400'}`}>
+              {validationMessage}
+            </div>
+          )}
+
           {/* Action Buttons */}
           <ActionButtons 
             hasHint={hasHint}
@@ -130,6 +182,9 @@ const ChallengeCard: React.FC<ChallengeCardProps> = ({ challenge }) => {
             onToggleHint={() => setShowHint(!showHint)}
             onSolutionRequest={handleSolutionRequest}
             onLectureRequest={handleLectureRequest}
+            onValidateRequest={handleValidateSolution}
+            isValidating={isValidating}
+            challengeId={challenge.id}
           />
 
           {/* Hint Section */}
@@ -141,14 +196,14 @@ const ChallengeCard: React.FC<ChallengeCardProps> = ({ challenge }) => {
           {/* Solution Section */}
           <SolutionSection 
             solution={challenge.solution} 
-            isVisible={showSolution} 
+            isVisible={!!showSolution} 
           />
 
           {/* More Information Section with Markdown */}
           {typeof challenge.solution === 'object' && (
             <LectureSection 
               lecture={challenge.solution.lecture} 
-              isVisible={showMoreInfo} 
+              isVisible={!!showMoreInfo} 
             />
           )}
         </CardContent>

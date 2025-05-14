@@ -4,11 +4,13 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Skeleton } from "@/components/ui/skeleton";
 import Challenge from './Challenge';
-import { useChallenges } from '../hooks/useAquariumData';
+import { useChallenges, useSystemStatus } from '../hooks/useAquariumData';
 import { AlertCircle, List, Trophy, Loader2 } from "lucide-react";
+import { toast } from "@/components/ui/sonner";
 
 const ChallengeList: React.FC = () => {
   const { challengesData, loading, error } = useChallenges();
+  const { status, setStatus } = useSystemStatus();
   
   // Fallback challenges in case API is unavailable
   const fallbackChallenges = [
@@ -58,6 +60,31 @@ const ChallengeList: React.FC = () => {
   const solved = challengesData?.solved || 0;
   const total = challengesData?.total || fallbackChallenges.length;
 
+  const handleSystemStatusUpdate = (systemStatus: any) => {
+    if (!systemStatus) return;
+    
+    if (setStatus) {
+      // Update the system status with the returned values
+      setStatus((prevStatus) => {
+        if (!prevStatus) return prevStatus;
+        
+        const updatedStatus = { ...prevStatus };
+        
+        // Update specific system components if provided
+        Object.keys(systemStatus).forEach(key => {
+          if (key in updatedStatus) {
+            // @ts-ignore - We know these properties exist
+            updatedStatus[key] = systemStatus[key];
+          }
+        });
+        
+        return updatedStatus;
+      });
+      
+      toast.success("System status updated based on your solution");
+    }
+  };
+
   return (
     <Card className="border-orange-500/40 bg-gray-800 shadow-lg orange-glow">
       <CardHeader className="bg-gray-900 text-white border-b-2 border-orange-500/40">
@@ -99,7 +126,11 @@ const ChallengeList: React.FC = () => {
         {!loading && (
           <div>
             {challenges.map((challenge) => (
-              <Challenge key={challenge.id} challenge={challenge} />
+              <Challenge 
+                key={challenge.id} 
+                challenge={challenge} 
+                onSystemStatusUpdate={handleSystemStatusUpdate} 
+              />
             ))}
           </div>
         )}
