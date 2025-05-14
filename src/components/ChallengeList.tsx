@@ -5,7 +5,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Skeleton } from "@/components/ui/skeleton";
 import Challenge from './Challenge';
 import { useChallenges, useSystemStatus } from '../hooks/useAquariumData';
-import { AlertCircle, List, Trophy, Loader2 } from "lucide-react";
+import { AlertCircle, List, Trophy, Loader2, Shield } from "lucide-react";
 
 const ChallengeList: React.FC = () => {
   const { challengesData, loading, error } = useChallenges();
@@ -83,20 +83,20 @@ const ChallengeList: React.FC = () => {
   };
 
   return (
-    <Card className="border-orange-500/40 bg-gray-800 shadow-lg orange-glow">
-      <CardHeader className="bg-gray-900 text-white border-b-2 border-orange-500/40">
-        <CardTitle className="flex justify-between items-center">
-          <div className="flex items-center gap-2">
-            <List className="h-5 w-5 text-orange-400" />
+    <Card className="border-orange-500/40 bg-gray-800 shadow-xl overflow-hidden">
+      <CardHeader className="bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 text-white border-b border-orange-500/30 pb-4">
+        <div className="flex justify-between items-center">
+          <CardTitle className="flex items-center gap-2 text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-orange-200">
+            <Shield className="h-5 w-5 text-orange-400" />
             Optimization Challenges
-          </div>
+          </CardTitle>
           <div className="flex items-center gap-2 text-sm">
             <Trophy className="h-4 w-4 text-orange-400" />
             <span>{solved} of {total} challenges solved</span>
           </div>
-        </CardTitle>
+        </div>
       </CardHeader>
-      <CardContent className="pt-6">
+      <CardContent className="pt-6 bg-gradient-to-b from-gray-900/80 to-black">
         {loading && (
           <div className="space-y-4">
             <div className="flex justify-center items-center py-4">

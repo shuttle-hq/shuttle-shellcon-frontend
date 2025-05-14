@@ -1,6 +1,7 @@
+
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Server, Database, Monitor } from "lucide-react";
+import { Server, Database, Monitor, Shield } from "lucide-react";
 import ServiceCard from './system-architecture/ServiceCard';
 import AquaMonitorControls from './system-architecture/AquaMonitorControls';
 import SpeciesHubControls from './system-architecture/SpeciesHubControls';
@@ -83,14 +84,16 @@ const SystemArchitecture: React.FC = () => {
 
   return (
     <>
-      <Card className="bg-gray-800 border-orange-500/40 mb-8 shadow-lg orange-glow">
-        <CardHeader className="bg-gray-900 border-b-2 border-orange-500/40">
-          <CardTitle className="text-white flex items-center gap-2">
-            <Server className="h-6 w-6 text-orange-400" />
-            ShellCon Smart Aquarium System Control Panel
-          </CardTitle>
+      <Card className="mb-8 shadow-xl border-orange-500/50 overflow-hidden">
+        <CardHeader className="bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 text-white border-b border-orange-500/30 pb-4">
+          <div className="flex justify-between items-center">
+            <CardTitle className="flex items-center gap-2 text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-orange-200">
+              <Shield className="h-5 w-5 text-orange-400" />
+              ShellCon Smart Aquarium System Control Panel
+            </CardTitle>
+          </div>
         </CardHeader>
-        <CardContent className="pt-6">
+        <CardContent className="pt-6 bg-gradient-to-b from-gray-900/80 to-black">
           <div className="grid md:grid-cols-3 gap-4">
             {/* Aqua Monitor Service Card */}
             <ServiceCard 
