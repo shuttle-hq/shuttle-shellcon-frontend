@@ -1,3 +1,4 @@
+
 import { API_URLS } from '../config/api';
 
 // Aqua-Brain API
@@ -23,10 +24,19 @@ export const getChallenges = async () => {
   }
 };
 
-// New function to validate challenge solution
+// Updated function to validate challenge solution using POST method
 export const validateChallengeSolution = async (challengeId: number) => {
   try {
-    const response = await fetch(`${API_URLS.AQUA_BRAIN}/challenges/${challengeId}/solution`);
+    // Using POST method instead of GET to avoid the 405 Method Not Allowed error
+    const response = await fetch(`${API_URLS.AQUA_BRAIN}/challenges/${challengeId}/solution`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      // Empty body since we're just validating the solution
+      body: JSON.stringify({})
+    });
+    
     if (!response.ok) throw new Error(`Failed to validate solution for challenge ${challengeId}`);
     return await response.json();
   } catch (error) {

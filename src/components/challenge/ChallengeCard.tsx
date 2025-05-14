@@ -193,17 +193,17 @@ const ChallengeCard: React.FC<ChallengeCardProps> = ({ challenge, onSystemStatus
             isVisible={showHint} 
           />
 
-          {/* Solution Section */}
+          {/* Solution Section - Convert showSolution to boolean explicitly */}
           <SolutionSection 
             solution={challenge.solution} 
-            isVisible={!!showSolution} 
+            isVisible={Boolean(showSolution)} 
           />
 
           {/* More Information Section with Markdown */}
           {typeof challenge.solution === 'object' && (
             <LectureSection 
               lecture={challenge.solution.lecture} 
-              isVisible={!!showMoreInfo} 
+              isVisible={Boolean(showMoreInfo)} 
             />
           )}
         </CardContent>

@@ -34,15 +34,14 @@ const ConfirmationDialog: React.FC<ConfirmationDialogProps> = ({
             {pendingAction === 'solution' ? 'View Solution?' : 'View Information?'}
           </AlertDialogTitle>
           <AlertDialogDescription className="text-gray-300">
-            {pendingAction === 'solution' && (
-              <span>
+            {pendingAction === 'solution' ? (
+              <div>
                 Looking at the solution will prevent you from experiencing the challenge of solving this problem yourself. Are you sure you want to continue?
-              </span>
-            )}
-            {pendingAction === 'lecture' && (
-              <span>
+              </div>
+            ) : (
+              <div>
                 This section contains educational information about the concepts involved in this challenge. It may contain hints or explanations that could make the challenge easier.
-              </span>
+              </div>
             )}
           </AlertDialogDescription>
         </AlertDialogHeader>
