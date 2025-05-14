@@ -106,16 +106,22 @@ const ChallengeCard: React.FC<ChallengeCardProps> = ({ challenge }) => {
           />
 
           {/* Hint Section */}
-          <HintSection hint={challenge.hint} isVisible={showHint} />
+          <HintSection 
+            hint={challenge.hint} 
+            isVisible={Boolean(showHint)} 
+          />
 
           {/* Solution Section */}
-          <SolutionSection solution={challenge.solution} isVisible={showSolution} />
+          <SolutionSection 
+            solution={challenge.solution} 
+            isVisible={Boolean(showSolution)} 
+          />
 
           {/* More Information Section with Markdown */}
           {typeof challenge.solution === 'object' && (
             <LectureSection 
               lecture={challenge.solution.lecture} 
-              isVisible={showMoreInfo} 
+              isVisible={Boolean(showMoreInfo)} 
             />
           )}
         </CardContent>
