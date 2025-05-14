@@ -29,8 +29,7 @@ const ConfirmationDialog: React.FC<ConfirmationDialogProps> = ({
     <AlertDialog open={isOpen} onOpenChange={onOpenChange}>
       <AlertDialogContent className="bg-gray-900 border border-gray-700 text-white">
         <AlertDialogHeader>
-          <AlertDialogTitle className="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 via-purple-400 to-orange-400 flex items-center gap-2">
-            <AlertTriangle className="h-5 w-5 text-orange-400" />
+          <AlertDialogTitle className="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 via-purple-400 to-orange-400 text-left">
             {pendingAction === 'solution' ? '🦀 View Solution? 🦀' : '🦀 View Information? 🦀'}
           </AlertDialogTitle>
           <AlertDialogDescription className="text-gray-300">

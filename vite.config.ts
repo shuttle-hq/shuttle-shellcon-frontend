@@ -13,6 +13,7 @@ export default defineConfig(({ mode }) => ({
       // aqua-monitor endpoints
       '/api/tanks': 'http://localhost:8000',
       '/api/sensors': 'http://localhost:8000',
+      '/api/challenges/1/validate': 'http://localhost:8000',  // Challenge #1 validation is on aqua-monitor
 
       // species-hub endpoints
       '/api/species': 'http://localhost:8001',
