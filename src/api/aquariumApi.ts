@@ -1,83 +1,103 @@
 import { API_URLS } from '../config/api';
 
-// System Status API for default challenge statuses
+// System Status API - Fetch system component statuses from current challenges
 export const getSystemStatus = async () => {
   try {
-    // Create the system status with the default values for each challenge component
-    // These match the status values returned by the API when challenges are not solved
+    // Initialize the system status object with default values
     const systemStatus = {
       environmental_monitoring: 'degraded', // Challenge #1 - Async I/O
       species_database: 'degraded',        // Challenge #2 - Query Optimization
-      feeding_system: 'error',             // Challenge #3 - Error Handling 
-      remote_monitoring: 'degraded',       // Challenge #4 - Resource Management (named "Sensor Management" in API)
+      feeding_system: 'error',             // Challenge #3 - Error Handling
+      remote_monitoring: 'degraded',       // Challenge #4 - Resource Management
       analysis_engine: 'degraded',         // Challenge #5 - Shared State
-      overall_status: 'degraded',          // Overall status based on component statuses
+      overall_status: 'degraded',
       last_updated: new Date().toISOString()
     };
 
-    // Try to fetch challenge #1 status (Environmental Monitoring)
+    // Fetch current challenges status
     try {
-      const response = await fetch('/api/challenges/1/validate');
+      const response = await fetch('/api/challenges/current');
       if (response.ok) {
         const data = await response.json();
-        if (data.system_component && data.system_component.name === 'Environmental Monitoring') {
-          systemStatus.environmental_monitoring = data.system_component.status;
+        
+        if (data.challenges && Array.isArray(data.challenges)) {
+          // Map challenge statuses to system components
+          data.challenges.forEach(challenge => {
+            let componentStatus = challenge.status === 'solved' ? 'normal' : 
+                                 (challenge.id === 3 ? 'error' : 'degraded');
+            
+            // Map challenge ID to system component
+            switch (challenge.id) {
+              case 1: // The Sluggish Sensor - Environmental Monitoring
+                systemStatus.environmental_monitoring = componentStatus;
+                break;
+              case 2: // The Query Conundrum - Species Database
+                systemStatus.species_database = componentStatus;
+                break;
+              case 3: // The Fragile Feeder - Feeding Schedule
+                systemStatus.feeding_system = componentStatus;
+                break;
+              case 4: // The Leaky Connection - Remote Monitoring (Sensor Management)
+                systemStatus.remote_monitoring = componentStatus;
+                break;
+              case 5: // Safe Shared State - Analysis Engine
+                systemStatus.analysis_engine = componentStatus;
+                break;
+            }
+          });
         }
       }
     } catch (error) {
-      console.error('Error fetching Environmental Monitoring status:', error);
+      console.error('Error fetching challenges status:', error);
+      
+      // If we can't get the challenges status, try to fetch individual validation statuses
+      try {
+        // Check if any challenges have been solved by validating each one
+        const validationPromises = [
+          validateChallenge(1).then(result => {
+            if (result && result.system_component) {
+              systemStatus.environmental_monitoring = result.system_component.status;
+            }
+          }),
+          validateChallenge(2).then(result => {
+            if (result && result.system_component) {
+              systemStatus.species_database = result.system_component.status;
+            }
+          }),
+          validateChallenge(3).then(result => {
+            if (result && result.system_component) {
+              systemStatus.feeding_system = result.system_component.status;
+            }
+          }),
+          validateChallenge(4).then(result => {
+            if (result && result.system_component) {
+              systemStatus.remote_monitoring = result.system_component.status;
+            }
+          }),
+          validateChallenge(5).then(result => {
+            if (result && result.system_component) {
+              systemStatus.analysis_engine = result.system_component.status;
+            }
+          })
+        ];
+        
+        await Promise.all(validationPromises);
+      } catch (validationError) {
+        console.error('Error validating challenges:', validationError);
+      }
     }
 
-    // Try to fetch challenge #2 status (Species Database)
-    try {
-      const response = await fetch('/api/challenges/2/validate');
-      if (response.ok) {
-        const data = await response.json();
-        if (data.system_component && data.system_component.name === 'Species Database') {
-          systemStatus.species_database = data.system_component.status;
+    // Helper function to validate a challenge
+    async function validateChallenge(challengeId) {
+      try {
+        const response = await fetch(`/api/challenges/${challengeId}/validate`);
+        if (response.ok) {
+          return await response.json();
         }
+      } catch (error) {
+        console.error(`Error validating challenge ${challengeId}:`, error);
       }
-    } catch (error) {
-      console.error('Error fetching Species Database status:', error);
-    }
-
-    // Try to fetch challenge #3 status (Feeding Schedule)
-    try {
-      const response = await fetch('/api/challenges/3/validate');
-      if (response.ok) {
-        const data = await response.json();
-        if (data.system_component && data.system_component.name === 'Feeding Schedule') {
-          systemStatus.feeding_system = data.system_component.status;
-        }
-      }
-    } catch (error) {
-      console.error('Error fetching Feeding Schedule status:', error);
-    }
-
-    // Try to fetch challenge #4 status (Sensor Management / Remote Monitoring)
-    try {
-      const response = await fetch('/api/challenges/4/validate');
-      if (response.ok) {
-        const data = await response.json();
-        if (data.system_component && data.system_component.name === 'Sensor Management') {
-          systemStatus.remote_monitoring = data.system_component.status;
-        }
-      }
-    } catch (error) {
-      console.error('Error fetching Sensor Management status:', error);
-    }
-
-    // Try to fetch challenge #5 status (Analysis Engine)
-    try {
-      const response = await fetch('/api/challenges/5/validate');
-      if (response.ok) {
-        const data = await response.json();
-        if (data.system_component && data.system_component.name === 'Analysis Engine') {
-          systemStatus.analysis_engine = data.system_component.status;
-        }
-      }
-    } catch (error) {
-      console.error('Error fetching Analysis Engine status:', error);
+      return null;
     }
 
     // Calculate overall status
