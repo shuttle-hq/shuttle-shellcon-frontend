@@ -1,61 +1,83 @@
 import { API_URLS } from '../config/api';
 
-// Aggregated System Status API
+// System Status API for default challenge statuses
 export const getSystemStatus = async () => {
   try {
-    // Initialize the system status with default values
+    // Create the system status with the default values for each challenge component
+    // These match the status values returned by the API when challenges are not solved
     const systemStatus = {
-      environmental_monitoring: 'unknown',
-      species_database: 'unknown',
-      feeding_system: 'unknown',
-      remote_monitoring: 'unknown',
-      analysis_engine: 'unknown',
-      overall_status: 'unknown',
+      environmental_monitoring: 'degraded', // Challenge #1 - Async I/O
+      species_database: 'degraded',        // Challenge #2 - Query Optimization
+      feeding_system: 'error',             // Challenge #3 - Error Handling 
+      remote_monitoring: 'degraded',       // Challenge #4 - Resource Management (named "Sensor Management" in API)
+      analysis_engine: 'degraded',         // Challenge #5 - Shared State
+      overall_status: 'degraded',          // Overall status based on component statuses
       last_updated: new Date().toISOString()
     };
 
-    // Try to fetch sensor status from aqua-monitor
+    // Try to fetch challenge #1 status (Environmental Monitoring)
     try {
-      const sensorResponse = await fetch('/api/sensors/status');
-      if (sensorResponse.ok) {
-        const sensorData = await sensorResponse.json();
-        systemStatus.environmental_monitoring = sensorData.status || 'unknown';
-        systemStatus.last_updated = sensorData.last_updated || systemStatus.last_updated;
+      const response = await fetch('/api/challenges/1/validate');
+      if (response.ok) {
+        const data = await response.json();
+        if (data.system_component && data.system_component.name === 'Environmental Monitoring') {
+          systemStatus.environmental_monitoring = data.system_component.status;
+        }
       }
-    } catch (sensorError) {
-      console.error('Error fetching sensor status:', sensorError);
+    } catch (error) {
+      console.error('Error fetching Environmental Monitoring status:', error);
     }
 
-    // Try to fetch species-hub health
+    // Try to fetch challenge #2 status (Species Database)
     try {
-      const speciesResponse = await fetch('/api/species');
-      systemStatus.species_database = speciesResponse.ok ? 'online' : 'offline';
-    } catch (speciesError) {
-      console.error('Error checking species database:', speciesError);
+      const response = await fetch('/api/challenges/2/validate');
+      if (response.ok) {
+        const data = await response.json();
+        if (data.system_component && data.system_component.name === 'Species Database') {
+          systemStatus.species_database = data.system_component.status;
+        }
+      }
+    } catch (error) {
+      console.error('Error fetching Species Database status:', error);
     }
 
-    // Try to fetch feeding system status
+    // Try to fetch challenge #3 status (Feeding Schedule)
     try {
-      const feedingResponse = await fetch('/api/feeding/schedule');
-      systemStatus.feeding_system = feedingResponse.ok ? 'online' : 'offline';
-    } catch (feedingError) {
-      console.error('Error checking feeding system:', feedingError);
+      const response = await fetch('/api/challenges/3/validate');
+      if (response.ok) {
+        const data = await response.json();
+        if (data.system_component && data.system_component.name === 'Feeding Schedule') {
+          systemStatus.feeding_system = data.system_component.status;
+        }
+      }
+    } catch (error) {
+      console.error('Error fetching Feeding Schedule status:', error);
     }
 
-    // Try to fetch analysis engine status
+    // Try to fetch challenge #4 status (Sensor Management / Remote Monitoring)
     try {
-      const analysisResponse = await fetch('/api/analysis/tanks');
-      systemStatus.analysis_engine = analysisResponse.ok ? 'online' : 'offline';
-    } catch (analysisError) {
-      console.error('Error checking analysis engine:', analysisError);
+      const response = await fetch('/api/challenges/4/validate');
+      if (response.ok) {
+        const data = await response.json();
+        if (data.system_component && data.system_component.name === 'Sensor Management') {
+          systemStatus.remote_monitoring = data.system_component.status;
+        }
+      }
+    } catch (error) {
+      console.error('Error fetching Sensor Management status:', error);
     }
 
-    // Check remote monitoring through a separate health endpoint
+    // Try to fetch challenge #5 status (Analysis Engine)
     try {
-      const monitoringResponse = await fetch('/api/health');
-      systemStatus.remote_monitoring = monitoringResponse.ok ? 'online' : 'offline';
-    } catch (monitoringError) {
-      console.error('Error checking remote monitoring:', monitoringError);
+      const response = await fetch('/api/challenges/5/validate');
+      if (response.ok) {
+        const data = await response.json();
+        if (data.system_component && data.system_component.name === 'Analysis Engine') {
+          systemStatus.analysis_engine = data.system_component.status;
+        }
+      }
+    } catch (error) {
+      console.error('Error fetching Analysis Engine status:', error);
     }
 
     // Calculate overall status
@@ -67,11 +89,11 @@ export const getSystemStatus = async () => {
       systemStatus.analysis_engine
     ];
 
-    if (statusValues.some(status => status === 'offline' || status === 'critical')) {
+    if (statusValues.some(status => status === 'error' || status === 'critical' || status === 'offline')) {
       systemStatus.overall_status = 'critical';
     } else if (statusValues.some(status => status === 'degraded')) {
       systemStatus.overall_status = 'degraded';
-    } else if (statusValues.every(status => status === 'online' || status === 'ok' || status === 'operational')) {
+    } else if (statusValues.every(status => status === 'normal' || status === 'online' || status === 'operational')) {
       systemStatus.overall_status = 'operational';
     } else {
       systemStatus.overall_status = 'unknown';
