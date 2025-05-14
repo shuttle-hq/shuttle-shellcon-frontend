@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Challenge as ChallengeType } from '../../hooks/useAquariumData';
@@ -136,20 +135,20 @@ const ChallengeCard: React.FC<ChallengeCardProps> = ({ challenge }) => {
           {/* Hint Section */}
           <HintSection 
             hint={challenge.hint} 
-            isVisible={Boolean(showHint)} 
+            isVisible={showHint} 
           />
 
           {/* Solution Section */}
           <SolutionSection 
             solution={challenge.solution} 
-            isVisible={Boolean(showSolution)} 
+            isVisible={showSolution} 
           />
 
           {/* More Information Section with Markdown */}
           {typeof challenge.solution === 'object' && (
             <LectureSection 
               lecture={challenge.solution.lecture} 
-              isVisible={Boolean(showMoreInfo)} 
+              isVisible={showMoreInfo} 
             />
           )}
         </CardContent>
