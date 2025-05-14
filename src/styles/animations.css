@@ -21,7 +21,7 @@
   }
 }
 
-/* Title icon animation */
+/* Title icon animation - keeping definition but not using it */
 @keyframes subtle-float {
   0% {
     transform: translateY(0px);
@@ -43,7 +43,7 @@
 }
 
 .animate-subtle-float {
-  animation: subtle-float 3s ease-in-out infinite;
+  /* Animation removed - class kept for compatibility */
 }
 
 /* Add more animations as needed */

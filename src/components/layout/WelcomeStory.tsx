@@ -30,7 +30,7 @@ const WelcomeStory: React.FC<WelcomeStoryProps> = ({ isOpen, setIsOpen }) => {
                   size="sm" 
                   className={`
                     relative overflow-hidden bg-gradient-to-r from-orange-500 via-purple-500 to-orange-500 
-                    bg-size-200 animate-gradient text-white font-bold px-6 py-3 shadow-lg 
+                    bg-size-200 text-white font-bold px-6 py-3 shadow-lg 
                     hover:shadow-orange-500/50 border-none
                     flex items-center gap-2 transition-all duration-300
                     hover:scale-105
