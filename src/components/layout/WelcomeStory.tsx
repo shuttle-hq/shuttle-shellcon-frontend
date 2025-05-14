@@ -44,18 +44,12 @@ const WelcomeStory: React.FC<WelcomeStoryProps> = ({ isOpen, setIsOpen }) => {
               </CollapsibleTrigger>
               <h2 className="text-lg font-semibold text-orange-300">
                 Welcome to the Shuttle onboarding experience!
+                <div className="text-sm font-normal mt-1 text-white">You are now a member of the emergency technical response team for ShellCon, where Rustaceans and crustaceans unite!</div>
               </h2>
             </div>
           </div>
           
-          <p className="text-gray-300 mt-1">
-            
-          </p>
-          
           <CollapsibleContent className="text-sm mt-2 space-y-3 text-gray-300 animate-fade-in">
-            <div>
-              <p className="font-semibold text-orange-300">Welcome to ShellCon Emergency Response Team!</p>
-            </div>
             
             <div className="border-l-4 border-orange-500 pl-4 py-2">
               <p className="font-bold text-orange-400">🦀 Congratulations on Your Deployment! 🦀</p>

@@ -1,4 +1,3 @@
-
 import { API_URLS } from '../config/api';
 
 // Aqua-Brain API
@@ -24,18 +23,17 @@ export const getChallenges = async () => {
   }
 };
 
-// Updated function to validate challenge solution with proper error handling
-export const validateChallengeSolution = async (challengeId: number) => {
+// Updated function to validate challenge solution using GET request instead of POST
+export const validateChallengeSolution = async (challengeId: number | string) => {
   try {
     console.log(`Validating solution for challenge ${challengeId} at ${API_URLS.AQUA_BRAIN}/challenges/${challengeId}/solution`);
     
+    // Changed from POST to GET request
     const response = await fetch(`${API_URLS.AQUA_BRAIN}/challenges/${challengeId}/solution`, {
-      method: 'POST',
+      method: 'GET',
       headers: {
         'Content-Type': 'application/json'
-      },
-      // Empty body since we're just validating the solution
-      body: JSON.stringify({})
+      }
     });
     
     if (!response.ok) {

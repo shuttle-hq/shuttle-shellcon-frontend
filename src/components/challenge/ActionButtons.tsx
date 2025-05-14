@@ -15,7 +15,7 @@ interface ActionButtonsProps {
   onLectureRequest: () => void;
   onValidateRequest?: () => void;
   isValidating?: boolean;
-  challengeId: number;
+  challengeId: number; // Changed from string to number
 }
 
 const ActionButtons: React.FC<ActionButtonsProps> = ({

@@ -45,7 +45,7 @@ const ConfirmationDialog: React.FC<ConfirmationDialogProps> = ({
             )}
           </AlertDialogDescription>
         </AlertDialogHeader>
-        <AlertDialogFooter className="flex justify-center gap-2">
+        <AlertDialogFooter className="flex !flex-row !justify-center gap-2 sm:!justify-center">
           <AlertDialogCancel className="text-gray-400 border-gray-700 hover:bg-gray-800 hover:text-white">
             I'll try again
           </AlertDialogCancel>

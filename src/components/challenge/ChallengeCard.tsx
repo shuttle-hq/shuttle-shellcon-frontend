@@ -90,26 +90,26 @@ const ChallengeCard: React.FC<ChallengeCardProps> = ({ challenge, onSystemStatus
             onLectureRequest={handleLectureRequest}
             onValidateRequest={handleValidateSolution}
             isValidating={isValidating}
-            challengeId={challenge.id || ""}
+            challengeId={typeof challenge.id === 'number' ? challenge.id : 0}
           />
 
           {/* Hint Section */}
           <HintSection 
             hint={challenge.hint} 
-            isVisible={showHint} 
+            isVisible={showHint === true} 
           />
 
           {/* Solution Section */}
           <SolutionSection 
             solution={challenge.solution} 
-            isVisible={showSolution} 
+            isVisible={showSolution === true} 
           />
 
           {/* More Information Section with Markdown */}
           {typeof challenge.solution === 'object' && (
             <LectureSection 
               lecture={challenge.solution.lecture} 
-              isVisible={showMoreInfo} 
+              isVisible={showMoreInfo === true} 
             />
           )}
         </CardContent>
