@@ -13,7 +13,18 @@ const SystemStatus: React.FC = () => {
     <Card className="mb-8 shadow-xl border-orange-500/50 overflow-hidden">
       <CardHeader className="bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 text-white border-b border-orange-500/30 pb-4">
         <div className="flex justify-between items-center">
-          <CardTitle className="card-header-title futuristic-title">
+          <CardTitle 
+            className="card-header-title flex items-center gap-2"
+            style={{
+              fontFamily: 'Inter, sans-serif',
+              fontWeight: 700,
+              color: 'transparent',
+              backgroundImage: 'linear-gradient(to bottom right, #f97316, #fbbf24, #f59e0b)',
+              backgroundClip: 'text',
+              WebkitBackgroundClip: 'text',
+              textShadow: '0 0 15px rgba(249, 115, 22, 0.2)'
+            }}
+          >
             <Activity className="h-5 w-5 text-orange-400" />
             System Status
           </CardTitle>

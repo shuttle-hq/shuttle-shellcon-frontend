@@ -10,7 +10,27 @@
   
   /* Modern futuristic text styles */
   .futuristic-title {
-    @apply font-mono tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-orange-400 via-orange-300 to-purple-400;
+    @apply font-mono font-bold tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-orange-500 via-orange-400 to-amber-300;
+    text-shadow: 0 0 20px rgba(249, 115, 22, 0.2);
+  }
+  
+  /* Main heading styles */
+  .shellcon-main-title {
+    @apply font-sans font-extrabold tracking-tight text-transparent !important;
+    background-clip: text !important;
+    background-image: linear-gradient(to right, #f97316, #fbbf24, #f59e0b) !important;
+    text-shadow: 0 0 30px rgba(249, 115, 22, 0.3);
+    letter-spacing: -0.025em;
+    color: transparent !important;
+  }
+  
+  /* Section heading styles */
+  .shellcon-section-title {
+    @apply font-sans font-bold tracking-tight text-transparent !important;
+    background-clip: text !important;
+    background-image: linear-gradient(to bottom right, #f97316, #fbbf24, #f59e0b) !important;
+    text-shadow: 0 0 15px rgba(249, 115, 22, 0.2);
+    color: transparent !important;
   }
   
   .futuristic-text {

@@ -3,7 +3,7 @@ import React from 'react';
 
 const Header: React.FC = () => {
   return (
-    <header className="header-with-mascot bg-black text-white py-4 border-b-4 border-orange-500">
+    <header className="header-with-mascot bg-black py-4 border-b-4 border-orange-500">
       <div className="container mx-auto px-4 flex items-center justify-between relative z-10">
         <div className="flex items-center gap-4">
           <img 
@@ -12,7 +12,21 @@ const Header: React.FC = () => {
             className="h-12 w-auto"
           />
           <div>
-            <h1 className="text-2xl md:text-3xl font-bold text-orange-400">ShellCon Smart Aquarium Dashboard</h1>
+            <h1 
+              className="text-2xl md:text-3xl" 
+              style={{
+                fontFamily: 'Inter, sans-serif',
+                fontWeight: 800,
+                letterSpacing: '-0.025em',
+                color: 'transparent',
+                backgroundImage: 'linear-gradient(to right, #f97316, #fbbf24, #f59e0b)',
+                backgroundClip: 'text',
+                WebkitBackgroundClip: 'text',
+                textShadow: '0 0 30px rgba(249, 115, 22, 0.3)'
+              }}
+            >
+              ShellCon Smart Aquarium System Control Panel
+            </h1>
             <p className="text-gray-300 text-sm md:text-base">
               Real-time monitoring and optimization challenges for the world's premier crustacean convention
             </p>
