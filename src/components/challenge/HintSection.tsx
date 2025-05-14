@@ -8,7 +8,10 @@ interface HintSectionProps {
 }
 
 const HintSection: React.FC<HintSectionProps> = ({ hint, isVisible }) => {
-  if (!isVisible || !hint) return null;
+  // Type guard to ensure isVisible is strictly a boolean
+  const shouldShow = Boolean(isVisible);
+  
+  if (!shouldShow || !hint) return null;
   
   return (
     <div className="mt-4 p-4 bg-blue-900/20 rounded-md border-2 border-blue-500/40 mb-4">

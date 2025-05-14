@@ -12,7 +12,10 @@ interface SolutionProps {
 }
 
 const SolutionSection: React.FC<SolutionProps> = ({ solution, isVisible }) => {
-  if (!isVisible || !solution) return null;
+  // Type guard to ensure isVisible is strictly a boolean
+  const shouldShow = Boolean(isVisible);
+  
+  if (!shouldShow || !solution) return null;
 
   // Handle string solution (backward compatibility)
   if (typeof solution === 'string') {

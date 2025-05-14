@@ -9,7 +9,10 @@ interface LectureSectionProps {
 }
 
 const LectureSection: React.FC<LectureSectionProps> = ({ lecture, isVisible }) => {
-  if (!isVisible || !lecture) return null;
+  // Type guard to ensure isVisible is strictly a boolean
+  const shouldShow = Boolean(isVisible);
+  
+  if (!shouldShow || !lecture) return null;
   
   return (
     <div className="mt-4 p-4 bg-green-900/20 rounded-md border-2 border-green-500/40 animate-fade-in">
