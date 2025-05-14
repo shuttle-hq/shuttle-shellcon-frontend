@@ -20,6 +20,7 @@ const ChallengeCard: React.FC<ChallengeCardProps> = ({ challenge }) => {
   const [showMoreInfo, setShowMoreInfo] = useState(false);
   const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
   const [pendingAction, setPendingAction] = useState<'solution' | 'lecture' | null>(null);
+  const [seenDialogs, setSeenDialogs] = useState<Set<string>>(new Set());
 
   const isSolved = challenge.status === 'solved';
 
@@ -37,20 +38,47 @@ const ChallengeCard: React.FC<ChallengeCardProps> = ({ challenge }) => {
     !!challenge.solution.lecture;
 
   const handleSolutionRequest = () => {
+    // If solution has already been shown, show it without dialog
+    if (showSolution) {
+      setShowSolution(false);
+      return;
+    }
+    
+    // If user has already seen a dialog for this challenge, don't show it again
+    if (seenDialogs.has(challenge.name)) {
+      setShowSolution(true);
+      return;
+    }
+    
     setPendingAction('solution');
     setConfirmDialogOpen(true);
   };
 
   const handleLectureRequest = () => {
+    // If lecture has already been shown, show it without dialog
+    if (showMoreInfo) {
+      setShowMoreInfo(false);
+      return;
+    }
+    
+    // If user has already seen a dialog for this challenge, don't show it again
+    if (seenDialogs.has(challenge.name)) {
+      setShowMoreInfo(true);
+      return;
+    }
+    
     setPendingAction('lecture');
     setConfirmDialogOpen(true);
   };
 
   const handleConfirm = () => {
+    // Mark this challenge as having shown a dialog
+    setSeenDialogs(prev => new Set(prev).add(challenge.name));
+    
     if (pendingAction === 'solution') {
-      setShowSolution(!showSolution);
+      setShowSolution(true);
     } else if (pendingAction === 'lecture') {
-      setShowMoreInfo(!showMoreInfo);
+      setShowMoreInfo(true);
     }
     setConfirmDialogOpen(false);
     setPendingAction(null);
