@@ -1,7 +1,6 @@
 
 import { useState, useEffect } from 'react';
 import { getSystemStatus, getChallenges } from '../api/aquariumApi';
-import { toast } from "@/components/ui/sonner";
 
 export interface SystemStatus {
   environmental_monitoring: string;
@@ -52,7 +51,6 @@ export const useSystemStatus = () => {
       } catch (err) {
         setError('Failed to fetch system status');
         setLoading(false);
-        toast.error("Failed to fetch system status");
       }
     };
 
@@ -80,7 +78,6 @@ export const useChallenges = () => {
       } catch (err) {
         setError('Failed to fetch challenges');
         setLoading(false);
-        toast.error("Failed to fetch challenges");
       }
     };
 

@@ -36,10 +36,19 @@ const SystemStatus: React.FC = () => {
   return (
     <Card className="mb-8 shadow-lg orange-glow">
       <CardHeader className="bg-orange-500 bg-opacity-90 text-white">
-        <CardTitle className="flex items-center gap-2">
-          <CheckCircle className="h-5 w-5" />
-          System Status
-        </CardTitle>
+        <div className="flex justify-between items-center">
+          <CardTitle className="flex items-center gap-2">
+            <CheckCircle className="h-5 w-5" />
+            System Status
+          </CardTitle>
+          
+          {status && (
+            <div className="flex items-center gap-2">
+              <span className="text-sm font-medium">Overall Status:</span>
+              <StatusBadge status={status.overall_status} />
+            </div>
+          )}
+        </div>
       </CardHeader>
       <CardContent className="pt-6">
         {loading && (
@@ -85,12 +94,6 @@ const SystemStatus: React.FC = () => {
               <div className="flex justify-between items-center">
                 <h3 className="font-medium text-white">Analysis Engine</h3>
                 <StatusBadge status={status.analysis_engine} />
-              </div>
-            </div>
-            <div className="p-4 rounded-md border-2 border-orange-500/30 bg-gray-900 hover:border-orange-400 transition-all duration-300 shadow-md">
-              <div className="flex justify-between items-center">
-                <h3 className="font-medium text-white">Overall Status</h3>
-                <StatusBadge status={status.overall_status} />
               </div>
             </div>
             <div className="col-span-1 md:col-span-3 text-xs text-gray-300 text-right">

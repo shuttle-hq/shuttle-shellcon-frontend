@@ -6,7 +6,6 @@ import { Skeleton } from "@/components/ui/skeleton";
 import Challenge from './Challenge';
 import { useChallenges, useSystemStatus } from '../hooks/useAquariumData';
 import { AlertCircle, List, Trophy, Loader2 } from "lucide-react";
-import { toast } from "@/components/ui/sonner";
 
 const ChallengeList: React.FC = () => {
   const { challengesData, loading, error } = useChallenges();
@@ -80,8 +79,6 @@ const ChallengeList: React.FC = () => {
         
         return updatedStatus;
       });
-      
-      toast.success("System status updated based on your solution");
     }
   };
 

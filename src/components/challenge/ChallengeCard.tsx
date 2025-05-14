@@ -10,7 +10,6 @@ import SolutionSection from './SolutionSection';
 import LectureSection from './LectureSection';
 import ConfirmationDialog from './ConfirmationDialog';
 import { validateChallengeSolution } from '../../api/aquariumApi';
-import { toast } from "@/components/ui/sonner";
 
 interface ChallengeCardProps {
   challenge: ChallengeType;
@@ -78,7 +77,7 @@ const ChallengeCard: React.FC<ChallengeCardProps> = ({ challenge, onSystemStatus
 
   const handleValidateSolution = async () => {
     if (!challenge.id) {
-      toast.error("Challenge ID is missing. Cannot validate solution.");
+      setValidationMessage("Challenge ID is missing. Cannot validate solution.");
       return;
     }
 
@@ -90,7 +89,6 @@ const ChallengeCard: React.FC<ChallengeCardProps> = ({ challenge, onSystemStatus
       
       // Update UI based on response
       if (response.implementation && response.implementation.valid) {
-        toast.success(response.implementation.message || "Your solution is correct!");
         setValidationMessage(response.implementation.message);
         
         // If the challenge status was updated, we can update it locally too
@@ -104,12 +102,11 @@ const ChallengeCard: React.FC<ChallengeCardProps> = ({ challenge, onSystemStatus
           onSystemStatusUpdate(response.system_status);
         }
       } else {
-        toast.error(response.implementation?.message || "Your solution is not yet correct.");
         setValidationMessage(response.implementation?.message);
       }
     } catch (error) {
       console.error("Error validating solution:", error);
-      toast.error("Failed to validate your solution. Please try again.");
+      setValidationMessage("Failed to validate your solution. Please try again.");
     } finally {
       setIsValidating(false);
     }
