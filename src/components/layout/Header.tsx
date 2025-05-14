@@ -12,7 +12,7 @@ const Header: React.FC = () => {
             className="h-12 w-auto"
           />
           <div>
-            <h1 className="text-2xl md:text-3xl shellcon-main-title">
+            <h1 className="shellcon-main-title text-2xl md:text-3xl">
               ShellCon Smart Aquarium System Control Panel
             </h1>
             <p className="text-gray-300 text-sm md:text-base">
