@@ -18,10 +18,14 @@ export default defineConfig(({ mode }) => ({
       '/api/species': 'http://localhost:8001',
       '/api/feeding': 'http://localhost:8001',
 
-      // aqua-brain endpoints
+      // aqua-brain endpoints - fix for the challenges endpoint
       '/api/system': 'http://localhost:8002',
       '/api/analysis': 'http://localhost:8002',
-      '/api/challenges': 'http://localhost:8002',
+      '/api/challenges': {
+        target: 'http://localhost:8002',
+        changeOrigin: true,
+        secure: false
+      }
     }
   },
   plugins: [

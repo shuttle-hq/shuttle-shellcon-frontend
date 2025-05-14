@@ -24,10 +24,11 @@ export const getChallenges = async () => {
   }
 };
 
-// Updated function to validate challenge solution using POST method
+// Updated function to validate challenge solution with proper error handling
 export const validateChallengeSolution = async (challengeId: number) => {
   try {
-    // Using POST method instead of GET to avoid the 405 Method Not Allowed error
+    console.log(`Validating solution for challenge ${challengeId} at ${API_URLS.AQUA_BRAIN}/challenges/${challengeId}/solution`);
+    
     const response = await fetch(`${API_URLS.AQUA_BRAIN}/challenges/${challengeId}/solution`, {
       method: 'POST',
       headers: {
@@ -37,7 +38,11 @@ export const validateChallengeSolution = async (challengeId: number) => {
       body: JSON.stringify({})
     });
     
-    if (!response.ok) throw new Error(`Failed to validate solution for challenge ${challengeId}`);
+    if (!response.ok) {
+      console.error(`Server returned status ${response.status} for challenge validation`);
+      throw new Error(`Failed to validate solution for challenge ${challengeId}`);
+    }
+    
     return await response.json();
   } catch (error) {
     console.error(`Error validating solution for challenge ${challengeId}:`, error);

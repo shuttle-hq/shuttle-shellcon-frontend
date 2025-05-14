@@ -17,13 +17,13 @@ interface ChallengeCardProps {
 }
 
 const ChallengeCard: React.FC<ChallengeCardProps> = ({ challenge, onSystemStatusUpdate }) => {
-  const [showSolution, setShowSolution] = useState(false);
-  const [showHint, setShowHint] = useState(false);
-  const [showMoreInfo, setShowMoreInfo] = useState(false);
-  const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
+  const [showSolution, setShowSolution] = useState<boolean>(false);
+  const [showHint, setShowHint] = useState<boolean>(false);
+  const [showMoreInfo, setShowMoreInfo] = useState<boolean>(false);
+  const [confirmDialogOpen, setConfirmDialogOpen] = useState<boolean>(false);
   const [pendingAction, setPendingAction] = useState<'solution' | 'lecture' | null>(null);
   const [seenDialogs, setSeenDialogs] = useState<Set<string>>(new Set());
-  const [isValidating, setIsValidating] = useState(false);
+  const [isValidating, setIsValidating] = useState<boolean>(false);
   const [validationMessage, setValidationMessage] = useState<string | null>(null);
 
   const isSolved = challenge.status === 'solved';
@@ -85,6 +85,7 @@ const ChallengeCard: React.FC<ChallengeCardProps> = ({ challenge, onSystemStatus
     setValidationMessage(null);
     
     try {
+      console.log(`Attempting to validate challenge ${challenge.id}`);
       const response = await validateChallengeSolution(challenge.id);
       
       // Update UI based on response
@@ -102,7 +103,7 @@ const ChallengeCard: React.FC<ChallengeCardProps> = ({ challenge, onSystemStatus
           onSystemStatusUpdate(response.system_status);
         }
       } else {
-        setValidationMessage(response.implementation?.message);
+        setValidationMessage(response.implementation?.message || "Validation failed with no specific message");
       }
     } catch (error) {
       console.error("Error validating solution:", error);
@@ -124,6 +125,21 @@ const ChallengeCard: React.FC<ChallengeCardProps> = ({ challenge, onSystemStatus
     setConfirmDialogOpen(false);
     setPendingAction(null);
   };
+
+  const isSolved = challenge.status === 'solved';
+
+  // Check if this challenge has a solution with code and lecture
+  const hasSolution = challenge.solution && (
+    typeof challenge.solution === 'string' || 
+    (typeof challenge.solution === 'object' && 
+      (challenge.solution.code || challenge.solution.explanation))
+  );
+  
+  const hasHint = !!challenge.hint;
+  
+  const hasLecture = challenge.solution && 
+    typeof challenge.solution === 'object' && 
+    !!challenge.solution.lecture;
 
   return (
     <>
