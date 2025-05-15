@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Challenge } from '../../../hooks/useAquariumData';
 import { API_BASE_URL } from '../../../config/api';
@@ -17,7 +16,7 @@ export const useChallengeCard = ({ challenge, onSystemStatusUpdate }: UseChallen
   const solutionConfirmKey = `shellcon_solution_confirmed_${challengeId}`;
   const lectureConfirmKey = `shellcon_lecture_confirmed_${challengeId}`;
   
-  // Initialize state from localStorage when available
+  // Initialize state for showing various sections
   const [showSolution, setShowSolution] = useState<boolean>(false);
   const [showHint, setShowHint] = useState<boolean>(false);
   const [showMoreInfo, setShowMoreInfo] = useState<boolean>(false);
@@ -48,11 +47,13 @@ export const useChallengeCard = ({ challenge, onSystemStatusUpdate }: UseChallen
 
   const handleSolutionRequest = () => {
     if (showSolution) {
+      // If solution is already visible, hide it
       setShowSolution(false);
     } else if (confirmedActions.solution) {
       // If user has already confirmed this action before, show solution without confirmation
       setShowSolution(true);
     } else {
+      // Otherwise, show the confirmation dialog
       setPendingAction("solution");
       setConfirmDialogOpen(true);
     }
@@ -60,11 +61,13 @@ export const useChallengeCard = ({ challenge, onSystemStatusUpdate }: UseChallen
 
   const handleLectureRequest = () => {
     if (showMoreInfo) {
+      // If lecture is already visible, hide it
       setShowMoreInfo(false);
     } else if (confirmedActions.lecture) {
       // If user has already confirmed this action before, show lecture without confirmation
       setShowMoreInfo(true);
     } else {
+      // Otherwise, show the confirmation dialog
       setPendingAction("lecture");
       setConfirmDialogOpen(true);
     }
