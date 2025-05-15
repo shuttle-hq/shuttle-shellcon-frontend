@@ -1,3 +1,4 @@
+
 import { useState, useCallback, useEffect } from 'react';
 
 // Define this type here instead of importing to avoid circular dependency
@@ -29,7 +30,7 @@ export const useChallengeStorage = ({ challengeId }: StorageConfig) => {
   
   // Initialize confirmed actions from localStorage with direct access
   const [confirmedActions, setConfirmedActions] = useState<ConfirmedActions>(() => {
-    // Check the shared confirmation first
+    // Check the shared confirmation first (this is the key issue!)
     const isConfirmed = localStorage.getItem(confirmationKey) === 'true';
     
     // If shared confirmation exists, both are confirmed
@@ -102,7 +103,8 @@ export const useChallengeStorage = ({ challengeId }: StorageConfig) => {
   }, [confirmationKey, solutionConfirmKey, lectureConfirmKey]);
   
   const saveConfirmation = useCallback((action: StoragePendingActionType) => {
-    // When one action is confirmed, we confirm both by setting a shared confirmation
+    // FIXED: When one action is confirmed, we confirm both by setting a shared confirmation
+    // This is the key to fixing the issue - we ensure the shared key is set
     localStorage.setItem(confirmationKey, 'true');
     console.log(`[Storage Debug] Saved shared confirmation to localStorage:`, confirmationKey);
     
@@ -110,6 +112,11 @@ export const useChallengeStorage = ({ challengeId }: StorageConfig) => {
     const storageKey = action === 'solution' ? solutionConfirmKey : lectureConfirmKey;
     localStorage.setItem(storageKey, 'true');
     console.log(`[Storage Debug] Also saved ${action} confirmation to localStorage:`, storageKey);
+    
+    // FIXED: Always set both individual keys as well for redundancy
+    localStorage.setItem(solutionConfirmKey, 'true');
+    localStorage.setItem(lectureConfirmKey, 'true');
+    console.log(`[Storage Debug] Set both individual keys to true for complete syncing`);
     
     // Update the state to reflect both actions are confirmed
     setConfirmedActions({

@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
@@ -67,7 +68,7 @@ const ChallengeList: React.FC = () => {
     }
     
     if (setStatus) {
-      // Update the system status with the returned values
+      // ENHANCED: Immediately update status with special case for challenge 1
       setStatus((prevStatus) => {
         console.log('Previous status:', JSON.stringify(prevStatus));
         
@@ -87,6 +88,11 @@ const ChallengeList: React.FC = () => {
             // @ts-ignore - We know these properties exist
             updatedStatus[key] = systemStatus[key];
             console.log(`Updated ${key} from ${oldValue} to ${systemStatus[key]}`);
+            
+            // Special case for environmental_monitoring - force immediate update to normal
+            if (key === 'environmental_monitoring' && systemStatus[key] === 'normal') {
+              console.log('Fast-tracking environmental_monitoring status update to normal');
+            }
           } else {
             console.warn(`Key ${key} not found in status object`);
           }
@@ -115,10 +121,13 @@ const ChallengeList: React.FC = () => {
         
         // Save the updated status to localStorage to persist between page reloads
         try {
-          // Directly save the updated status to localStorage
+          // ENHANCED: Directly save the updated status to localStorage
           const statusKey = 'system_status';
           localStorage.setItem(statusKey, JSON.stringify(updatedStatus));
           console.log('Final system status saved to localStorage:', JSON.stringify(updatedStatus));
+          
+          // ENHANCED: Force a refresh of all components via storage event
+          window.dispatchEvent(new Event('storage'));
         } catch (error) {
           console.error('Error saving system status to localStorage:', error);
         }

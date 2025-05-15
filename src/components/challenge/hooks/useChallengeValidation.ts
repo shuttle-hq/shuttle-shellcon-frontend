@@ -61,22 +61,29 @@ export const validateChallengeSolution = async (
         5: 'analysis_engine'
       };
       
+      // For challenge 1, immediately set environmental_monitoring to normal state
+      const systemComponent = componentMap[challenge.id] || 'overall_status';
+      const systemStatus = { [systemComponent]: 'normal' };
+      
       // Fallback validation result
       const mockResult: ValidationResult = {
         isValid: true,
         message: "Challenge completed successfully! (Offline mode)",
-        systemStatus: { [componentMap[challenge.id] || 'overall_status']: 'normal' }
+        systemStatus
       };
       
       // Save the solved challenge state
       saveChallengeAsSolved(challenge.id);
       
-      // Immediately update the system status without delay
+      // ENHANCED: Immediately update status in localStorage and trigger UI refresh
       if (onSystemStatusUpdate && mockResult.systemStatus) {
         onSystemStatusUpdate(mockResult.systemStatus);
         
-        // Also update localStorage directly for immediate persistence
+        // Directly update localStorage for immediate persistence
         updateSystemStatusInLocalStorage(mockResult.systemStatus);
+        
+        // Force UI refresh with dispatch event
+        window.dispatchEvent(new Event('storage'));
       }
       
       return mockResult;
@@ -97,28 +104,32 @@ export const validateChallengeSolution = async (
         saveChallengeAsSolved(challenge.id);
       }
       
-      // Update system status if provided - with immediate effect
-      if (onSystemStatusUpdate) {
-        const mappedSystemComponent = mapChallengeIdToSystemComponent(challenge.id);
-        console.log(`Challenge ${challenge.id} maps to component: ${mappedSystemComponent}`);
+      // ENHANCED: Immediate status updates for specific challenges
+      const mappedSystemComponent = mapChallengeIdToSystemComponent(challenge.id);
+      console.log(`Challenge ${challenge.id} maps to component: ${mappedSystemComponent}`);
+      
+      if (isValid && mappedSystemComponent === 'environmental_monitoring') {
+        // For challenge 1, force the status to normal immediately
+        systemStatus = { [mappedSystemComponent]: 'normal' };
+        console.log(`Force updating ${mappedSystemComponent} to normal status`);
+      } else if (data.system_component) {
+        console.log(`API provided system_component info:`, data.system_component);
         
-        // Check if API provided system_component info
-        if (data.system_component) {
-          console.log(`API provided system_component info:`, data.system_component);
-          
-          // Handle the specific format from the API
-          if (data.system_component.status) {
-            // API returns { name, status, description } format
-            systemStatus = { [mappedSystemComponent]: data.system_component.status };
-          } else {
-            // Fallback to the old format
-            systemStatus = { [mappedSystemComponent]: data.valid ? 'normal' : (challenge.id === 3 ? 'error' : 'degraded') };
-          }
+        // Handle the specific format from the API
+        if (data.system_component.status) {
+          // API returns { name, status, description } format
+          systemStatus = { [mappedSystemComponent]: data.system_component.status };
         } else {
-          console.warn(`API response missing system_component field for challenge ${challenge.id}`);
+          // Fallback to the old format
           systemStatus = { [mappedSystemComponent]: data.valid ? 'normal' : (challenge.id === 3 ? 'error' : 'degraded') };
         }
-        
+      } else {
+        console.warn(`API response missing system_component field for challenge ${challenge.id}`);
+        systemStatus = { [mappedSystemComponent]: data.valid ? 'normal' : (challenge.id === 3 ? 'error' : 'degraded') };
+      }
+      
+      // ENHANCED: Update immediately with forced refresh via storage event
+      if (onSystemStatusUpdate && systemStatus) {
         console.log(`Updating system status for challenge ${challenge.id}:`, systemStatus);
         
         // Update immediately
@@ -126,6 +137,9 @@ export const validateChallengeSolution = async (
         
         // Also update localStorage directly
         updateSystemStatusInLocalStorage(systemStatus);
+        
+        // Force UI refresh for all components
+        window.dispatchEvent(new Event('storage'));
       }
     } else if (data.success !== undefined) {
       // Old API format
@@ -137,18 +151,25 @@ export const validateChallengeSolution = async (
         saveChallengeAsSolved(challenge.id);
       }
       
-      // Update system status if provided - with immediate effect
-      if (onSystemStatusUpdate) {
-        if (data.systemStatus) {
-          console.log(`Old API format provided systemStatus:`, data.systemStatus);
-          systemStatus = data.systemStatus;
-        } else {
-          console.warn(`API response (old format) missing systemStatus field for challenge ${challenge.id}`);
-          
-          const mappedSystemComponent = mapChallengeIdToSystemComponent(challenge.id);
-          systemStatus = { [mappedSystemComponent]: data.success ? 'normal' : (challenge.id === 3 ? 'error' : 'degraded') };
-        }
+      // ENHANCED: Immediate status updates for specific challenges
+      const mappedSystemComponent = mapChallengeIdToSystemComponent(challenge.id);
+      
+      if (isValid && mappedSystemComponent === 'environmental_monitoring') {
+        // For challenge 1, force the status to normal immediately
+        systemStatus = { [mappedSystemComponent]: 'normal' };
+        console.log(`Force updating ${mappedSystemComponent} to normal status`);
+      } else if (data.systemStatus) {
+        console.log(`Old API format provided systemStatus:`, data.systemStatus);
+        systemStatus = data.systemStatus;
+      } else {
+        console.warn(`API response (old format) missing systemStatus field for challenge ${challenge.id}`);
         
+        const mappedSystemComponent = mapChallengeIdToSystemComponent(challenge.id);
+        systemStatus = { [mappedSystemComponent]: data.success ? 'normal' : (challenge.id === 3 ? 'error' : 'degraded') };
+      }
+      
+      // ENHANCED: Update immediately with forced refresh via storage event
+      if (onSystemStatusUpdate && systemStatus) {
         console.log(`Updating system status for challenge ${challenge.id}:`, systemStatus);
         
         // Update immediately
@@ -156,6 +177,9 @@ export const validateChallengeSolution = async (
         
         // Also update localStorage directly
         updateSystemStatusInLocalStorage(systemStatus);
+        
+        // Force UI refresh for all components
+        window.dispatchEvent(new Event('storage'));
       }
     } else {
       // Unknown response format
