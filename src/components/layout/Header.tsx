@@ -12,8 +12,10 @@ const Header: React.FC = () => {
             className="h-12 w-auto"
           />
           <div>
-            <h1 className="shellcon-main-title text-2xl md:text-3xl">
-              ShellCon Smart Aquarium System Control Panel
+            <h1 className="font-sans text-2xl md:text-3xl font-extrabold tracking-tight">
+              <span className="bg-gradient-to-r from-orange-500 via-orange-400 to-amber-300 bg-clip-text text-transparent">
+                ShellCon Smart Aquarium System Control Panel
+              </span>
             </h1>
             <p className="text-gray-300 text-sm md:text-base">
               Real-time monitoring and optimization challenges for the world's premier crustacean convention
