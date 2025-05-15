@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useRef } from 'react';
 import { Challenge } from '../../../hooks/useAquariumData';
 import { validateChallengeSolution } from './useChallengeValidation';
@@ -37,7 +36,7 @@ export const useChallengeCard = ({ challenge, onSystemStatusUpdate }: UseChallen
     challenge.status === 'solved'
   );
 
-  // Check if the challenge has a solution property
+  // Check if challenge has a solution property
   const hasSolution = Boolean(challenge.solution);
   
   // Check if the challenge has a hint property
@@ -52,18 +51,12 @@ export const useChallengeCard = ({ challenge, onSystemStatusUpdate }: UseChallen
     if (isFirstRender.current) {
       isFirstRender.current = false;
       
-      // Direct check of localStorage values for this challenge
-      const solutionConfirmKey = `shellcon_solution_confirmed_${challengeId}`;
-      const lectureConfirmKey = `shellcon_lecture_confirmed_${challengeId}`;
-      
-      const directSolutionValue = localStorage.getItem(solutionConfirmKey) === 'true';
-      const directLectureValue = localStorage.getItem(lectureConfirmKey) === 'true';
-      
+      // Debug output to verify confirmation state
       console.log(`[Card Debug] Challenge ${challengeId} - initial check:`);
       console.log(`  - solution confirmed (state):`, confirmedActions.solution);
       console.log(`  - lecture confirmed (state):`, confirmedActions.lecture);
-      console.log(`  - solution confirmed (localStorage):`, directSolutionValue);
-      console.log(`  - lecture confirmed (localStorage):`, directLectureValue);
+      console.log(`  - shared confirmation key:`, `shellcon_confirmed_${challengeId}`);
+      console.log(`  - shared confirmation value:`, localStorage.getItem(`shellcon_confirmed_${challengeId}`));
     }
   }, [challengeId, confirmedActions]);
 
@@ -72,14 +65,8 @@ export const useChallengeCard = ({ challenge, onSystemStatusUpdate }: UseChallen
       // If solution is already visible, hide it
       setShowSolution(false);
     } else {
-      // Check localStorage directly to ensure we have the latest value
-      const solutionConfirmKey = `shellcon_solution_confirmed_${challengeId}`;
-      const isConfirmed = localStorage.getItem(solutionConfirmKey) === 'true';
-      
-      console.log(`[useChallengeCard] Solution request - isConfirmed from localStorage:`, isConfirmed);
-      console.log(`[useChallengeCard] Solution request - confirmedActions.solution:`, confirmedActions.solution);
-      
-      if (isConfirmed || confirmedActions.solution) {
+      // Direct check from the current state
+      if (confirmedActions.solution) {
         // If user has already confirmed this action before, show solution without confirmation
         console.log(`[useChallengeCard] Solution was confirmed before, showing without dialog`);
         setShowSolution(true);
@@ -97,14 +84,8 @@ export const useChallengeCard = ({ challenge, onSystemStatusUpdate }: UseChallen
       // If lecture is already visible, hide it
       setShowMoreInfo(false);
     } else {
-      // Check localStorage directly to ensure we have the latest value
-      const lectureConfirmKey = `shellcon_lecture_confirmed_${challengeId}`;
-      const isConfirmed = localStorage.getItem(lectureConfirmKey) === 'true';
-      
-      console.log(`[useChallengeCard] Lecture request - isConfirmed from localStorage:`, isConfirmed);
-      console.log(`[useChallengeCard] Lecture request - confirmedActions.lecture:`, confirmedActions.lecture);
-      
-      if (isConfirmed || confirmedActions.lecture) {
+      // Direct check from the current state
+      if (confirmedActions.lecture) {
         // If user has already confirmed this action before, show lecture without confirmation
         console.log(`[useChallengeCard] Lecture was confirmed before, showing without dialog`);
         setShowMoreInfo(true);
@@ -135,7 +116,7 @@ export const useChallengeCard = ({ challenge, onSystemStatusUpdate }: UseChallen
     
     console.log(`[useChallengeCard] Handling confirmation for:`, pendingAction);
     
-    // Call saveConfirmation to update localStorage and state
+    // Call saveConfirmation to update localStorage and state for BOTH actions
     saveConfirmation(pendingAction);
     
     // Update the UI based on the action
