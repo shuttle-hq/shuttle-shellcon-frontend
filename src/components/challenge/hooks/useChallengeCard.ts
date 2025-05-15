@@ -12,6 +12,12 @@ interface UseChallengeCardProps {
 }
 
 export const useChallengeCard = ({ challenge, onSystemStatusUpdate }: UseChallengeCardProps) => {
+  // Create unique keys for this challenge's localStorage items
+  const challengeId = challenge.id.toString();
+  const solutionConfirmKey = `shellcon_solution_confirmed_${challengeId}`;
+  const lectureConfirmKey = `shellcon_lecture_confirmed_${challengeId}`;
+  
+  // Initialize state from localStorage when available
   const [showSolution, setShowSolution] = useState<boolean>(false);
   const [showHint, setShowHint] = useState<boolean>(false);
   const [showMoreInfo, setShowMoreInfo] = useState<boolean>(false);
@@ -19,6 +25,12 @@ export const useChallengeCard = ({ challenge, onSystemStatusUpdate }: UseChallen
   const [pendingAction, setPendingAction] = useState<PendingActionType | null>(null);
   const [isValidating, setIsValidating] = useState<boolean>(false);
   const [validationMessage, setValidationMessage] = useState<string | null>(null);
+  
+  // Initialize confirmed actions from localStorage
+  const [confirmedActions, setConfirmedActions] = useState<Record<PendingActionType, boolean>>(() => ({
+    solution: localStorage.getItem(solutionConfirmKey) === 'true',
+    lecture: localStorage.getItem(lectureConfirmKey) === 'true'
+  }));
   
   // Check if challenge is already solved
   const [isSolved, setIsSolved] = useState<boolean>(
@@ -37,6 +49,9 @@ export const useChallengeCard = ({ challenge, onSystemStatusUpdate }: UseChallen
   const handleSolutionRequest = () => {
     if (showSolution) {
       setShowSolution(false);
+    } else if (confirmedActions.solution) {
+      // If user has already confirmed this action before, show solution without confirmation
+      setShowSolution(true);
     } else {
       setPendingAction("solution");
       setConfirmDialogOpen(true);
@@ -46,6 +61,9 @@ export const useChallengeCard = ({ challenge, onSystemStatusUpdate }: UseChallen
   const handleLectureRequest = () => {
     if (showMoreInfo) {
       setShowMoreInfo(false);
+    } else if (confirmedActions.lecture) {
+      // If user has already confirmed this action before, show lecture without confirmation
+      setShowMoreInfo(true);
     } else {
       setPendingAction("lecture");
       setConfirmDialogOpen(true);
@@ -57,32 +75,92 @@ export const useChallengeCard = ({ challenge, onSystemStatusUpdate }: UseChallen
       setIsValidating(true);
       setValidationMessage(null);
 
-      // Simulate API call to validate solution
-      const response = await fetch(`${API_BASE_URL}/validate/${challenge.name}`);
-      const data = await response.json();
+      // Get the correct validation endpoint from the challenge object
+      let validationEndpoint = `/api/challenges/${challenge.id}/validate`;
+      
+      // Use the validation_endpoint from the challenge if available
+      if (challenge.validation_endpoint && challenge.validation_endpoint.url) {
+        // If the URL starts with '/', it's a relative path
+        if (challenge.validation_endpoint.url.startsWith('/')) {
+          validationEndpoint = challenge.validation_endpoint.url;
+        } else {
+          // Otherwise, prepend the API base URL
+          validationEndpoint = `${API_BASE_URL}/${challenge.validation_endpoint.url}`;
+        }
+      }
+      
+      console.log(`Validating challenge ${challenge.id} using endpoint: ${validationEndpoint}`);
+      
+      // Call the validation endpoint
+      const response = await fetch(validationEndpoint);
+      
+      // Check if response is ok before trying to parse JSON
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error(`Validation error (${response.status}):`, errorText);
+        throw new Error(`Server responded with status: ${response.status}`);
+      }
+      
+      // Safely parse the JSON response
+      let data;
+      try {
+        data = await response.json();
+      } catch (jsonError) {
+        console.error('Error parsing JSON response:', jsonError);
+        throw new Error('Invalid response format from server');
+      }
 
-      if (data.success) {
-        setIsSolved(true);
-        setValidationMessage(data.message || "Great job! Challenge successfully solved!");
+      // Check if the response has the expected format
+      if (data.valid !== undefined) {
+        // New API format
+        setIsSolved(data.valid);
+        setValidationMessage(data.message || (data.valid ? "Great job! Challenge successfully solved!" : "Validation failed. Please check your implementation."));
         
-        // Show success toast
-        toast({
-          title: "Challenge Completed!",
-          description: `You've successfully solved: ${challenge.title}`,
-          variant: "default"
-        });
+        // Only show success toast, not failure toast
+        if (data.valid) {
+          toast({
+            title: "Challenge Completed!",
+            description: `You've successfully solved: ${challenge.title}`,
+            variant: "default"
+          });
+        }
+        
+        // Update system status if provided
+        if (onSystemStatusUpdate && data.system_component) {
+          onSystemStatusUpdate({
+            [`${challenge.id === 1 ? 'environmental_monitoring' : 
+               challenge.id === 2 ? 'species_database' : 
+               challenge.id === 3 ? 'feeding_system' : 
+               challenge.id === 4 ? 'remote_monitoring' : 
+               challenge.id === 5 ? 'analysis_engine' : ''}`]: data.valid ? 'normal' : (challenge.id === 3 ? 'error' : 'degraded')
+          });
+        }
+      } else if (data.success !== undefined) {
+        // Old API format
+        setIsSolved(data.success);
+        setValidationMessage(data.message || (data.success ? "Great job! Challenge successfully solved!" : "Validation failed. Please check your implementation."));
+        
+        // Only show success toast, not failure toast
+        if (data.success) {
+          toast({
+            title: "Challenge Completed!",
+            description: `You've successfully solved: ${challenge.title}`,
+            variant: "default"
+          });
+        }
         
         // Update system status if provided
         if (onSystemStatusUpdate && data.systemStatus) {
           onSystemStatusUpdate(data.systemStatus);
         }
       } else {
-        setValidationMessage(data.message || "Validation failed. Please check your implementation.");
+        // Unknown response format
+        console.warn('Unknown validation response format:', data);
+        setValidationMessage("Received an unexpected response format from the server.");
         
-        // Show warning toast
         toast({
-          title: "Validation Failed",
-          description: data.message || "Your solution doesn't quite match what we're looking for.",
+          title: "Validation Error",
+          description: "Received an unexpected response format from the server.",
           variant: "destructive"
         });
       }
@@ -104,8 +182,14 @@ export const useChallengeCard = ({ challenge, onSystemStatusUpdate }: UseChallen
   const handleConfirm = () => {
     if (pendingAction === "solution") {
       setShowSolution(true);
+      // Mark solution action as confirmed and save to localStorage
+      setConfirmedActions(prev => ({ ...prev, solution: true }));
+      localStorage.setItem(solutionConfirmKey, 'true');
     } else if (pendingAction === "lecture") {
       setShowMoreInfo(true);
+      // Mark lecture action as confirmed and save to localStorage
+      setConfirmedActions(prev => ({ ...prev, lecture: true }));
+      localStorage.setItem(lectureConfirmKey, 'true');
     }
     setConfirmDialogOpen(false);
     setPendingAction(null);

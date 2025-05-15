@@ -29,6 +29,12 @@ export interface Challenge {
     explanation?: string;
     lecture?: string;
   };
+  // Validation endpoint information
+  validation_endpoint?: {
+    url: string;
+    method: string;
+    service: string;
+  };
 }
 
 export interface ChallengesResponse {
