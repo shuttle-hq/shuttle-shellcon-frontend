@@ -10,11 +10,11 @@ const Footer: React.FC = () => {
           Shuttle
         </a>
       </div>
-      <div className="mascot-footer w-16 h-16 right-4 absolute top-1/2 transform -translate-y-1/2">
+      <div className="mascot-footer w-16 h-16 right-4 absolute top-1/2 transform -translate-y-1/2 flex items-center justify-center">
         <img 
           src="/lovable-uploads/4adfa2cc-cffd-4463-8069-939658c80853.png" 
           alt="Ferris the Crab" 
-          className="h-full w-full"
+          className="max-h-full max-w-full object-contain"
         />
       </div>
     </footer>
