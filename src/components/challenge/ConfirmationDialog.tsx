@@ -33,15 +33,15 @@ const ConfirmationDialog: React.FC<ConfirmationDialogProps> = ({
           <AlertDialogTitle className="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 via-purple-400 to-orange-400 text-left">
             {pendingAction === 'solution' ? '🦀 View Solution? 🦀' : '🦀 View Information? 🦀'}
           </AlertDialogTitle>
-          <AlertDialogDescription className="text-gray-300">
+          <AlertDialogDescription asChild>
             {pendingAction === 'solution' ? (
-              <div>
+              <p className="text-gray-300">
                 <span className="font-medium text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-purple-400">Ferris says:</span> Looking at the solution will prevent you from experiencing the challenge of solving this problem yourself. Are you sure you want to continue?
-              </div>
+              </p>
             ) : (
-              <div>
+              <p className="text-gray-300">
                 <span className="font-medium text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-purple-400">Ferris says:</span> This section contains educational information about the concepts involved in this challenge. It may contain hints or explanations that could make the challenge easier.
-              </div>
+              </p>
             )}
           </AlertDialogDescription>
         </AlertDialogHeader>

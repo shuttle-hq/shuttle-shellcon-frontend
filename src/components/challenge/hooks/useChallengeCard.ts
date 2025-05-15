@@ -1,9 +1,10 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Challenge } from '../../../hooks/useAquariumData';
 import { validateChallengeSolution } from './useChallengeValidation';
-import { useChallengeStorage, ConfirmedActions } from './useChallengeStorage';
+import { useChallengeStorage, ConfirmedActions, StoragePendingActionType } from './useChallengeStorage';
 
-export type PendingActionType = "solution" | "lecture";
+// Re-export the type from storage to avoid circular dependency
+export type PendingActionType = StoragePendingActionType;
 
 interface UseChallengeCardProps {
   challenge: Challenge;
@@ -11,6 +12,9 @@ interface UseChallengeCardProps {
 }
 
 export const useChallengeCard = ({ challenge, onSystemStatusUpdate }: UseChallengeCardProps) => {
+  // Create a ref to track if this is the first render
+  const isFirstRender = useRef(true);
+  
   // Initialize state for showing various sections
   const [showSolution, setShowSolution] = useState<boolean>(false);
   const [showHint, setShowHint] = useState<boolean>(false);
@@ -41,25 +45,46 @@ export const useChallengeCard = ({ challenge, onSystemStatusUpdate }: UseChallen
   // Check if the solution has a lecture property (for More Information)
   const hasLecture = typeof challenge.solution === 'object' && Boolean(challenge.solution.lecture);
 
-  // Log values for debugging
+  // Force update the localStorage values on component mount
   useEffect(() => {
-    console.log(`Challenge ${challengeId} - solution confirmed:`, confirmedActions.solution);
-    console.log(`Challenge ${challengeId} - lecture confirmed:`, confirmedActions.lecture);
-  }, [confirmedActions, challengeId]);
+    // This will run only once when the component mounts
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      
+      // Direct check of localStorage values for this challenge
+      const solutionConfirmKey = `shellcon_solution_confirmed_${challengeId}`;
+      const lectureConfirmKey = `shellcon_lecture_confirmed_${challengeId}`;
+      
+      const directSolutionValue = localStorage.getItem(solutionConfirmKey) === 'true';
+      const directLectureValue = localStorage.getItem(lectureConfirmKey) === 'true';
+      
+      console.log(`[Card Debug] Challenge ${challengeId} - initial check:`);
+      console.log(`  - solution confirmed (state):`, confirmedActions.solution);
+      console.log(`  - lecture confirmed (state):`, confirmedActions.lecture);
+      console.log(`  - solution confirmed (localStorage):`, directSolutionValue);
+      console.log(`  - lecture confirmed (localStorage):`, directLectureValue);
+    }
+  }, []);
 
   const handleSolutionRequest = () => {
     if (showSolution) {
       // If solution is already visible, hide it
       setShowSolution(false);
-    } else if (confirmedActions.solution) {
-      // If user has already confirmed this action before, show solution without confirmation
-      console.log(`Solution was confirmed before, showing without dialog`);
-      setShowSolution(true);
     } else {
-      // Otherwise, show the confirmation dialog
-      console.log(`Solution not confirmed, showing dialog`);
-      setPendingAction("solution");
-      setConfirmDialogOpen(true);
+      // Check localStorage directly to ensure we have the latest value
+      const solutionConfirmKey = `shellcon_solution_confirmed_${challengeId}`;
+      const isConfirmed = localStorage.getItem(solutionConfirmKey) === 'true';
+      
+      if (isConfirmed) {
+        // If user has already confirmed this action before, show solution without confirmation
+        console.log(`[useChallengeCard] Solution was confirmed before, showing without dialog`);
+        setShowSolution(true);
+      } else {
+        // Otherwise, show the confirmation dialog
+        console.log(`[useChallengeCard] Solution not confirmed, showing dialog`);
+        setPendingAction("solution");
+        setConfirmDialogOpen(true);
+      }
     }
   };
 
@@ -67,15 +92,21 @@ export const useChallengeCard = ({ challenge, onSystemStatusUpdate }: UseChallen
     if (showMoreInfo) {
       // If lecture is already visible, hide it
       setShowMoreInfo(false);
-    } else if (confirmedActions.lecture) {
-      // If user has already confirmed this action before, show lecture without confirmation
-      console.log(`Lecture was confirmed before, showing without dialog`);
-      setShowMoreInfo(true);
     } else {
-      // Otherwise, show the confirmation dialog
-      console.log(`Lecture not confirmed, showing dialog`);
-      setPendingAction("lecture");
-      setConfirmDialogOpen(true);
+      // Check localStorage directly to ensure we have the latest value
+      const lectureConfirmKey = `shellcon_lecture_confirmed_${challengeId}`;
+      const isConfirmed = localStorage.getItem(lectureConfirmKey) === 'true';
+      
+      if (isConfirmed) {
+        // If user has already confirmed this action before, show lecture without confirmation
+        console.log(`[useChallengeCard] Lecture was confirmed before, showing without dialog`);
+        setShowMoreInfo(true);
+      } else {
+        // Otherwise, show the confirmation dialog
+        console.log(`[useChallengeCard] Lecture not confirmed, showing dialog`);
+        setPendingAction("lecture");
+        setConfirmDialogOpen(true);
+      }
     }
   };
 
@@ -94,6 +125,15 @@ export const useChallengeCard = ({ challenge, onSystemStatusUpdate }: UseChallen
 
   const handleConfirm = () => {
     if (!pendingAction) return;
+    
+    // Get the appropriate localStorage key
+    const storageKey = pendingAction === "solution" 
+      ? `shellcon_solution_confirmed_${challengeId}`
+      : `shellcon_lecture_confirmed_${challengeId}`;
+    
+    // Set the value directly in localStorage first
+    localStorage.setItem(storageKey, 'true');
+    console.log(`[useChallengeCard] Direct localStorage save for ${pendingAction}:`, storageKey);
     
     if (pendingAction === "solution") {
       setShowSolution(true);

@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Challenge as ChallengeType } from '../../hooks/useAquariumData';
 import { Check, X } from "lucide-react";
@@ -18,25 +18,99 @@ interface ChallengeCardProps {
 }
 
 const ChallengeCard: React.FC<ChallengeCardProps> = ({ challenge, onSystemStatusUpdate }) => {
-  const {
-    showSolution,
-    showHint,
-    showMoreInfo,
-    confirmDialogOpen,
-    pendingAction,
-    isValidating,
-    validationMessage,
-    isSolved,
-    hasSolution,
-    hasHint,
-    hasLecture,
-    setShowHint,
-    setConfirmDialogOpen,
-    handleSolutionRequest,
-    handleLectureRequest,
-    handleValidateSolution,
-    handleConfirm
-  } = useChallengeCard({ challenge, onSystemStatusUpdate });
+  // State for showing content
+  const [showSolution, setShowSolution] = useState(false);
+  const [showHint, setShowHint] = useState(false);
+  const [showMoreInfo, setShowMoreInfo] = useState(false);
+  const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
+  const [pendingAction, setPendingAction] = useState<PendingActionType | null>(null);
+  const [isValidating, setIsValidating] = useState(false);
+  const [validationMessage, setValidationMessage] = useState<string | null>(null);
+  const [isSolved, setIsSolved] = useState(challenge.status === 'solved');
+  
+  // Track if the user has seen any dialog for this challenge
+  const [seenDialogs, setSeenDialogs] = useState<Set<string>>(new Set());
+  
+  // Check if challenge has these properties
+  const hasSolution = Boolean(challenge.solution);
+  const hasHint = Boolean(challenge.hint);
+  const hasLecture = typeof challenge.solution === 'object' && Boolean(challenge.solution.lecture);
+  
+  // Handle solution request
+  const handleSolutionRequest = () => {
+    // If solution is already visible, hide it
+    if (showSolution) {
+      setShowSolution(false);
+      return;
+    }
+    
+    // If user has already seen a dialog for this challenge, don't show it again
+    if (seenDialogs.has(challenge.name)) {
+      setShowSolution(true);
+      return;
+    }
+    
+    // Otherwise, show the confirmation dialog
+    setPendingAction('solution');
+    setConfirmDialogOpen(true);
+  };
+  
+  // Handle lecture request
+  const handleLectureRequest = () => {
+    // If lecture is already visible, hide it
+    if (showMoreInfo) {
+      setShowMoreInfo(false);
+      return;
+    }
+    
+    // If user has already seen a dialog for this challenge, don't show it again
+    if (seenDialogs.has(challenge.name)) {
+      setShowMoreInfo(true);
+      return;
+    }
+    
+    // Otherwise, show the confirmation dialog
+    setPendingAction('lecture');
+    setConfirmDialogOpen(true);
+  };
+  
+  // Handle validation
+  const handleValidateSolution = async () => {
+    setIsValidating(true);
+    setValidationMessage(null);
+    
+    try {
+      const { validateChallengeSolution } = await import('./hooks/useChallengeValidation');
+      const result = await validateChallengeSolution(challenge, onSystemStatusUpdate);
+      setIsSolved(result.isValid);
+      setValidationMessage(result.message);
+    } catch (error) {
+      console.error('Error validating solution:', error);
+      setValidationMessage('Error validating solution. Please try again later.');
+    } finally {
+      setIsValidating(false);
+    }
+  };
+  
+  // Handle confirmation
+  const handleConfirm = () => {
+    if (!pendingAction) return;
+    
+    // Mark this challenge as having shown a dialog
+    setSeenDialogs(prev => new Set(prev).add(challenge.name));
+    
+    // Save to localStorage for persistence
+    if (pendingAction === 'solution') {
+      localStorage.setItem(`shellcon_solution_confirmed_${challenge.id}`, 'true');
+      setShowSolution(true);
+    } else if (pendingAction === 'lecture') {
+      localStorage.setItem(`shellcon_lecture_confirmed_${challenge.id}`, 'true');
+      setShowMoreInfo(true);
+    }
+    
+    setConfirmDialogOpen(false);
+    setPendingAction(null);
+  };
 
   return (
     <>
@@ -118,7 +192,11 @@ const ChallengeCard: React.FC<ChallengeCardProps> = ({ challenge, onSystemStatus
       {/* Confirmation Dialog */}
       <ConfirmationDialog 
         isOpen={confirmDialogOpen} 
-        onOpenChange={setConfirmDialogOpen} 
+        onOpenChange={(open) => {
+          if (!open) {
+            setConfirmDialogOpen(false);
+          }
+        }} 
         onConfirm={handleConfirm} 
         pendingAction={pendingAction as PendingActionType} 
       />
