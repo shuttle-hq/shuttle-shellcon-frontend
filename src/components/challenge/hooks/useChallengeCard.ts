@@ -186,13 +186,13 @@ export const useChallengeCard = ({ challenge, onSystemStatusUpdate }: UseChallen
     if (pendingAction === "solution") {
       setShowSolution(true);
       // Mark solution action as confirmed and save to localStorage
-      setConfirmedActions(prev => ({ ...prev, solution: true }));
       localStorage.setItem(solutionConfirmKey, 'true');
+      setConfirmedActions(prev => ({ ...prev, solution: true }));
     } else if (pendingAction === "lecture") {
       setShowMoreInfo(true);
       // Mark lecture action as confirmed and save to localStorage
-      setConfirmedActions(prev => ({ ...prev, lecture: true }));
       localStorage.setItem(lectureConfirmKey, 'true');
+      setConfirmedActions(prev => ({ ...prev, lecture: true }));
     }
     setConfirmDialogOpen(false);
     setPendingAction(null);
