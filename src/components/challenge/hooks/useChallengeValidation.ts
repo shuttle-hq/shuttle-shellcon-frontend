@@ -1,7 +1,5 @@
-
 import { Challenge } from '../../../hooks/useAquariumData';
 import { API_BASE_URL } from '../../../config/api';
-import { toast } from '../../../hooks/use-toast';
 
 interface ValidationResult {
   isValid: boolean;
@@ -77,14 +75,6 @@ export const validateChallengeSolution = async (
         onSystemStatusUpdate(mockResult.systemStatus);
       }
       
-      // Show success toast
-      toast({
-        title: "Challenge Completed!",
-        description: `You've successfully solved: ${challenge.title}`,
-        variant: "success",
-        duration: 5000
-      });
-      
       return mockResult;
     }
 
@@ -101,14 +91,6 @@ export const validateChallengeSolution = async (
       if (data.valid) {
         // Save the solved state to localStorage
         saveChallengeAsSolved(challenge.id);
-        
-        // Show success toast
-        toast({
-          title: "Challenge Completed!",
-          description: `You've successfully solved: ${challenge.title}`,
-          variant: "success",
-          duration: 5000
-        });
       }
       
       // Update system status if provided
@@ -144,14 +126,6 @@ export const validateChallengeSolution = async (
       if (data.success) {
         // Save the solved state to localStorage
         saveChallengeAsSolved(challenge.id);
-        
-        // Show success toast
-        toast({
-          title: "Challenge Completed!",
-          description: `You've successfully solved: ${challenge.title}`,
-          variant: "success",
-          duration: 5000
-        });
       }
       
       // Update system status if provided
@@ -173,25 +147,12 @@ export const validateChallengeSolution = async (
       // Unknown response format
       console.warn('Unknown validation response format:', data);
       message = "Received an unexpected response format from the server.";
-      
-      toast({
-        title: "Validation Error",
-        description: "Received an unexpected response format from the server.",
-        variant: "destructive"
-      });
     }
 
     return { isValid, message, systemStatus };
   } catch (error) {
     console.error('Error validating solution:', error);
     
-    // Show error toast
-    toast({
-      title: "Validation Error",
-      description: "We encountered a technical issue checking your solution.",
-      variant: "destructive"
-    });
-
     return { 
       isValid: false, 
       message: "Error validating solution. Please try again later."

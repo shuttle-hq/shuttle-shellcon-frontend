@@ -10,7 +10,6 @@ import LectureSection from './LectureSection';
 import ConfirmationDialog from './ConfirmationDialog';
 import ValidationMessage from './ValidationMessage';
 import { useChallengeCard, PendingActionType } from './hooks/useChallengeCard';
-import { toast } from '@/hooks/use-toast';
 
 interface ChallengeCardProps {
   challenge: ChallengeType;
