@@ -6,6 +6,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import Challenge from './Challenge';
 import { useChallenges, useSystemStatus } from '../hooks/useAquariumData';
 import { AlertCircle, List, Trophy, Loader2, Target } from "lucide-react";
+import { toast } from '@/hooks/use-toast';
 
 const ChallengeList: React.FC = () => {
   const { challengesData, loading, error } = useChallenges();
@@ -96,32 +97,31 @@ const ChallengeList: React.FC = () => {
         // Save the updated status to localStorage to persist between page reloads
         try {
           // Get the current saved status or initialize a new one
-          const savedStatusStr = localStorage.getItem('system_status');
+          const statusKey = 'system_status';
+          const savedStatusStr = localStorage.getItem(statusKey);
           console.log('Current localStorage system_status:', savedStatusStr);
           
           const savedStatus = savedStatusStr ? JSON.parse(savedStatusStr) : { ...updatedStatus };
-          console.log('Parsed saved status:', JSON.stringify(savedStatus));
           
           // Update with the new values
           Object.keys(systemStatus).forEach(key => {
             if (key in savedStatus) {
-              const oldValue = savedStatus[key];
               savedStatus[key] = systemStatus[key];
-              console.log(`Updated localStorage ${key} from ${oldValue} to ${systemStatus[key]}`);
-            } else {
-              console.warn(`Key ${key} not found in localStorage status object`);
+              console.log(`Updated localStorage ${key} to ${systemStatus[key]}`);
             }
           });
           
           // Save back to localStorage
-          localStorage.setItem('system_status', JSON.stringify(savedStatus));
+          localStorage.setItem(statusKey, JSON.stringify(savedStatus));
           console.log('Final system status saved to localStorage:', JSON.stringify(savedStatus));
           
-          // Force a reload of the page to ensure the status is updated
-          console.log('Forcing reload to apply status update');
-          setTimeout(() => {
-            window.location.reload();
-          }, 1000);
+          // Show a toast notification to confirm system update
+          toast({
+            title: "System Updated",
+            description: `System component status has been updated successfully`,
+            variant: "success",
+            duration: 3000
+          });
         } catch (error) {
           console.error('Error saving system status to localStorage:', error);
         }

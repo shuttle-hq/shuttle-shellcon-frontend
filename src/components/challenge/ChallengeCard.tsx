@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Challenge as ChallengeType } from '../../hooks/useAquariumData';
@@ -11,6 +10,7 @@ import LectureSection from './LectureSection';
 import ConfirmationDialog from './ConfirmationDialog';
 import ValidationMessage from './ValidationMessage';
 import { useChallengeCard, PendingActionType } from './hooks/useChallengeCard';
+import { toast } from '@/hooks/use-toast';
 
 interface ChallengeCardProps {
   challenge: ChallengeType;
@@ -18,140 +18,60 @@ interface ChallengeCardProps {
 }
 
 const ChallengeCard: React.FC<ChallengeCardProps> = ({ challenge, onSystemStatusUpdate }) => {
-  // State for showing content
-  const [showSolution, setShowSolution] = useState(false);
-  const [showHint, setShowHint] = useState(false);
-  const [showMoreInfo, setShowMoreInfo] = useState(false);
-  const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
-  const [pendingAction, setPendingAction] = useState<PendingActionType | null>(null);
-  const [isValidating, setIsValidating] = useState(false);
-  const [validationMessage, setValidationMessage] = useState<string | null>(null);
-  
-  // State for challenge status - check localStorage first
-  const solvedChallengesKey = 'solved_challenges';
-  const [isSolved, setIsSolved] = useState(() => {
-    // Check if this challenge is marked as solved in localStorage
-    const solvedChallenges = localStorage.getItem(solvedChallengesKey);
-    if (solvedChallenges) {
-      try {
-        const parsedChallenges = JSON.parse(solvedChallenges);
-        if (Array.isArray(parsedChallenges) && parsedChallenges.includes(challenge.id)) {
-          return true;
-        }
-      } catch (e) {
-        console.error('Error parsing solved challenges from localStorage:', e);
-      }
-    }
-    // Fall back to the challenge status from props
-    return challenge.status === 'solved';
+  const {
+    showSolution,
+    showHint,
+    showMoreInfo,
+    confirmDialogOpen,
+    pendingAction,
+    isValidating,
+    validationMessage,
+    isSolved,
+    hasSolution,
+    hasHint,
+    hasLecture,
+    setShowSolution,
+    setShowHint,
+    setShowMoreInfo,
+    setConfirmDialogOpen,
+    setPendingAction,
+    handleSolutionRequest,
+    handleLectureRequest,
+    handleValidateSolution,
+    handleConfirm
+  } = useChallengeCard({ 
+    challenge, 
+    onSystemStatusUpdate 
   });
+
+  // Keep track of the last validation message for persistence
+  const [persistentMessage, setPersistentMessage] = useState<string | null>(null);
   
-  // Track if the user has seen any dialog for this challenge
-  const [seenDialogs, setSeenDialogs] = useState<Set<string>>(new Set());
-  
-  // Check if challenge has these properties
-  const hasSolution = Boolean(challenge.solution);
-  const hasHint = Boolean(challenge.hint);
-  const hasLecture = typeof challenge.solution === 'object' && Boolean(challenge.solution.lecture);
-  
-  // Handle solution request
-  const handleSolutionRequest = () => {
-    // If solution is already visible, hide it
-    if (showSolution) {
-      setShowSolution(false);
-      return;
-    }
-    
-    // If user has already seen a dialog for this challenge, don't show it again
-    if (seenDialogs.has(challenge.name)) {
-      setShowSolution(true);
-      return;
-    }
-    
-    // Otherwise, show the confirmation dialog
-    setPendingAction('solution');
-    setConfirmDialogOpen(true);
-  };
-  
-  // Handle lecture request
-  const handleLectureRequest = () => {
-    // If lecture is already visible, hide it
-    if (showMoreInfo) {
-      setShowMoreInfo(false);
-      return;
-    }
-    
-    // If user has already seen a dialog for this challenge, don't show it again
-    if (seenDialogs.has(challenge.name)) {
-      setShowMoreInfo(true);
-      return;
-    }
-    
-    // Otherwise, show the confirmation dialog
-    setPendingAction('lecture');
-    setConfirmDialogOpen(true);
-  };
-  
-  // Handle validation
-  const handleValidateSolution = async () => {
-    setIsValidating(true);
-    setValidationMessage(null);
-    
-    try {
-      const { validateChallengeSolution } = await import('./hooks/useChallengeValidation');
-      const result = await validateChallengeSolution(challenge, onSystemStatusUpdate);
+  // When validation message changes and is not null, update persistent message
+  useEffect(() => {
+    if (validationMessage) {
+      setPersistentMessage(validationMessage);
       
-      // If validation was successful, update the solved state
-      if (result.isValid) {
-        setIsSolved(true);
-        
-        // Persist the solved state to localStorage
-        try {
-          // Get the current solved challenges or initialize an empty array
-          const solvedChallengesStr = localStorage.getItem(solvedChallengesKey);
-          const solvedChallenges = solvedChallengesStr ? JSON.parse(solvedChallengesStr) : [];
-          
-          // Add this challenge ID if it's not already in the array
-          if (!solvedChallenges.includes(challenge.id)) {
-            solvedChallenges.push(challenge.id);
-            localStorage.setItem(solvedChallengesKey, JSON.stringify(solvedChallenges));
-            console.log(`Challenge ${challenge.id} marked as solved in localStorage`);
-          }
-        } catch (storageError) {
-          console.error('Error saving solved challenge to localStorage:', storageError);
-        }
-      } else {
-        setIsSolved(false);
+      // Store the validation message for this challenge in localStorage
+      try {
+        localStorage.setItem(`validation_message_${challenge.id}`, validationMessage);
+      } catch (error) {
+        console.error('Error saving validation message to localStorage:', error);
       }
-      
-      setValidationMessage(result.message);
-    } catch (error) {
-      console.error('Error validating solution:', error);
-      setValidationMessage('Error validating solution. Please try again later.');
-    } finally {
-      setIsValidating(false);
     }
-  };
+  }, [validationMessage, challenge.id]);
   
-  // Handle confirmation
-  const handleConfirm = () => {
-    if (!pendingAction) return;
-    
-    // Mark this challenge as having shown a dialog
-    setSeenDialogs(prev => new Set(prev).add(challenge.name));
-    
-    // Save to localStorage for persistence
-    if (pendingAction === 'solution') {
-      localStorage.setItem(`shellcon_solution_confirmed_${challenge.id}`, 'true');
-      setShowSolution(true);
-    } else if (pendingAction === 'lecture') {
-      localStorage.setItem(`shellcon_lecture_confirmed_${challenge.id}`, 'true');
-      setShowMoreInfo(true);
+  // On initial load, check for saved validation message
+  useEffect(() => {
+    try {
+      const savedMessage = localStorage.getItem(`validation_message_${challenge.id}`);
+      if (savedMessage) {
+        setPersistentMessage(savedMessage);
+      }
+    } catch (error) {
+      console.error('Error loading validation message from localStorage:', error);
     }
-    
-    setConfirmDialogOpen(false);
-    setPendingAction(null);
-  };
+  }, [challenge.id]);
 
   return (
     <>
@@ -190,7 +110,10 @@ const ChallengeCard: React.FC<ChallengeCardProps> = ({ challenge, onSystemStatus
           />
 
           {/* Validation Message */}
-          <ValidationMessage message={validationMessage} isSolved={isSolved} />
+          <ValidationMessage 
+            message={validationMessage || persistentMessage} 
+            isSolved={isSolved} 
+          />
 
           {/* Action Buttons */}
           <ActionButtons 

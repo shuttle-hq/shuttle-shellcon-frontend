@@ -40,22 +40,37 @@ export const useChallengeStorage = ({ challengeId }: StorageConfig) => {
   });
   
   // Use effect to sync state with localStorage when the component mounts or keys change
-  // Only run this effect once when the component mounts to avoid loops
   useEffect(() => {
-    const solutionConfirmed = localStorage.getItem(solutionConfirmKey) === 'true';
-    const lectureConfirmed = localStorage.getItem(lectureConfirmKey) === 'true';
-    
-    console.log(`[Storage Debug] useEffect - solution confirmed:`, solutionConfirmed);
-    console.log(`[Storage Debug] useEffect - lecture confirmed:`, lectureConfirmed);
-    
-    // Only update state if the values are different to avoid unnecessary re-renders
-    if (solutionConfirmed !== confirmedActions.solution || lectureConfirmed !== confirmedActions.lecture) {
-      setConfirmedActions({
-        solution: solutionConfirmed,
-        lecture: lectureConfirmed
+    const syncStorage = () => {
+      const solutionConfirmed = localStorage.getItem(solutionConfirmKey) === 'true';
+      const lectureConfirmed = localStorage.getItem(lectureConfirmKey) === 'true';
+      
+      console.log(`[Storage Debug] Storage sync - solution confirmed:`, solutionConfirmed);
+      console.log(`[Storage Debug] Storage sync - lecture confirmed:`, lectureConfirmed);
+      
+      // Only update state if the values are different
+      setConfirmedActions(prev => {
+        if (prev.solution !== solutionConfirmed || prev.lecture !== lectureConfirmed) {
+          return {
+            solution: solutionConfirmed,
+            lecture: lectureConfirmed
+          };
+        }
+        return prev;
       });
-    }
-  }, [solutionConfirmKey, lectureConfirmKey]); // Remove confirmedActions from dependency array
+    };
+
+    // Initial sync when component mounts
+    syncStorage();
+    
+    // Set up event listener for storage changes from other tabs/windows
+    window.addEventListener('storage', syncStorage);
+    
+    // Cleanup event listener
+    return () => {
+      window.removeEventListener('storage', syncStorage);
+    };
+  }, [solutionConfirmKey, lectureConfirmKey]);
   
   const saveConfirmation = useCallback((action: StoragePendingActionType) => {
     const storageKey = action === 'solution' ? solutionConfirmKey : lectureConfirmKey;
