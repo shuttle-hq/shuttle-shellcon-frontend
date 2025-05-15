@@ -1,5 +1,5 @@
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { PendingActionType } from './useChallengeCard';
 
 interface StorageConfig {
@@ -21,6 +21,15 @@ export const useChallengeStorage = ({ challengeId }: StorageConfig) => {
     solution: localStorage.getItem(solutionConfirmKey) === 'true',
     lecture: localStorage.getItem(lectureConfirmKey) === 'true'
   }));
+  
+  // Use effect to ensure localStorage values are read after component mounts
+  useEffect(() => {
+    // This ensures we're reading the latest values from localStorage
+    setConfirmedActions({
+      solution: localStorage.getItem(solutionConfirmKey) === 'true',
+      lecture: localStorage.getItem(lectureConfirmKey) === 'true'
+    });
+  }, [solutionConfirmKey, lectureConfirmKey]);
   
   const saveConfirmation = useCallback((action: PendingActionType) => {
     const storageKey = action === 'solution' ? solutionConfirmKey : lectureConfirmKey;

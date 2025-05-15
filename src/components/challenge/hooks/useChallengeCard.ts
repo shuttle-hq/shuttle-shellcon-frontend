@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Challenge } from '../../../hooks/useAquariumData';
 import { validateChallengeSolution } from './useChallengeValidation';
 import { useChallengeStorage, ConfirmedActions } from './useChallengeStorage';
@@ -41,15 +41,23 @@ export const useChallengeCard = ({ challenge, onSystemStatusUpdate }: UseChallen
   // Check if the solution has a lecture property (for More Information)
   const hasLecture = typeof challenge.solution === 'object' && Boolean(challenge.solution.lecture);
 
+  // Log values for debugging
+  useEffect(() => {
+    console.log(`Challenge ${challengeId} - solution confirmed:`, confirmedActions.solution);
+    console.log(`Challenge ${challengeId} - lecture confirmed:`, confirmedActions.lecture);
+  }, [confirmedActions, challengeId]);
+
   const handleSolutionRequest = () => {
     if (showSolution) {
       // If solution is already visible, hide it
       setShowSolution(false);
     } else if (confirmedActions.solution) {
       // If user has already confirmed this action before, show solution without confirmation
+      console.log(`Solution was confirmed before, showing without dialog`);
       setShowSolution(true);
     } else {
       // Otherwise, show the confirmation dialog
+      console.log(`Solution not confirmed, showing dialog`);
       setPendingAction("solution");
       setConfirmDialogOpen(true);
     }
@@ -61,9 +69,11 @@ export const useChallengeCard = ({ challenge, onSystemStatusUpdate }: UseChallen
       setShowMoreInfo(false);
     } else if (confirmedActions.lecture) {
       // If user has already confirmed this action before, show lecture without confirmation
+      console.log(`Lecture was confirmed before, showing without dialog`);
       setShowMoreInfo(true);
     } else {
       // Otherwise, show the confirmation dialog
+      console.log(`Lecture not confirmed, showing dialog`);
       setPendingAction("lecture");
       setConfirmDialogOpen(true);
     }

@@ -1,6 +1,5 @@
 
 import React from 'react';
-import { FerrisWheel } from 'lucide-react';
 
 const Footer: React.FC = () => {
   return (
@@ -12,7 +11,11 @@ const Footer: React.FC = () => {
         </a>
       </div>
       <div className="mascot-footer w-16 h-16 right-4 absolute top-1/2 transform -translate-y-1/2">
-        <FerrisWheel className="h-full w-full text-orange-400" />
+        <img 
+          src="/lovable-uploads/4adfa2cc-cffd-4463-8069-939658c80853.png" 
+          alt="Ferris the Crab" 
+          className="h-full w-full"
+        />
       </div>
     </footer>
   );
