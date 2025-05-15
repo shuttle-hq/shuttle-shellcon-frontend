@@ -1,3 +1,4 @@
+
 import { Challenge } from '../../../hooks/useAquariumData';
 import { API_BASE_URL } from '../../../config/api';
 
@@ -70,9 +71,12 @@ export const validateChallengeSolution = async (
       // Save the solved challenge state
       saveChallengeAsSolved(challenge.id);
       
-      // If we have a system status update callback, use it
+      // Immediately update the system status without delay
       if (onSystemStatusUpdate && mockResult.systemStatus) {
         onSystemStatusUpdate(mockResult.systemStatus);
+        
+        // Also update localStorage directly for immediate persistence
+        updateSystemStatusInLocalStorage(mockResult.systemStatus);
       }
       
       return mockResult;
@@ -93,7 +97,7 @@ export const validateChallengeSolution = async (
         saveChallengeAsSolved(challenge.id);
       }
       
-      // Update system status if provided
+      // Update system status if provided - with immediate effect
       if (onSystemStatusUpdate) {
         const mappedSystemComponent = mapChallengeIdToSystemComponent(challenge.id);
         console.log(`Challenge ${challenge.id} maps to component: ${mappedSystemComponent}`);
@@ -116,7 +120,12 @@ export const validateChallengeSolution = async (
         }
         
         console.log(`Updating system status for challenge ${challenge.id}:`, systemStatus);
+        
+        // Update immediately
         onSystemStatusUpdate(systemStatus);
+        
+        // Also update localStorage directly
+        updateSystemStatusInLocalStorage(systemStatus);
       }
     } else if (data.success !== undefined) {
       // Old API format
@@ -128,7 +137,7 @@ export const validateChallengeSolution = async (
         saveChallengeAsSolved(challenge.id);
       }
       
-      // Update system status if provided
+      // Update system status if provided - with immediate effect
       if (onSystemStatusUpdate) {
         if (data.systemStatus) {
           console.log(`Old API format provided systemStatus:`, data.systemStatus);
@@ -141,7 +150,12 @@ export const validateChallengeSolution = async (
         }
         
         console.log(`Updating system status for challenge ${challenge.id}:`, systemStatus);
+        
+        // Update immediately
         onSystemStatusUpdate(systemStatus);
+        
+        // Also update localStorage directly
+        updateSystemStatusInLocalStorage(systemStatus);
       }
     } else {
       // Unknown response format
@@ -197,5 +211,57 @@ const saveChallengeAsSolved = (challengeId: number | string) => {
     }
   } catch (error) {
     console.error('Error saving solved challenge to localStorage:', error);
+  }
+};
+
+// Helper function to directly update system status in localStorage
+const updateSystemStatusInLocalStorage = (newStatusValues: Record<string, string>) => {
+  try {
+    const statusKey = 'system_status';
+    const savedStatusStr = localStorage.getItem(statusKey);
+    
+    if (!savedStatusStr) {
+      console.warn('No existing system status in localStorage to update');
+      return;
+    }
+    
+    const currentStatus = JSON.parse(savedStatusStr);
+    const updatedStatus = { ...currentStatus };
+    
+    // Update specific system components
+    Object.keys(newStatusValues).forEach(key => {
+      if (key in updatedStatus) {
+        const oldValue = updatedStatus[key];
+        updatedStatus[key] = newStatusValues[key];
+        console.log(`Direct localStorage update: ${key} from ${oldValue} to ${newStatusValues[key]}`);
+      }
+    });
+    
+    // Calculate new overall status based on component statuses
+    const componentStatuses = [
+      updatedStatus.environmental_monitoring,
+      updatedStatus.species_database,
+      updatedStatus.feeding_system,
+      updatedStatus.remote_monitoring,
+      updatedStatus.analysis_engine
+    ];
+    
+    // Update the overall status based on the worst component status
+    if (componentStatuses.includes('error')) {
+      updatedStatus.overall_status = 'critical';
+    } else if (componentStatuses.includes('degraded')) {
+      updatedStatus.overall_status = 'degraded';
+    } else {
+      updatedStatus.overall_status = 'normal';
+    }
+    
+    // Update timestamp
+    updatedStatus.last_updated = new Date().toISOString();
+    
+    // Save back to localStorage
+    localStorage.setItem(statusKey, JSON.stringify(updatedStatus));
+    console.log('System status updated directly in localStorage:', updatedStatus);
+  } catch (error) {
+    console.error('Error updating system status in localStorage:', error);
   }
 };

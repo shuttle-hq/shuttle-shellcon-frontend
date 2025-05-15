@@ -23,7 +23,8 @@ export const useChallengeStorage = ({ challengeId }: StorageConfig) => {
   
   // Debug localStorage values
   console.log(`[Storage Debug] Challenge ${normalizedId} solution key:`, solutionConfirmKey);
-  console.log(`[Storage Debug] Current localStorage value:`, localStorage.getItem(solutionConfirmKey));
+  console.log(`[Storage Debug] Current localStorage value for solution:`, localStorage.getItem(solutionConfirmKey));
+  console.log(`[Storage Debug] Current localStorage value for lecture:`, localStorage.getItem(lectureConfirmKey));
   
   // Initialize confirmed actions from localStorage with direct access
   const [confirmedActions, setConfirmedActions] = useState<ConfirmedActions>(() => {
@@ -75,16 +76,24 @@ export const useChallengeStorage = ({ challengeId }: StorageConfig) => {
   const saveConfirmation = useCallback((action: StoragePendingActionType) => {
     const storageKey = action === 'solution' ? solutionConfirmKey : lectureConfirmKey;
     
-    // Set the value in localStorage
+    // Set the value in localStorage directly first
     localStorage.setItem(storageKey, 'true');
     console.log(`[Storage Debug] Saved ${action} confirmation to localStorage:`, storageKey);
+    console.log(`[Storage Debug] New localStorage value:`, localStorage.getItem(storageKey));
     
-    // Update the state
+    // Then update the state to match
     setConfirmedActions(prev => {
       const newState = { ...prev, [action]: true };
       console.log(`[Storage Debug] Updated state:`, newState);
       return newState;
     });
+    
+    // Force a storage event for synchronization across components
+    try {
+      window.dispatchEvent(new Event('storage'));
+    } catch (e) {
+      console.error('Failed to dispatch storage event:', e);
+    }
   }, [solutionConfirmKey, lectureConfirmKey]);
 
   return {

@@ -1,3 +1,4 @@
+
 import { useState, useEffect, useRef } from 'react';
 import { Challenge } from '../../../hooks/useAquariumData';
 import { validateChallengeSolution } from './useChallengeValidation';
@@ -64,7 +65,7 @@ export const useChallengeCard = ({ challenge, onSystemStatusUpdate }: UseChallen
       console.log(`  - solution confirmed (localStorage):`, directSolutionValue);
       console.log(`  - lecture confirmed (localStorage):`, directLectureValue);
     }
-  }, []);
+  }, [challengeId, confirmedActions]);
 
   const handleSolutionRequest = () => {
     if (showSolution) {
@@ -75,7 +76,10 @@ export const useChallengeCard = ({ challenge, onSystemStatusUpdate }: UseChallen
       const solutionConfirmKey = `shellcon_solution_confirmed_${challengeId}`;
       const isConfirmed = localStorage.getItem(solutionConfirmKey) === 'true';
       
-      if (isConfirmed) {
+      console.log(`[useChallengeCard] Solution request - isConfirmed from localStorage:`, isConfirmed);
+      console.log(`[useChallengeCard] Solution request - confirmedActions.solution:`, confirmedActions.solution);
+      
+      if (isConfirmed || confirmedActions.solution) {
         // If user has already confirmed this action before, show solution without confirmation
         console.log(`[useChallengeCard] Solution was confirmed before, showing without dialog`);
         setShowSolution(true);
@@ -97,7 +101,10 @@ export const useChallengeCard = ({ challenge, onSystemStatusUpdate }: UseChallen
       const lectureConfirmKey = `shellcon_lecture_confirmed_${challengeId}`;
       const isConfirmed = localStorage.getItem(lectureConfirmKey) === 'true';
       
-      if (isConfirmed) {
+      console.log(`[useChallengeCard] Lecture request - isConfirmed from localStorage:`, isConfirmed);
+      console.log(`[useChallengeCard] Lecture request - confirmedActions.lecture:`, confirmedActions.lecture);
+      
+      if (isConfirmed || confirmedActions.lecture) {
         // If user has already confirmed this action before, show lecture without confirmation
         console.log(`[useChallengeCard] Lecture was confirmed before, showing without dialog`);
         setShowMoreInfo(true);
@@ -126,21 +133,16 @@ export const useChallengeCard = ({ challenge, onSystemStatusUpdate }: UseChallen
   const handleConfirm = () => {
     if (!pendingAction) return;
     
-    // Get the appropriate localStorage key
-    const storageKey = pendingAction === "solution" 
-      ? `shellcon_solution_confirmed_${challengeId}`
-      : `shellcon_lecture_confirmed_${challengeId}`;
+    console.log(`[useChallengeCard] Handling confirmation for:`, pendingAction);
     
-    // Set the value directly in localStorage first
-    localStorage.setItem(storageKey, 'true');
-    console.log(`[useChallengeCard] Direct localStorage save for ${pendingAction}:`, storageKey);
+    // Call saveConfirmation to update localStorage and state
+    saveConfirmation(pendingAction);
     
+    // Update the UI based on the action
     if (pendingAction === "solution") {
       setShowSolution(true);
-      saveConfirmation("solution");
     } else if (pendingAction === "lecture") {
       setShowMoreInfo(true);
-      saveConfirmation("lecture");
     }
     
     setConfirmDialogOpen(false);

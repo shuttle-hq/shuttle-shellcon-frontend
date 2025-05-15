@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
@@ -6,7 +5,6 @@ import { Skeleton } from "@/components/ui/skeleton";
 import Challenge from './Challenge';
 import { useChallenges, useSystemStatus } from '../hooks/useAquariumData';
 import { AlertCircle, List, Trophy, Loader2, Target } from "lucide-react";
-import { toast } from '@/hooks/use-toast';
 
 const ChallengeList: React.FC = () => {
   const { challengesData, loading, error } = useChallenges();
@@ -94,34 +92,33 @@ const ChallengeList: React.FC = () => {
           }
         });
         
+        // Calculate new overall status based on component statuses
+        const componentStatuses = [
+          updatedStatus.environmental_monitoring,
+          updatedStatus.species_database,
+          updatedStatus.feeding_system,
+          updatedStatus.remote_monitoring,
+          updatedStatus.analysis_engine
+        ];
+        
+        // Update the overall status based on the worst component status
+        if (componentStatuses.includes('error')) {
+          updatedStatus.overall_status = 'critical';
+        } else if (componentStatuses.includes('degraded')) {
+          updatedStatus.overall_status = 'degraded';
+        } else {
+          updatedStatus.overall_status = 'normal';
+        }
+        
+        // Update timestamp
+        updatedStatus.last_updated = new Date().toISOString();
+        
         // Save the updated status to localStorage to persist between page reloads
         try {
-          // Get the current saved status or initialize a new one
+          // Directly save the updated status to localStorage
           const statusKey = 'system_status';
-          const savedStatusStr = localStorage.getItem(statusKey);
-          console.log('Current localStorage system_status:', savedStatusStr);
-          
-          const savedStatus = savedStatusStr ? JSON.parse(savedStatusStr) : { ...updatedStatus };
-          
-          // Update with the new values
-          Object.keys(systemStatus).forEach(key => {
-            if (key in savedStatus) {
-              savedStatus[key] = systemStatus[key];
-              console.log(`Updated localStorage ${key} to ${systemStatus[key]}`);
-            }
-          });
-          
-          // Save back to localStorage
-          localStorage.setItem(statusKey, JSON.stringify(savedStatus));
-          console.log('Final system status saved to localStorage:', JSON.stringify(savedStatus));
-          
-          // Show a toast notification to confirm system update
-          toast({
-            title: "System Updated",
-            description: `System component status has been updated successfully`,
-            variant: "success",
-            duration: 3000
-          });
+          localStorage.setItem(statusKey, JSON.stringify(updatedStatus));
+          console.log('Final system status saved to localStorage:', JSON.stringify(updatedStatus));
         } catch (error) {
           console.error('Error saving system status to localStorage:', error);
         }
