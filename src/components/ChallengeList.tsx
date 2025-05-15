@@ -60,25 +60,77 @@ const ChallengeList: React.FC = () => {
   const total = challengesData?.total || fallbackChallenges.length;
 
   const handleSystemStatusUpdate = (systemStatus: any) => {
-    if (!systemStatus) return;
+    console.log('handleSystemStatusUpdate called with:', JSON.stringify(systemStatus));
+    
+    if (!systemStatus) {
+      console.warn('System status update called with null or undefined value');
+      return;
+    }
     
     if (setStatus) {
       // Update the system status with the returned values
       setStatus((prevStatus) => {
-        if (!prevStatus) return prevStatus;
+        console.log('Previous status:', JSON.stringify(prevStatus));
+        
+        if (!prevStatus) {
+          console.warn('Previous status is null, cannot update');
+          return prevStatus;
+        }
         
         const updatedStatus = { ...prevStatus };
         
         // Update specific system components if provided
         Object.keys(systemStatus).forEach(key => {
+          console.log(`Checking key: ${key}, exists in status: ${key in updatedStatus}`);
+          
           if (key in updatedStatus) {
+            const oldValue = updatedStatus[key];
             // @ts-ignore - We know these properties exist
             updatedStatus[key] = systemStatus[key];
+            console.log(`Updated ${key} from ${oldValue} to ${systemStatus[key]}`);
+          } else {
+            console.warn(`Key ${key} not found in status object`);
           }
         });
         
+        // Save the updated status to localStorage to persist between page reloads
+        try {
+          // Get the current saved status or initialize a new one
+          const savedStatusStr = localStorage.getItem('system_status');
+          console.log('Current localStorage system_status:', savedStatusStr);
+          
+          const savedStatus = savedStatusStr ? JSON.parse(savedStatusStr) : { ...updatedStatus };
+          console.log('Parsed saved status:', JSON.stringify(savedStatus));
+          
+          // Update with the new values
+          Object.keys(systemStatus).forEach(key => {
+            if (key in savedStatus) {
+              const oldValue = savedStatus[key];
+              savedStatus[key] = systemStatus[key];
+              console.log(`Updated localStorage ${key} from ${oldValue} to ${systemStatus[key]}`);
+            } else {
+              console.warn(`Key ${key} not found in localStorage status object`);
+            }
+          });
+          
+          // Save back to localStorage
+          localStorage.setItem('system_status', JSON.stringify(savedStatus));
+          console.log('Final system status saved to localStorage:', JSON.stringify(savedStatus));
+          
+          // Force a reload of the page to ensure the status is updated
+          console.log('Forcing reload to apply status update');
+          setTimeout(() => {
+            window.location.reload();
+          }, 1000);
+        } catch (error) {
+          console.error('Error saving system status to localStorage:', error);
+        }
+        
+        console.log('Returning updated status:', JSON.stringify(updatedStatus));
         return updatedStatus;
       });
+    } else {
+      console.error('setStatus function is not available, cannot update system status');
     }
   };
 

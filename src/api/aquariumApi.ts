@@ -3,8 +3,11 @@ import { API_URLS } from '../config/api';
 // System Status API - Fetch system component statuses from current challenges
 export const getSystemStatus = async () => {
   try {
-    // Initialize the system status object with default values
-    const systemStatus = {
+    // Check if we have saved status in localStorage
+    const savedStatus = localStorage.getItem('system_status');
+    
+    // Initialize the system status object with default values or saved values
+    const systemStatus = savedStatus ? JSON.parse(savedStatus) : {
       environmental_monitoring: 'degraded', // Challenge #1 - Async I/O
       species_database: 'degraded',        // Challenge #2 - Query Optimization
       feeding_system: 'error',             // Challenge #3 - Error Handling
@@ -118,6 +121,9 @@ export const getSystemStatus = async () => {
     } else {
       systemStatus.overall_status = 'unknown';
     }
+    
+    // Save the updated status to localStorage
+    localStorage.setItem('system_status', JSON.stringify(systemStatus));
 
     return systemStatus;
   } catch (error) {

@@ -79,6 +79,47 @@ export const useChallenges = () => {
     const fetchChallenges = async () => {
       try {
         const data = await getChallenges();
+        
+        // Check for locally validated challenges and preserve their state
+        const solvedChallengesKey = 'solved_challenges';
+        const solvedChallengesStr = localStorage.getItem(solvedChallengesKey);
+        
+        if (solvedChallengesStr && data.challenges) {
+          try {
+            const solvedChallenges = JSON.parse(solvedChallengesStr);
+            
+            // Update the challenges with locally validated state
+            if (Array.isArray(solvedChallenges) && solvedChallenges.length > 0) {
+              const updatedChallenges = data.challenges.map(challenge => {
+                // If this challenge is in our locally solved list, mark it as solved
+                if (solvedChallenges.includes(challenge.id)) {
+                  return { ...challenge, status: 'solved' };
+                }
+                return challenge;
+              });
+              
+              // Update the solved count to match our local state
+              const solvedCount = updatedChallenges.filter(c => c.status === 'solved').length;
+              
+              // Create updated data with our locally validated challenges
+              const updatedData = {
+                ...data,
+                challenges: updatedChallenges,
+                solved: solvedCount
+              };
+              
+              setChallengesData(updatedData);
+              setLoading(false);
+              return; // Exit early since we've set the data
+            }
+          } catch (parseError) {
+            console.error('Error parsing solved challenges:', parseError);
+            // Continue with original data if there's an error
+          }
+        }
+        
+        // If we didn't have any locally validated challenges or there was an error,
+        // just use the data from the API
         setChallengesData(data);
         setLoading(false);
       } catch (err) {

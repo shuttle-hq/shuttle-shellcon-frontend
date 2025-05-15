@@ -43,6 +43,8 @@ export const validateChallengeSolution = async (
     let data;
     try {
       data = await response.json();
+      // Debug the entire API response
+      console.log(`Challenge ${challenge.id} validation response:`, JSON.stringify(data, null, 2));
     } catch (jsonError) {
       console.error('Error parsing JSON response:', jsonError);
       throw new Error('Invalid response format from server');
@@ -68,10 +70,44 @@ export const validateChallengeSolution = async (
       }
       
       // Update system status if provided
-      if (onSystemStatusUpdate && data.system_component) {
+      if (onSystemStatusUpdate) {
         const mappedSystemComponent = mapChallengeIdToSystemComponent(challenge.id);
-        systemStatus = { [mappedSystemComponent]: data.valid ? 'normal' : (challenge.id === 3 ? 'error' : 'degraded') };
+        console.log(`Challenge ${challenge.id} maps to component: ${mappedSystemComponent}`);
+        
+        // Check if API provided system_component info
+        if (data.system_component) {
+          console.log(`API provided system_component info:`, data.system_component);
+          
+          // Handle the specific format from the API
+          if (data.system_component.status) {
+            // API returns { name, status, description } format
+            console.log(`API returned status: ${data.system_component.status} for component ${data.system_component.name}`);
+            console.log(`Mapped component name: ${mappedSystemComponent}`);
+            
+            // Debug the exact object structure we're creating
+            systemStatus = { [mappedSystemComponent]: data.system_component.status };
+            console.log(`Created system status object:`, JSON.stringify(systemStatus));
+          } else {
+            // Fallback to the old format
+            systemStatus = { [mappedSystemComponent]: data.valid ? 'normal' : (challenge.id === 3 ? 'error' : 'degraded') };
+          }
+        } else {
+          console.warn(`API response missing system_component field for challenge ${challenge.id}`);
+          // Create a warning toast to notify the user
+          if (data.valid) {
+            toast({
+              title: "System Status Warning",
+              description: `The API response is missing system status information. The system status may not update correctly.`,
+              variant: "warning"
+            });
+          }
+          systemStatus = { [mappedSystemComponent]: data.valid ? 'normal' : (challenge.id === 3 ? 'error' : 'degraded') };
+        }
+        
+        console.log(`Updating system status for challenge ${challenge.id}:`, systemStatus);
         onSystemStatusUpdate(systemStatus);
+      } else {
+        console.warn(`No onSystemStatusUpdate callback provided for challenge ${challenge.id}`);
       }
     } else if (data.success !== undefined) {
       // Old API format
@@ -88,9 +124,29 @@ export const validateChallengeSolution = async (
       }
       
       // Update system status if provided
-      if (onSystemStatusUpdate && data.systemStatus) {
-        systemStatus = data.systemStatus;
+      if (onSystemStatusUpdate) {
+        if (data.systemStatus) {
+          console.log(`Old API format provided systemStatus:`, data.systemStatus);
+          systemStatus = data.systemStatus;
+        } else {
+          console.warn(`API response (old format) missing systemStatus field for challenge ${challenge.id}`);
+          // Create a warning toast to notify the user
+          if (data.success) {
+            toast({
+              title: "System Status Warning",
+              description: `The API response is missing system status information. The system status may not update correctly.`,
+              variant: "warning"
+            });
+          }
+          
+          const mappedSystemComponent = mapChallengeIdToSystemComponent(challenge.id);
+          systemStatus = { [mappedSystemComponent]: data.success ? 'normal' : (challenge.id === 3 ? 'error' : 'degraded') };
+        }
+        
+        console.log(`Updating system status for challenge ${challenge.id}:`, systemStatus);
         onSystemStatusUpdate(systemStatus);
+      } else {
+        console.warn(`No onSystemStatusUpdate callback provided for challenge ${challenge.id}`);
       }
     } else {
       // Unknown response format
@@ -126,12 +182,19 @@ export const validateChallengeSolution = async (
 const mapChallengeIdToSystemComponent = (challengeId: number | string): string => {
   const id = typeof challengeId === 'string' ? parseInt(challengeId, 10) : challengeId;
   
+  // Add detailed logging
+  console.log(`Mapping challenge ID ${id} to system component`);
+  
+  let componentName = '';
   switch (id) {
-    case 1: return 'environmental_monitoring';
-    case 2: return 'species_database';
-    case 3: return 'feeding_system';
-    case 4: return 'remote_monitoring';
-    case 5: return 'analysis_engine';
-    default: return '';
+    case 1: componentName = 'environmental_monitoring'; break;
+    case 2: componentName = 'species_database'; break;
+    case 3: componentName = 'feeding_system'; break;
+    case 4: componentName = 'remote_monitoring'; break;
+    case 5: componentName = 'analysis_engine'; break;
+    default: componentName = '';
   }
+  
+  console.log(`Mapped challenge ID ${id} to component: ${componentName}`);
+  return componentName;
 };

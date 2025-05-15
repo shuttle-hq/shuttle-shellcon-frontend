@@ -26,7 +26,25 @@ const ChallengeCard: React.FC<ChallengeCardProps> = ({ challenge, onSystemStatus
   const [pendingAction, setPendingAction] = useState<PendingActionType | null>(null);
   const [isValidating, setIsValidating] = useState(false);
   const [validationMessage, setValidationMessage] = useState<string | null>(null);
-  const [isSolved, setIsSolved] = useState(challenge.status === 'solved');
+  
+  // State for challenge status - check localStorage first
+  const solvedChallengesKey = 'solved_challenges';
+  const [isSolved, setIsSolved] = useState(() => {
+    // Check if this challenge is marked as solved in localStorage
+    const solvedChallenges = localStorage.getItem(solvedChallengesKey);
+    if (solvedChallenges) {
+      try {
+        const parsedChallenges = JSON.parse(solvedChallenges);
+        if (Array.isArray(parsedChallenges) && parsedChallenges.includes(challenge.id)) {
+          return true;
+        }
+      } catch (e) {
+        console.error('Error parsing solved challenges from localStorage:', e);
+      }
+    }
+    // Fall back to the challenge status from props
+    return challenge.status === 'solved';
+  });
   
   // Track if the user has seen any dialog for this challenge
   const [seenDialogs, setSeenDialogs] = useState<Set<string>>(new Set());
@@ -82,7 +100,30 @@ const ChallengeCard: React.FC<ChallengeCardProps> = ({ challenge, onSystemStatus
     try {
       const { validateChallengeSolution } = await import('./hooks/useChallengeValidation');
       const result = await validateChallengeSolution(challenge, onSystemStatusUpdate);
-      setIsSolved(result.isValid);
+      
+      // If validation was successful, update the solved state
+      if (result.isValid) {
+        setIsSolved(true);
+        
+        // Persist the solved state to localStorage
+        try {
+          // Get the current solved challenges or initialize an empty array
+          const solvedChallengesStr = localStorage.getItem(solvedChallengesKey);
+          const solvedChallenges = solvedChallengesStr ? JSON.parse(solvedChallengesStr) : [];
+          
+          // Add this challenge ID if it's not already in the array
+          if (!solvedChallenges.includes(challenge.id)) {
+            solvedChallenges.push(challenge.id);
+            localStorage.setItem(solvedChallengesKey, JSON.stringify(solvedChallenges));
+            console.log(`Challenge ${challenge.id} marked as solved in localStorage`);
+          }
+        } catch (storageError) {
+          console.error('Error saving solved challenge to localStorage:', storageError);
+        }
+      } else {
+        setIsSolved(false);
+      }
+      
       setValidationMessage(result.message);
     } catch (error) {
       console.error('Error validating solution:', error);
