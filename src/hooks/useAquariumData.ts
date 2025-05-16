@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { getSystemStatus, getChallenges } from '../api/aquariumApi';
 
@@ -48,46 +47,79 @@ export const useSystemStatus = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    const fetchSystemStatus = async () => {
-      try {
-        // Try to get status from localStorage first
-        const savedStatusStr = localStorage.getItem('system_status');
-        let data;
-        
-        if (savedStatusStr) {
-          try {
-            const savedStatus = JSON.parse(savedStatusStr);
-            console.log('Loaded system status from localStorage:', savedStatus);
-            data = savedStatus;
-          } catch (parseError) {
-            console.error('Error parsing saved system status:', parseError);
-            // If there's an error parsing, fetch fresh data
-            data = await getSystemStatus();
-          }
-        } else {
-          // No saved status, fetch from API
+  // Function to fetch system status that can be called from multiple places
+  const fetchSystemStatus = async () => {
+    try {
+      // Try to get status from localStorage first
+      const savedStatusStr = localStorage.getItem('system_status');
+      let data;
+      
+      if (savedStatusStr) {
+        try {
+          const savedStatus = JSON.parse(savedStatusStr);
+          console.log('Loaded system status from localStorage:', savedStatus);
+          data = savedStatus;
+        } catch (parseError) {
+          console.error('Error parsing saved system status:', parseError);
+          // If there's an error parsing, fetch fresh data
           data = await getSystemStatus();
         }
-        
-        setStatus(data);
-        setLoading(false);
-        
-        // Save the fetched status to localStorage for persistence
-        if (data) {
-          localStorage.setItem('system_status', JSON.stringify(data));
+      } else {
+        // No saved status, fetch from API
+        data = await getSystemStatus();
+      }
+      
+      setStatus(data);
+      setLoading(false);
+    } catch (err) {
+      setError('Failed to fetch system status');
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchSystemStatus();
+
+    // Listen for storage events to detect when another component updates system status
+    const handleStorageChange = (event: StorageEvent) => {
+      if (event.key === 'system_status' && event.newValue) {
+        console.log('System status changed in localStorage, updating UI immediately');
+        try {
+          const newData = JSON.parse(event.newValue);
+          setStatus(newData);
+        } catch (e) {
+          console.error('Error parsing updated system status:', e);
         }
-      } catch (err) {
-        setError('Failed to fetch system status');
-        setLoading(false);
       }
     };
 
-    fetchSystemStatus();
+    // In the same browser tab, we won't get StorageEvent when we update localStorage ourselves
+    // But challenge validation in useChallengeValidation.ts dispatches a custom 'storage' event
+    // So we listen for that too
+    const handleLocalStorageChange = () => {
+      const savedStatusStr = localStorage.getItem('system_status');
+      if (savedStatusStr) {
+        try {
+          const savedStatus = JSON.parse(savedStatusStr);
+          setStatus(savedStatus);
+        } catch (e) {
+          console.error('Error parsing status from local event:', e);
+        }
+      }
+    };
 
-    // Poll for updates every 15 seconds
+    // Listen for both cross-tab storage events and same-tab custom events
+    window.addEventListener('storage', handleStorageChange);
+    window.addEventListener('storage', handleLocalStorageChange); // This catches our custom event
+
+    // Poll for updates every 15 seconds as a fallback
     const interval = setInterval(fetchSystemStatus, 15000);
-    return () => clearInterval(interval);
+    
+    return () => {
+      clearInterval(interval);
+      window.removeEventListener('storage', handleStorageChange);
+      window.removeEventListener('storage', handleLocalStorageChange);
+    };
   }, []);
 
   return { status, loading, error, setStatus };

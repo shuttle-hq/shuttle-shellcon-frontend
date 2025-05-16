@@ -1,4 +1,3 @@
-
 import { Challenge } from '../../../hooks/useAquariumData';
 import { API_BASE_URL } from '../../../config/api';
 
@@ -13,18 +12,14 @@ export const validateChallengeSolution = async (
   onSystemStatusUpdate?: (status: any) => void
 ): Promise<ValidationResult> => {
   try {
-    // Get the correct validation endpoint from the challenge object
-    let validationEndpoint = `/api/challenges/${challenge.id}/validate`;
+    // Always use the consistent /api/challenges/{id}/validate format for all challenges
+    // This is the most reliable format that works in both local and cloud environments
+    const validationEndpoint = `/api/challenges/${challenge.id}/validate`;
     
-    // Use the validation_endpoint from the challenge if available
+    // Log the validation endpoint for debugging
+    console.log(`Challenge ${challenge.id} validation using URL: ${validationEndpoint}`);
     if (challenge.validation_endpoint && challenge.validation_endpoint.url) {
-      // If the URL starts with '/', it's a relative path
-      if (challenge.validation_endpoint.url.startsWith('/')) {
-        validationEndpoint = challenge.validation_endpoint.url;
-      } else {
-        // Otherwise, prepend the API base URL
-        validationEndpoint = `${API_BASE_URL}/${challenge.validation_endpoint.url}`;
-      }
+      console.log(`(Note: Original endpoint from API was: ${challenge.validation_endpoint.url})`);
     }
     
     console.log(`Validating challenge ${challenge.id} using endpoint: ${validationEndpoint}`);
@@ -128,6 +123,20 @@ export const validateChallengeSolution = async (
         systemStatus = { [mappedSystemComponent]: data.valid ? 'normal' : (challenge.id === 3 ? 'error' : 'degraded') };
       }
       
+      // Update specific system components
+      if (mappedSystemComponent && systemStatus) {
+        // Save the updated status to localStorage for immediate UI update
+        updateSystemStatusInLocalStorage(systemStatus);
+        
+        // Force UI refresh for all components
+        window.dispatchEvent(new Event('storage'));
+        
+        // Dispatch a custom event for components listening specifically for system status changes
+        window.dispatchEvent(new CustomEvent('systeminfochange', { 
+          detail: { component: mappedSystemComponent, status: data.system_component.status } 
+        }));
+      }
+      
       // ENHANCED: Update immediately with forced refresh via storage event
       if (onSystemStatusUpdate && systemStatus) {
         console.log(`Updating system status for challenge ${challenge.id}:`, systemStatus);
@@ -166,6 +175,20 @@ export const validateChallengeSolution = async (
         
         const mappedSystemComponent = mapChallengeIdToSystemComponent(challenge.id);
         systemStatus = { [mappedSystemComponent]: data.success ? 'normal' : (challenge.id === 3 ? 'error' : 'degraded') };
+      }
+      
+      // Update specific system components
+      if (mappedSystemComponent && systemStatus) {
+        // Save the updated status to localStorage for immediate UI update
+        updateSystemStatusInLocalStorage(systemStatus);
+        
+        // Force UI refresh for all components
+        window.dispatchEvent(new Event('storage'));
+        
+        // Dispatch a custom event for components listening specifically for system status changes
+        window.dispatchEvent(new CustomEvent('systeminfochange', { 
+          detail: { component: mappedSystemComponent, status: data.system_component.status } 
+        }));
       }
       
       // ENHANCED: Update immediately with forced refresh via storage event

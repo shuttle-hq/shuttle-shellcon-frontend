@@ -165,7 +165,6 @@ export const validateChallengeSolution = async (challengeId: number | string) =>
     const validationData = await response.json();
     
     // Format the response to match what the frontend expects
-    // We're maintaining the expected structure based on the UI components
     return {
       implementation: {
         valid: validationData.valid,
