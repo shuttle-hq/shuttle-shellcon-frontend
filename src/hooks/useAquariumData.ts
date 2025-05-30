@@ -6,7 +6,6 @@ export interface SystemStatus {
   species_database: string;
   feeding_system: string;
   remote_monitoring: string;
-  analysis_engine: string;
   overall_status: string;
   last_updated: string;
 }

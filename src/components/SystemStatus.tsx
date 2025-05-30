@@ -14,16 +14,7 @@ const SystemStatus: React.FC = () => {
       <CardHeader className="bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 text-white border-b border-orange-500/30 pb-4">
         <div className="flex justify-between items-center">
           <CardTitle 
-            className="card-header-title flex items-center gap-2"
-            style={{
-              fontFamily: 'Inter, sans-serif',
-              fontWeight: 700,
-              color: 'transparent',
-              backgroundImage: 'linear-gradient(to bottom right, #f97316, #fbbf24, #f59e0b)',
-              backgroundClip: 'text',
-              WebkitBackgroundClip: 'text',
-              textShadow: '0 0 15px rgba(249, 115, 22, 0.2)'
-            }}
+            className="card-header-title flex items-center gap-2 font-bold text-transparent bg-gradient-to-br from-orange-500 via-amber-400 to-amber-500 bg-clip-text shadow-sm"
           >
             <Activity className="h-5 w-5 text-orange-400" />
             System Status
@@ -74,12 +65,6 @@ const SystemStatus: React.FC = () => {
               status={status.remote_monitoring}
               icon={CheckCircle}
             />
-            <StatusCard 
-              title="Analysis Engine" 
-              status={status.analysis_engine}
-              icon={CheckCircle}
-            />
-            
             {/* Updated timestamp */}
             <div className="col-span-1 sm:col-span-2 md:col-span-3 flex justify-end mt-2">
               <div className="text-xs text-orange-300/70 italic flex items-center gap-1">

@@ -12,7 +12,6 @@ export const getSystemStatus = async () => {
       species_database: 'degraded',        // Challenge #2 - Query Optimization
       feeding_system: 'error',             // Challenge #3 - Error Handling
       remote_monitoring: 'degraded',       // Challenge #4 - Resource Management
-      analysis_engine: 'degraded',         // Challenge #5 - Shared State
       overall_status: 'degraded',
       last_updated: new Date().toISOString()
     };
@@ -43,9 +42,6 @@ export const getSystemStatus = async () => {
               case 4: // The Leaky Connection - Remote Monitoring (Sensor Management)
                 systemStatus.remote_monitoring = componentStatus;
                 break;
-              case 5: // Safe Shared State - Analysis Engine
-                systemStatus.analysis_engine = componentStatus;
-                break;
             }
           });
         }
@@ -75,11 +71,6 @@ export const getSystemStatus = async () => {
           validateChallenge(4).then(result => {
             if (result && result.system_component) {
               systemStatus.remote_monitoring = result.system_component.status;
-            }
-          }),
-          validateChallenge(5).then(result => {
-            if (result && result.system_component) {
-              systemStatus.analysis_engine = result.system_component.status;
             }
           })
         ];
@@ -136,7 +127,79 @@ export const getChallenges = async () => {
   try {
     const response = await fetch(`${API_URLS.AQUA_BRAIN}/challenges/current`);
     if (!response.ok) throw new Error('Failed to fetch challenges');
-    return await response.json();
+    const data = await response.json();
+    
+    // Debug log to inspect challenge content
+    if (data && data.challenges) {
+      console.log('Challenge data received:', data);
+      
+      // Create a consistent function to normalize all markdown content from the API
+      data.challenges = data.challenges.map(challenge => {
+        // Helper function to normalize code blocks to use proper markdown syntax
+        const normalizeMarkdownContent = (content) => {
+          if (!content) return content;
+          
+          // Since the backend now handles triple quotes properly, we only need to
+          // ensure proper formatting and spacing of existing code blocks
+          let result = content;
+          
+          // Improve spacing around code blocks for better readability
+          result = result
+            // Ensure language specifier is followed by a newline
+            .replace(/```([a-z]*)\s*/g, '```$1\n')
+            
+            // Ensure closing code fence has proper spacing
+            .replace(/\s*```/g, '\n```');
+          
+          // Fix improper indentation and formatting inside code blocks
+          const lines = result.split('\n');
+          let inCodeBlock = false;
+          
+          for (let i = 0; i < lines.length; i++) {
+            if (lines[i].trim().startsWith('```')) {
+              inCodeBlock = !inCodeBlock;
+              
+              // Add a language identifier for code blocks without one (defaults to text)
+              if (inCodeBlock && lines[i].trim() === '```') {
+                lines[i] = '```text';
+              }
+            } else if (inCodeBlock) {
+              // Normalize indentation inside code blocks (convert tabs to spaces)
+              lines[i] = lines[i].replace(/\t/g, '  ');
+            }
+          }
+          
+          return lines.join('\n');
+        };
+        
+        // Apply fixes to solution
+        if (challenge.solution) {
+          if (typeof challenge.solution === 'string') {
+            challenge.solution = normalizeMarkdownContent(challenge.solution);
+            console.log(`Fixed code blocks in solution for challenge ${challenge.id}`);
+          } else if (challenge.solution.explanation) {
+            challenge.solution.explanation = normalizeMarkdownContent(challenge.solution.explanation);
+            console.log(`Fixed code blocks in solution explanation for challenge ${challenge.id}`);
+          }
+        }
+        
+        // Apply fixes to description
+        if (challenge.description) {
+          challenge.description = normalizeMarkdownContent(challenge.description);
+          console.log(`Fixed code blocks in description for challenge ${challenge.id}`);
+        }
+        
+        // Apply fixes to hint
+        if (challenge.hint) {
+          challenge.hint = normalizeMarkdownContent(challenge.hint);
+          console.log(`Fixed code blocks in hint for challenge ${challenge.id}`);
+        }
+        
+        return challenge;
+      });
+    }
+    
+    return data;
   } catch (error) {
     console.error('Error fetching challenges:', error);
     throw error;

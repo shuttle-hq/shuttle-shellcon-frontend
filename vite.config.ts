@@ -92,6 +92,31 @@ export default defineConfig(({ mode }) => {
           secure: false,
           rewrite: undefined
         },
+        // Challenge 3 validation endpoint - Memory Miser (Memory Optimization)
+        '/api/challenges/3/validate': {
+          target: AQUA_BRAIN_URL,  // Using Aqua Brain service as specified in challenge API response
+          changeOrigin: true,
+          secure: false,
+          rewrite: undefined,
+          configure: (proxy) => {
+            proxy.on('proxyReq', (proxyReq, req) => {
+              console.log(`Proxying challenge 3 validation: ${req.url} → ${AQUA_BRAIN_URL}`);
+            });
+          }
+        },
+        
+        // Challenge 4 validation endpoint - The Leaky Connection (Resource Optimization)
+        '/api/challenges/4/validate': {
+          target: AQUA_MONITOR_URL,  // Using Aqua Monitor service as verified by direct curl test
+          changeOrigin: true,
+          secure: false,
+          rewrite: undefined,
+          configure: (proxy) => {
+            proxy.on('proxyReq', (proxyReq, req) => {
+              console.log(`Proxying challenge 4 validation: ${req.url} → ${AQUA_MONITOR_URL}`);
+            });
+          }
+        },
         
         // Aqua Brain paths
         '/api/system': {

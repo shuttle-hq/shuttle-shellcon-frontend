@@ -10,6 +10,11 @@ import LectureSection from './LectureSection';
 import ConfirmationDialog from './ConfirmationDialog';
 import ValidationMessage from './ValidationMessage';
 import { useChallengeCard, PendingActionType } from './hooks/useChallengeCard';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
+import { CustomCodeBlock } from './shared/CustomCodeBlock';
+import EnhancedMarkdown from './EnhancedMarkdown';
+import { cn } from '@/lib/utils';
 
 interface ChallengeCardProps {
   challenge: ChallengeType;
@@ -99,7 +104,12 @@ const ChallengeCard: React.FC<ChallengeCardProps> = ({ challenge, onSystemStatus
           </CardTitle>
         </CardHeader>
         <CardContent className="pt-4">
-          <p className="mb-4 text-gray-300">{challenge.description || "No description available"}</p>
+          <div className="mb-4 text-gray-300 prose prose-invert prose-sm max-w-none">
+            <EnhancedMarkdown 
+              content={challenge.description || "No description available"}
+              accentColor="gray"
+            />
+          </div>
           
           {/* Service, File and Function Information */}
           <ChallengeMetadata 

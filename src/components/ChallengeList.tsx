@@ -11,7 +11,7 @@ const ChallengeList: React.FC = () => {
   const { challengesData, loading, error } = useChallenges();
   const { status, setStatus } = useSystemStatus();
   
-  // Fallback challenges in case API is unavailable
+  // Fallback challenges in case API is unavailable - Only including challenges 1-4
   const fallbackChallenges = [
     {
       id: 1,
@@ -44,14 +44,6 @@ const ChallengeList: React.FC = () => {
       status: "pending",
       description: "Address resource management issues creating memory leaks.",
       solution: "Ensure proper cleanup of resources using RAII patterns and avoid unnecessary cloning of large data structures."
-    },
-    {
-      id: 5,
-      name: "concurrency-conundrum",
-      title: "Concurrency Conundrum",
-      status: "pending",
-      description: "Optimize concurrency patterns that are limiting throughput and scalability.",
-      solution: "Implement async/await patterns properly and use appropriate synchronization primitives."
     }
   ];
 
@@ -99,21 +91,26 @@ const ChallengeList: React.FC = () => {
         });
         
         // Calculate new overall status based on component statuses
+        // Only consider the first 4 components (challenges 1-4)
         const componentStatuses = [
-          updatedStatus.environmental_monitoring,
-          updatedStatus.species_database,
-          updatedStatus.feeding_system,
-          updatedStatus.remote_monitoring,
-          updatedStatus.analysis_engine
+          updatedStatus.environmental_monitoring,  // Challenge 1
+          updatedStatus.species_database,         // Challenge 2
+          updatedStatus.feeding_system,           // Challenge 3
+          updatedStatus.remote_monitoring         // Challenge 4
         ];
+        
+        console.log('Component statuses for overall calculation:', componentStatuses);
         
         // Update the overall status based on the worst component status
         if (componentStatuses.includes('error')) {
           updatedStatus.overall_status = 'critical';
         } else if (componentStatuses.includes('degraded')) {
           updatedStatus.overall_status = 'degraded';
-        } else {
+        } else if (componentStatuses.every(status => status === 'normal' || status === 'online' || status === 'operational')) {
           updatedStatus.overall_status = 'normal';
+        } else {
+          // Fallback - if we're not sure, default to degraded
+          updatedStatus.overall_status = 'degraded';
         }
         
         // Update timestamp
@@ -145,16 +142,7 @@ const ChallengeList: React.FC = () => {
       <CardHeader className="bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 text-white border-b border-orange-500/30 pb-4">
         <div className="flex justify-between items-center">
           <CardTitle 
-            className="card-header-title flex items-center gap-2"
-            style={{
-              fontFamily: 'Inter, sans-serif',
-              fontWeight: 700,
-              color: 'transparent',
-              backgroundImage: 'linear-gradient(to bottom right, #f97316, #fbbf24, #f59e0b)',
-              backgroundClip: 'text',
-              WebkitBackgroundClip: 'text',
-              textShadow: '0 0 15px rgba(249, 115, 22, 0.2)'
-            }}
+            className="card-header-title flex items-center gap-2 font-bold text-transparent bg-gradient-to-br from-orange-500 via-amber-400 to-amber-500 bg-clip-text shadow-sm"
           >
             <Target className="h-5 w-5 text-orange-400" />
             Optimization Challenges

@@ -52,8 +52,7 @@ export const validateChallengeSolution = async (
         1: 'environmental_monitoring',
         2: 'species_database',
         3: 'feeding_system',
-        4: 'remote_monitoring',
-        5: 'analysis_engine'
+        4: 'remote_monitoring'
       };
       
       // For challenge 1, immediately set environmental_monitoring to normal state
@@ -231,7 +230,6 @@ const mapChallengeIdToSystemComponent = (challengeId: number | string): string =
     case 2: componentName = 'species_database'; break;
     case 3: componentName = 'feeding_system'; break;
     case 4: componentName = 'remote_monitoring'; break;
-    case 5: componentName = 'analysis_engine'; break;
     default: componentName = '';
   }
   
@@ -284,13 +282,12 @@ const updateSystemStatusInLocalStorage = (newStatusValues: Record<string, string
       }
     });
     
-    // Calculate new overall status based on component statuses
+    // Calculate new overall status based on component statuses (challenges 1-4 only)
     const componentStatuses = [
       updatedStatus.environmental_monitoring,
       updatedStatus.species_database,
       updatedStatus.feeding_system,
-      updatedStatus.remote_monitoring,
-      updatedStatus.analysis_engine
+      updatedStatus.remote_monitoring
     ];
     
     // Update the overall status based on the worst component status
@@ -298,8 +295,11 @@ const updateSystemStatusInLocalStorage = (newStatusValues: Record<string, string
       updatedStatus.overall_status = 'critical';
     } else if (componentStatuses.includes('degraded')) {
       updatedStatus.overall_status = 'degraded';
-    } else {
+    } else if (componentStatuses.every(status => status === 'normal' || status === 'online' || status === 'operational')) {
       updatedStatus.overall_status = 'normal';
+    } else {
+      // Fallback - if we're not sure, default to degraded
+      updatedStatus.overall_status = 'degraded';
     }
     
     // Update timestamp

@@ -1,73 +1,197 @@
-# Welcome to your Lovable project
+# ShellCon Frontend - Smart Aquarium Dashboard
 
-## Project info
+## Overview
 
-**URL**: https://lovable.dev/projects/43a6486c-9b62-4174-a918-b3c220165f4b
+This repository contains the frontend application for the ShellCon Smart Aquarium Dashboard. It's designed to work with three Rust backend microservices deployed using Shuttle. The application provides an interactive interface for solving shell scripting challenges in the context of managing a smart aquarium system.
 
-## How can I edit this code?
+## Prerequisites
 
-There are several ways of editing your application.
+- Node.js 16+ and npm
+- A deployed instance of the ShellCon backend services on Shuttle Cloud
+  - **Backend Repository**: [INSERT YOUR BACKEND REPO URL HERE]
 
-**Use Lovable**
+## Backend Services
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/43a6486c-9b62-4174-a918-b3c220165f4b) and start prompting.
+The frontend communicates with three separate backend microservices:
 
-Changes made via Lovable will be committed automatically to this repo.
+1. **Aqua Monitor** (Port 8000): Environmental monitoring system and challenge #1 validation
+2. **Species Hub** (Port 8001): Species database management and challenge #2 validation
+3. **Aqua Brain** (Port 8002): System status reporting and challenges #3-4 validation
 
-**Use your preferred IDE**
+## Deployment Guide
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+### Step 1: Deploy Backend Services to Shuttle Cloud
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+Before setting up the frontend, you need to deploy the backend services to Shuttle Cloud:
 
-Follow these steps:
+1. Clone the backend repository:
+   ```bash
+   git clone [INSERT YOUR BACKEND REPO URL HERE]
+   cd [backend-repo-name]
+   ```
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+2. Deploy the services to Shuttle Cloud:
+   ```bash
+   # Make sure you're at the root of the rust project where the shuttle.toml file is located
+   shuttle deploy
+   ```
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+3. After successful deployment, Shuttle will provide URLs for each service. Note these URLs as you'll need them for the frontend configuration.
 
-# Step 3: Install the necessary dependencies.
-npm i
+### Step 2: Configure the Frontend
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
-```
+1. Clone this frontend repository:
+   ```bash
+   git clone https://github.com/yourusername/shellcon-frontend.git
+   cd shellcon-frontend
+   ```
 
-**Edit a file directly in GitHub**
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+3. Create a `.env.prod` file in the project root with your Shuttle-deployed backend URLs:
+   ```env
+   # Replace with your actual Shuttle-deployed service URLs
+   VITE_AQUA_MONITOR_URL=https://your-aqua-monitor-service.shuttleapp.rs
+   VITE_SPECIES_HUB_URL=https://your-species-hub-service.shuttleapp.rs
+   VITE_AQUA_BRAIN_URL=https://your-aqua-brain-service.shuttleapp.rs
+   VITE_API_BASE_URL=/api
+   ```
 
-**Use GitHub Codespaces**
+### Step 3: Run the Frontend with Cloud Backend
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+1. Start the frontend with the production configuration:
+   ```bash
+   npm run dev:prod
+   ```
 
-## What technologies are used for this project?
+2. Access the application at `http://localhost:8080`
 
-This project is built with:
+   This will run the frontend locally but connect to your cloud-deployed backend services.
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+### Step 4: Verify the Connection
 
-## How can I deploy this project?
+1. Access the frontend application at `http://localhost:8080`
+2. Ensure all three backend services are connected properly
+3. Verify that you can view and interact with all challenges
 
-Simply open [Lovable](https://lovable.dev/projects/43a6486c-9b62-4174-a918-b3c220165f4b) and click on Share -> Publish.
+## Running Locally
 
-## Can I connect a custom domain to my Lovable project?
+### Local Backend Setup
 
-Yes, you can!
+To run the backend services locally:
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+1. Clone the backend repository if you haven't already:
+   ```bash
+   git clone [INSERT YOUR BACKEND REPO URL HERE]
+   cd [backend-repo-name]
+   ```
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+2. Start all services locally with Shuttle:
+   ```bash
+   # Make sure you're at the root of the rust project where the shuttle.toml file is located
+   shuttle run
+   ```
+
+   The services will be available at:
+   - Aqua Monitor: `http://localhost:8000`
+   - Species Hub: `http://localhost:8001`
+   - Aqua Brain: `http://localhost:8002`
+
+### Local Frontend Setup
+
+1. Use the existing `.env.localhost` file for local development:
+   ```env
+   VITE_AQUA_MONITOR_URL=http://localhost:8000
+   VITE_SPECIES_HUB_URL=http://localhost:8001
+   VITE_AQUA_BRAIN_URL=http://localhost:8002
+   VITE_API_BASE_URL=/api
+   ```
+
+2. Start the development server:
+   ```bash
+   npm run dev:localhost
+   ```
+
+3. Access the application at `http://localhost:8080`
+
+## Switching Between Local and Cloud Backends
+
+### Using Local Backend
+
+1. **Start Local Backend Services**:
+   ```bash
+   # Make sure you're at the root of the rust project where the shuttle.toml file is located
+   cd [backend-repo-name]
+   shuttle run
+   ```
+
+2. **Start Frontend with Local Configuration**:
+   ```bash
+   # This will use the .env.localhost configuration
+   npm run dev:localhost
+   ```
+
+3. **Access the application** at `http://localhost:8080`
+
+### Using Cloud Backend
+
+1. **Deploy Backend to Cloud** (if not already deployed):
+   ```bash
+   # Make sure you're at the root of the rust project where the shuttle.toml file is located
+   cd [backend-repo-name]
+   shuttle deploy
+   ```
+
+2. **Update `.env.prod` File** (if needed):
+   ```env
+   # Replace with your actual Shuttle-deployed service URLs
+   VITE_AQUA_MONITOR_URL=https://your-aqua-monitor-service.shuttleapp.rs
+   VITE_SPECIES_HUB_URL=https://your-species-hub-service.shuttleapp.rs
+   VITE_AQUA_BRAIN_URL=https://your-aqua-brain-service.shuttleapp.rs
+   VITE_API_BASE_URL=/api
+   ```
+
+3. **Start Frontend with Production Configuration**:
+   ```bash
+   # This will use the .env.prod configuration
+   npm run dev:prod
+   ```
+
+4. **Access the application** at `http://localhost:8080`
+
+## Troubleshooting
+
+### Common Issues
+
+1. **Backend Connection Errors**:
+   - Verify that all three backend services are running (check the Shuttle dashboard or run `shuttle logs --latest`)
+   - Ensure the URLs in your `.env.localhost` or `.env.prod` file are correct
+   - Check the browser console for specific error messages
+
+2. **CORS Issues**:
+   - Ensure the backend services are configured to accept requests from your frontend domain
+   - For local development, make sure the backend services allow requests from `http://localhost:8080`
+
+3. **Challenge Validation Problems**:
+   - Check the backend logs for any errors:
+     ```bash
+     shuttle logs --latest
+     ```
+   - Verify that you're following the challenge instructions correctly
+
+4. **Shuttle Deployment Issues**:
+   - Make sure you're running the deployment command from the root directory where the `shuttle.toml` file is located
+   - Check that you have the latest version of the Shuttle CLI installed
+
+## Challenge Information
+
+The challenges and their solutions are described in the backend repository. The frontend simply provides an interface for interacting with these challenges.
+
+For details on each challenge and how to solve them, please refer to the documentation in the backend repository.
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.

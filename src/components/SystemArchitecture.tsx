@@ -90,15 +90,7 @@ const SystemArchitecture: React.FC = () => {
             <CardTitle className="flex items-center gap-2">
               <CircuitBoard className="h-5 w-5 text-orange-400 flex-shrink-0" />
               <span 
-                style={{
-                  background: 'linear-gradient(to right, #f97316, #fb923c, #fbbf24)',
-                  WebkitBackgroundClip: 'text',
-                  backgroundClip: 'text',
-                  color: 'transparent',
-                  display: 'inline-block',
-                  fontFamily: 'Inter, sans-serif',
-                  fontWeight: 700
-                }}
+                className="font-bold text-transparent bg-gradient-to-r from-orange-500 via-orange-400 to-amber-400 bg-clip-text inline-block"
               >
                 ShellCon Smart Aquarium System Control Panel
               </span>

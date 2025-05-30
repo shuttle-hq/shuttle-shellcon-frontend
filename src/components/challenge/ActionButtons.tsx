@@ -74,7 +74,7 @@ const ActionButtons: React.FC<ActionButtonsProps> = ({
         </Button>
       )}
 
-      {/* More Information Button - only shown if lecture is available */}
+      {/* Teach me how it works Button - only shown if lecture is available */}
       {hasLecture && (
         <Button
           variant="outline"
@@ -83,7 +83,7 @@ const ActionButtons: React.FC<ActionButtonsProps> = ({
           onClick={onLectureRequest}
         >
           <BookOpen className="h-4 w-4 mr-1" />
-          {showMoreInfo ? "Hide Information" : "More Information"}
+          {showMoreInfo ? "Hide Lesson" : "Teach me how it works"}
         </Button>
       )}
     </div>
