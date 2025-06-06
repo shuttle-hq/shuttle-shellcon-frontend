@@ -2,13 +2,15 @@
 
 ## 🔍 Overview
 
-This repository contains the frontend application for the ShellCon Smart Aquarium Dashboard. It's designed to work with three Rust backend microservices deployed using Shuttle. The application provides an interactive interface for solving shell scripting challenges in the context of managing a smart aquarium system.
+This repository contains the frontend application for the ShellCon Smart Aquarium Dashboard. It's designed to work with three Rust backend microservices running on Shuttle. The application provides an interactive interface for solving shell scripting challenges in the context of managing a smart aquarium system. The frontend uses React with Vite and communicates with the backend services via REST APIs.
 
 ## 📋 Prerequisites
 
 - Node.js 16+ and npm
-- A deployed instance of the ShellCon backend services on Shuttle Cloud
-  - **Backend Repository**: [https://github.com/shuttle-hq/shuttle-shellcon](https://github.com/shuttle-hq/shuttle-shellcon)
+- Rust and Cargo installed
+- Shuttle CLI installed (`curl -sSfL https://www.shuttle.dev/install | bash`)
+- Git for cloning repositories
+- **Backend Repository**: [https://github.com/shuttle-hq/shuttle-shellcon](https://github.com/shuttle-hq/shuttle-shellcon)
 
 ## 🔧 Backend Services
 
@@ -18,29 +20,15 @@ The frontend communicates with three separate backend microservices:
 2. **Species Hub** (Port 8001): Species database management and challenge #2 validation
 3. **Aqua Brain** (Port 8002): System status reporting and challenges #3-4 validation
 
-## 🚀 Deployment Guide
+## 💻 Getting Started with Local Development
 
-### Step 1: Deploy Backend Services to Shuttle Cloud
+## Step 1: Set Up the Backend Services Locally
 
-Before setting up the frontend, you need to deploy the backend services to Shuttle Cloud:
+Follow the instructions in the [backend repository](https://github.com/shuttle-hq/shuttle-shellcon) to set up the backend services locally.
 
-1. Clone the backend repository:
-   ```bash
-   git clone https://github.com/shuttle-hq/shuttle-shellcon.git
-   cd shuttle-shellcon
-   ```
+## Step 2: Set Up the Frontend
 
-2. Deploy the services to Shuttle Cloud:
-   ```bash
-   # Make sure you're at the root of the rust project where the shuttle.toml file is located
-   shuttle deploy
-   ```
-
-3. After successful deployment, Shuttle will provide URLs for each service. Note these URLs as you'll need them for the frontend configuration.
-
-### Step 2: Configure the Frontend
-
-1. Clone this frontend repository:
+1. Clone this frontend repository (in a new terminal):
    ```bash
    git clone https://github.com/shuttle-hq/shuttle-shellcon-frontend.git
    cd shuttle-shellcon-frontend
@@ -51,60 +39,7 @@ Before setting up the frontend, you need to deploy the backend services to Shutt
    npm install
    ```
 
-3. Create a `.env.prod` file in the project root with your Shuttle-deployed backend URLs:
-   ```bash
-   # Create the .env.prod file (this file is in .gitignore and won't exist in the cloned repo)
-   touch .env.prod
-   ```
-
-4. Add your Shuttle-deployed backend URLs to the `.env.prod` file:
-   ```env
-   # Replace with your actual Shuttle-deployed service URLs
-   VITE_AQUA_MONITOR_URL=https://your-aqua-monitor-service.shuttleapp.app
-   VITE_SPECIES_HUB_URL=https://your-species-hub-service.shuttleapp.app
-   VITE_AQUA_BRAIN_URL=https://your-aqua-brain-service.shuttleapp.app
-   VITE_API_BASE_URL=/api
-   ```
-
-### Step 3: Run the Frontend with Cloud Backend
-
-1. Start the frontend with the production configuration:
-   ```bash
-   npm run dev:prod
-   ```
-
-2. Access the application at `http://localhost:8080`
-
-   This will run the frontend locally but connect to your cloud-deployed backend services.
-
-### Step 4: Verify the Connection
-
-1. Access the frontend application at `http://localhost:8080`
-2. Ensure all three backend services are connected properly
-3. Verify that you can view and interact with all challenges
-
-## 💻 Running with Local Backend
-
-To run the backend services locally:
-
-1. Clone the backend repository if you haven't already:
-   ```bash
-   git clone https://github.com/shuttle-hq/shuttle-shellcon.git
-   cd shuttle-shellcon
-   ```
-
-2. Start all services locally with Shuttle:
-   ```bash
-   # Make sure you're at the root of the rust project where the shuttle.toml file is located
-   shuttle run
-   ```
-
-   The services will be available at:
-   - Aqua Monitor: `http://localhost:8000`
-   - Species Hub: `http://localhost:8001`
-   - Aqua Brain: `http://localhost:8002`
-
-3. Create a `.env.localhost` file in your frontend project:
+3. Create a `.env.localhost` file for local development:
    ```bash
    # Create the .env.localhost file (this file is in .gitignore and won't exist in the cloned repo)
    touch .env.localhost
@@ -125,9 +60,113 @@ To run the backend services locally:
 
 6. Access the application at `http://localhost:8080`
 
+## Step 3: Test All System Control Panel Actions (Pre-Challenge Checklist)
+
+Before starting the challenges, your first task is to verify that all buttons and system control actions in the ShellCon Smart Aquarium System Control Panel work correctly.
+
+This ensures your frontend is communicating with the backend services and that your environment is set up properly. **Explore each button and action in the control panel UI. If the backend is running, you should NOT see any error messages in the panel.**
+
+Below is a mapping of each control panel button to its backend API call and service:
+
+| Button / Action                 | API Endpoint & Method                                  | Backend Service    |
+|----------------------------------|--------------------------------------------------------|--------------------|
+| View All Tanks                   | `GET /tanks`                                           | Aqua Monitor (8000)|
+| Fetch Tank Readings (by tank)    | `GET /tanks/{tankId}/readings`                         | Aqua Monitor (8000)|
+| Check Sensor Status              | `GET /sensors/status`                                  | Aqua Monitor (8000)|
+| List All Species                 | `GET /species`                                         | Species Hub (8001) |
+| Get Species Details (by species) | `GET /species/{speciesId}`                             | Species Hub (8001) |
+| Get Feeding Schedule (by species)| `GET /species/{speciesId}/feeding-schedule`            | Species Hub (8001) |
+| View All Tank Analysis           | `GET /analysis/tanks`                                  | Aqua Brain (8002)  |
+| Tank Health Analysis (by tank)   | `GET /analysis/tanks/{tankId}`                         | Aqua Brain (8002)  |
+
+**How to test:**
+- Click each button in the control panel and verify that data loads without error.
+- Use dropdowns/selectors where applicable (e.g., tank or species selection) and confirm the correct API call is made.
+- If you see any error message or no data loads, double-check that the backend service for that action is running and accessible on the correct port.
+
+**Only proceed to the challenges once all actions above work without errors.**
+
+### Exploring the Backend API Implementation
+
+All API endpoints are implemented in Rust using the Axum web framework. You can find the source code for each service in the backend repository under `services/<service-name>/src/main.rs`. Each service defines its routes in the `shuttle_runtime::main` function.
+
+For example, here's how the Aqua Monitor service (`services/aqua-monitor/src/main.rs`) defines its routes:
+
+```rust
+#[shuttle_runtime::main]
+async fn axum(#[shuttle_shared_db::Postgres] pool: PgPool) -> shuttle_axum::ShuttleAxum {
+    // Build router with all endpoints
+    let router = Router::new()
+        .route("/api/tanks", get(get_all_tanks))
+        .route("/api/tanks/:tank_id/readings", get(challenges::get_tank_readings))
+        .route("/api/sensors/status", get(challenges::get_sensor_status))
+        // ... challenge validation routes
+        .with_state(state);
+
+    Ok(router.into())
+}
+```
+
+To explore the API implementations:
+1. Open your local backend repository folder
+2. Navigate to `services/<service-name>/src/main.rs`
+3. Look for the `shuttle_runtime::main` function
+4. Each `.route()` call maps an endpoint to its handler function
+5. Follow the handler functions to understand the implementation
+
+The three services are structured similarly:
+- **Aqua Monitor**: `services/aqua-monitor/src/main.rs`
+- **Species Hub**: `services/species-hub/src/main.rs`
+- **Aqua Brain**: `services/aqua-brain/src/main.rs`
+
+---
+
+## Step 4: Solve the Challenges Locally
+
+Work through the challenges using your local environment. This allows you to:
+- Make quick iterations to your solutions
+- Test changes immediately
+- Debug more effectively
+
+## 🚀 Deploying to Shuttle Cloud
+
+Once you've completed the challenges locally, you can deploy to Shuttle Cloud:
+
+## Step 5: Deploy Backend Services to Shuttle Cloud
+
+1. Follow the instructions from the backend repository to deploy to Shuttle Cloud.
+
+2. After successful deployment, Shuttle will provide URLs for each service. Note these URLs as you'll need them for the frontend configuration.
+
+## Step 6: Configure the Frontend for Cloud Backend
+
+1. Create a `.env.prod` file in your frontend project:
+   ```bash
+   # Create the .env.prod file (this file is in .gitignore and won't exist in the cloned repo)
+   touch .env.prod
+   ```
+
+2. Add your Shuttle-deployed backend URLs to the `.env.prod` file:
+   ```env
+   # Replace with your actual Shuttle-deployed service URLs
+   VITE_AQUA_MONITOR_URL=https://your-aqua-monitor-service.shuttleapp.app
+   VITE_SPECIES_HUB_URL=https://your-species-hub-service.shuttleapp.app
+   VITE_AQUA_BRAIN_URL=https://your-aqua-brain-service.shuttleapp.app
+   VITE_API_BASE_URL=/api
+   ```
+   
+   > **Note**: After deploying with `shuttle deploy`, you'll receive the actual URLs for your services in the terminal output. Use these URLs in your `.env.prod` file.
+
+3. Start the frontend with the production configuration:
+   ```bash
+   npm run dev:prod
+   ```
+
+4. Access the application at `http://localhost:8080` and verify all services are connected properly
+
 ## 🔄 Switching Between Local and Cloud Backends
 
-### To Use Local Backend
+## To Use Local Backend
 
 1. Start the backend services locally:
    ```bash
@@ -140,13 +179,9 @@ To run the backend services locally:
    npm run dev:localhost
    ```
 
-### To Use Cloud Backend
+## To Use Cloud Backend
 
-1. If not already deployed, deploy the backend to Shuttle Cloud:
-   ```bash
-   cd shuttle-shellcon
-   shuttle deploy
-   ```
+1. If not already deployed, follow the instructions from the backend repository to deploy to Shuttle Cloud.
 
 2. Make sure your `.env.prod` file has the correct URLs:
    ```env
@@ -184,7 +219,7 @@ In both cases, the application will be available at `http://localhost:8080`.
    - Make sure you've completed all the prerequisites for each challenge
    - Check if your solution matches the expected format (case-sensitive, exact spacing, etc.)
 
-5. **Frontend Loading Issues**:
+4. **Frontend Loading Issues**:
    - If challenges don't load, check the Network tab in your browser's developer tools
    - Verify that the API requests are being sent to the correct URLs
    - Try restarting both the frontend and backend services
@@ -204,14 +239,14 @@ In both cases, the application will be available at `http://localhost:8080`.
 
 ### Shuttle-Specific Questions
 
-1. **Q: Where should I run the `shuttle deploy` command?**
-   A: Always run it at the root of the Rust project where the `shuttle.toml` file is located.
+1. **Q: Where can I find deployment instructions for the backend?**
+   A: Refer to the documentation in the backend repository for detailed deployment instructions.
 
 2. **Q: How can I check if my Shuttle services are running in the cloud?**
-   A: Visit the Shuttle dashboard.
+   A: Visit the [Shuttle dashboard](https://console.shuttle.dev/) or check your project status in the Shuttle console.
 
 3. **Q: How do I update my cloud deployment after making changes?**
-   A: Simply run `shuttle deploy` again from the root directory of your project.
+   A: Follow the update instructions in the backend repository documentation.
 
 ### Challenge-Specific Questions
 
@@ -227,6 +262,8 @@ In both cases, the application will be available at `http://localhost:8080`.
    - Using the same browser and device
    - Not clearing your browser data
    - Completing each challenge fully before moving to the next
+   
+   > **Note**: The application uses localStorage to persist challenge validation state and system status changes between page refreshes. This ensures that when a challenge is validated as solved, it remains in the solved state even after page reloads.
 
 3. **Q: The code examples in the challenges aren't displaying correctly. How can I fix this?**
    A: If code blocks aren't rendering properly:
@@ -234,23 +271,25 @@ In both cases, the application will be available at `http://localhost:8080`.
    - Clear your browser cache
    - Try a different browser if the issue persists
 
-### Environment Setup Questions
-
-1. **Q: Do I need to modify the `.env.localhost` or `.env.prod` files?**
-   A: Only if your backend services are running on different URLs than the defaults. For local development, the default ports should work fine.
-
-2. **Q: Can I run the frontend and backend on different machines?**
-   A: Yes, but you'll need to update the URLs in your environment files to point to the correct IP addresses or hostnames.
-
-3. **Q: What Node.js version is required for the frontend?**
-   A: Node.js 16+ is recommended for optimal compatibility.
-
 ## 🏆 Challenge Information
 
 The challenges and their solutions are described in the backend repository. The frontend simply provides an interface for interacting with these challenges.
 
 For details on each challenge and how to solve them, please refer to the documentation in the backend repository.
 
+### Smart Aquarium Dashboard Features
+
+The frontend application includes several key features:
+
+1. **Interactive Challenge Cards**: Each challenge is presented as a card with description, validation status, and solution submission.
+2. **System Status Visualization**: Real-time visualization of the aquarium system components and their status.
+3. **Persistent State**: Challenge validation status and system component status are persisted in localStorage to maintain state between page refreshes.
+4. **API Integration**: Seamless integration with the backend microservices for challenge validation and system monitoring.
+
 ## 📄 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+---
+
+*Last updated: June 2025*
